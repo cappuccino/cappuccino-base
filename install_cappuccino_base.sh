@@ -25,16 +25,17 @@ function prompt () {
     done
 }
 
-HERE=`pwd`
-if ! echo $HERE | grep cappuccino-base; then
+destination=`pwd`
+cappuccino_source="/usr/local/narwhal"
+if ! echo $destination | grep cappuccino-base; then
     echo "This script should be run from within cappuccino-base."
     exit 1
 fi
 
-echo "Install /usr/local/cappuccino in $HERE?"
+echo "Install $cappuccino_source in $destination?"
 echo "WARNING: all files not supposed to be in the folder will be deleted."
 if prompt "no"; then
-    rsync -acvP --exclude-from install_cappuccino_exclude.rsync --delete /usr/local/cappuccino/ "$HERE"
+    rsync -acvP --exclude-from install_cappuccino_exclude.rsync --delete "$cappuccino_source/" "$destination"
 
     # Make links relative.
 
@@ -46,7 +47,7 @@ if prompt "no"; then
     (cd bin && ln -sf narwhal js)
     (cd bin && ln -sf activate.bash activate)
 
-    echo "Version size: `du -sh \"$HERE\"`"
+    echo "Version size: `du -sh \"$destination\"`"
 
     echo "Commit the new build?"
     if prompt "yes"; then
