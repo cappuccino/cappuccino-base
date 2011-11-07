@@ -34,13 +34,14 @@ fi
 echo "Install /usr/local/cappuccino in $HERE?"
 echo "WARNING: all files not supposed to be in the folder will be deleted."
 if prompt "no"; then
-    rsync -avP --exclude .git --exclude README.md --exclude install_cappuccino_base.sh --exclude README.markdown --exclude zips/\* --delete /usr/local/cappuccino/ "$HERE"
+    rsync -acvP --exclude .git --exclude README.md --exclude install_cappuccino_base.sh --exclude README.markdown --exclude zips/\* --delete /usr/local/cappuccino/ "$HERE"
     echo "Version size: `du -sh \"$HERE\"`"
 
     echo "Commit the new build?"
     if prompt "yes"; then
-        rm "$HERE/packages/.gitignore"
         git add .
+        git add --force packages/*
+        git add --force packages/narwhal-jsc/deps/*
         git commit
     fi
 fi
