@@ -51,10 +51,10 @@ if prompt "no"; then
 
     echo "Commit the new build?"
     if prompt "yes"; then
-        git add .
-        git add --force packages/*
-        git add --force packages/narwhal-jsc/deps/*
-        git add --force bin/*
+        git add -A .
+        git add -A  --force packages/*
+        git add -A  --force packages/narwhal-jsc/deps/*
+        git add -A  --force bin/*
 
         git commit
     fi
