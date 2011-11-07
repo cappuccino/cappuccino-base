@@ -1,0 +1,65 @@
+#!/usr/bin/env objj
+
+@import <OJAutotest/OJAutotest.j>
+var File = require("file");
+
+CPLogRegister(CPLogPrint, "warn");
+
+var OPTIONS_FILENAME = ".ojautotest";
+var OJTEST_OPTIONS_FILENAME = ".ojtest";
+
+function main(args) {
+    if (isSystemSupported()) {
+        var options = readConfigurationFile();
+        var autotest = [[OJAutotest alloc] init];
+        [autotest setWatchLocations:options.watch];
+        [autotest setFrameworksLocations:options.frameworks];
+        [autotest start];
+        return 0;
+    }
+    
+    print("OJAutotest is currently not supported on non-Mac operating systems.")
+    require("os").exit(1);
+}
+
+function readConfigurationFile()
+{
+    var options = {"watch": ["Test"], "frameworks": []};
+    
+    if (File.isFile(OPTIONS_FILENAME))
+    {
+        require("system").print("The .autotest configuration file is deprecated. Please use the new .ojtest file!");
+        options = JSON.parse(readFile(OPTIONS_FILENAME));
+    }
+    
+    if (File.isFile(OJTEST_OPTIONS_FILENAME))
+    {
+        var ojTestOptions = JSON.parse(readFile(OJTEST_OPTIONS_FILENAME)).autotest;
+        for(var x in ojTestOptions)
+            options[x] = ojTestOptions[x];
+    }
+    
+    return options;
+}
+
+function readFile(fileName)
+{
+    try
+    {
+        var filePath = File.absolute(fileName);
+        fileBytes = File.read(filePath);
+        return fileBytes;
+    }
+    catch (e)
+    {
+        CPLog.error("Error reading file: " + filePath);
+        throw e;
+        require("os").exit(1);
+    }
+}
+
+function isSystemSupported()
+{
+    var System = require("system");
+    return (System.os.match(/darwin/) || System.os.match(/Mac OS X/));
+}

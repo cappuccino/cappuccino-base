@@ -1,0 +1,13 @@
+bin
+*.dylib
+*.dylib.dSYM
+*.so
+*.dll
+*.o
+*.s
+*.ii
+deps
+frameworks
+.DS_Store
+narwhal-jsc.conf
+include/config.h

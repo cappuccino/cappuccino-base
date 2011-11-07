@@ -1,0 +1,85 @@
+#!/usr/bin/env objj
+
+@import <OJUnit/OJTestRunnerText.j>
+@import <OJUnit/OJTestRunnerTextParallel.j>
+@import <OJCov/OJCoverageRunnerText.j>
+@import <OJSpec/OJSpec.j>
+
+var LOCAL_OPTIONS_FILE = ".ojtest";
+
+var parser = new (require("narwhal/args").Parser)();
+
+parser.usage("INPUT_FILE ...");
+parser.help("Runs the given suite of tests.");
+
+parser.option("-c", "coverage")
+    .def(false)
+    .set(true)
+    .help("Runs test coverage along with your OJUnit tests.");
+
+parser.option("-t", "threshold")
+    .def(0.8)
+    .set()
+    .help("Set the threshold for test coverage to the specified percentage. Implies -c. Default: 0.8");
+
+parser.option("-l", "level")
+    .def(@"warn")
+    .choices(["fatal", "error", "warn", "info", "debug", "trace"])
+    .set()
+    .help("Set the minimum log level.");
+
+parser.option("-s", "spec")
+    .def(false)
+    .set(true)
+    .help("Run with OJSpec enabled (experimental). When this is stable, OJSpec will be enabled by default.");
+    
+parser.option("-p", "parallel")
+    .set(true)
+    .help("Run with Rhino-enabled parallel test running on 10 threads.");
+
+parser.helpful();
+
+function main(args) {
+    var savedArgs = args.slice(0),
+        options = parser.parse(args),
+        SYS = require("system"),
+        FILE = require("file");
+    
+    if(FILE.exists(LOCAL_OPTIONS_FILE)) 
+    {
+        var fileOptions = JSON.parse(FILE.read(LOCAL_OPTIONS_FILE));
+        for(var x in fileOptions)
+            options[x] = fileOptions[x];
+    }
+    
+    if (options.args.length < 1)
+    {
+        parser.printUsage(options);
+        return;
+    }
+
+    if (options.spec)
+    {
+        @import <OJSpec/OJSpec.j>
+    }
+
+    CPLogRegister(CPLogPrint, options.level);
+
+    if (options.coverage || savedArgs.indexOf("-t") !== -1)
+    {
+        var threshold = options.threshold > 1 ? options.threshold / 100 : options.threshold;
+
+        var runner = [[OJCoverageRunnerText alloc] initWithThreshold:threshold];
+    }
+    else if (options.parallel)
+    {
+        require("narwhal").ensureEngine("rhino");
+        var runner = [[OJTestRunnerTextParallel alloc] init];
+    }
+    else
+    {
+        var runner = [[OJTestRunnerText alloc] init];
+    }
+    
+    [runner startWithArguments:options.args];
+}
