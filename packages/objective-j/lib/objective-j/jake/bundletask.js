@@ -75,6 +75,7 @@ function BundleTask(aName, anApplication)
     this._compilerFlags = null;
     this._flattensSources = false;
     this._includesNibsAndXibs = false;
+    this._preventsNib2Cib = false;
 
     this._productName = this.name();
 
@@ -226,6 +227,16 @@ BundleTask.prototype.setIncludesNibsAndXibs = function(shouldIncludeNibsAndXibs)
 BundleTask.prototype.includesNibsAndXibs = function()
 {
     return this._includesNibsAndXibs;
+}
+
+BundleTask.prototype.setPreventsNib2Cib = function(shouldPreventNib2Cib)
+{
+    this._preventsNib2Cib = shouldPreventNib2Cib;
+}
+
+BundleTask.prototype.preventsNib2Cib = function()
+{
+    return this._preventsNib2Cib;
 }
 
 BundleTask.prototype.setProductName = function(aProductName)
@@ -512,7 +523,7 @@ BundleTask.prototype.defineResourceTask = function(aResourcePath, aDestinationPa
 
 
 
-    if ((extension !== ".cib" || !FILE.exists(extensionless + ".xib") && !FILE.exists(extensionless + ".nib")) &&
+    if ((extension !== ".cib" || !FILE.exists(extensionless + ".xib") && !FILE.exists(extensionless + ".nib") || this._preventsNib2Cib) &&
         ((extension !== ".xib" && extension !== ".nib") || this.includesNibsAndXibs()))
     {
         filedir (aDestinationPath, [aResourcePath], function()
@@ -529,7 +540,7 @@ BundleTask.prototype.defineResourceTask = function(aResourcePath, aDestinationPa
         this.enhance([aDestinationPath]);
     }
 
-    if (extension === ".xib" || extension === ".nib")
+    if ((extension === ".xib" || extension === ".nib") && !this._preventsNib2Cib)
     {
         var cibDestinationPath = FILE.join(FILE.dirname(aDestinationPath), FILE.basename(aDestinationPath, extension)) + ".cib";
 
@@ -849,8 +860,7 @@ BundleTask.prototype.defineSourceTasks = function()
 
         environmentSources.forEach(function( aFilename)
         {
-
-            if (!FILE.exists(aFilename) || FILE.extension(aFilename) !== '.j')
+            if (!FILE.exists(aFilename))
                 return;
 
             var relativePath = aFilename.substring(basePathLength ? basePathLength + 1 : basePathLength),
@@ -858,8 +868,19 @@ BundleTask.prototype.defineSourceTasks = function()
 
             filedir (compiledEnvironmentSource, [aFilename], function()
             {
-                TERM.stream.write("Compiling [\0blue(" + anEnvironment + "\0)] \0purple(" + aFilename + "\0)").flush();
-                var compiled = require("objective-j/compiler").compile(aFilename, environmentCompilerFlags);
+                var compile
+
+                if (FILE.extension(aFilename) !== ".j")
+                {
+                    TERM.stream.write("Including [\0blue(" + anEnvironment + "\0)] \0purple(" + aFilename + "\0)").flush();
+                    var compiled = FILE.read(aFilename, { charset:"UTF-8" });
+                }
+                else
+                {
+                    TERM.stream.write("Compiling [\0blue(" + anEnvironment + "\0)] \0purple(" + aFilename + "\0)").flush();
+                    var compiled = require("objective-j/compiler").compile(aFilename, environmentCompilerFlags);
+                }
+
                 TERM.stream.print(Array(Math.round(compiled.length / 1024) + 3).join("."));
                 FILE.write(compiledEnvironmentSource, compiled, { charset:"UTF-8" });
             });

@@ -927,7 +927,7 @@ function serializePropertyList( aPropertyList, serializers)
         type = "boolean";
     else if (type === "number")
     {
-        if (FLOOR(aPropertyList) === aPropertyList)
+        if (FLOOR(aPropertyList) === aPropertyList && ("" + aPropertyList).indexOf('e') == -1)
             type = "integer";
         else
             type = "real";
@@ -2563,7 +2563,7 @@ function CFBundleNotifySpriteSupportListeners()
 }
 function CFBundleTestSpriteTypes( spriteTypes)
 {
-    if (spriteTypes.length < 2)
+    if (!("Image" in global) || spriteTypes.length < 2)
     {
         CFBundleSupportedSpriteType = CFBundleNoSpriteType;
         CFBundleNotifySpriteSupportListeners();
@@ -2726,7 +2726,7 @@ function StaticResource( aURL, aParent, isDirectory, isResolved)
 StaticResource.rootResources = function()
 {
     return rootResources;
-}
+};
 exports.StaticResource = StaticResource;
 function resolveStaticResource( aResource)
 {
@@ -2760,35 +2760,35 @@ StaticResource.prototype.resolve = function()
         }
         new FileRequest(this.URL(), onsuccess, onfailure);
     }
-}
+};
 StaticResource.prototype.name = function()
 {
     return this._name;
-}
+};
 StaticResource.prototype.URL = function()
 {
     return this._URL;
-}
+};
 StaticResource.prototype.contents = function()
 {
     return this._contents;
-}
+};
 StaticResource.prototype.children = function()
 {
     return this._children;
-}
+};
 StaticResource.prototype.parent = function()
 {
     return this._parent;
-}
+};
 StaticResource.prototype.isResolved = function()
 {
     return this._isResolved;
-}
+};
 StaticResource.prototype.write = function( aString)
 {
     this._contents += aString;
-}
+};
 function rootResourceForAbsoluteURL( anAbsoluteURL)
 {
     var schemeAndAuthority = anAbsoluteURL.schemeAndAuthority(),
@@ -2819,20 +2819,20 @@ StaticResource.resourceAtURL = function( aURL, resolveAsDirectoriesIfNecessary)
             throw new Error("Static Resource at " + aURL + " is not resolved (\"" + name + "\")");
     }
     return resource;
-}
+};
 StaticResource.prototype.resourceAtURL = function( aURL, resolveAsDirectoriesIfNecessary)
 {
     return StaticResource.resourceAtURL(new CFURL(aURL, this.URL()), resolveAsDirectoriesIfNecessary);
-}
+};
 StaticResource.resolveResourceAtURL = function( aURL, isDirectory, aCallback)
 {
     aURL = makeAbsoluteURL(aURL).absoluteURL();
     resolveResourceComponents(rootResourceForAbsoluteURL(aURL), isDirectory, aURL.pathComponents(), 0, aCallback);
-}
+};
 StaticResource.prototype.resolveResourceAtURL = function( aURL, isDirectory, aCallback)
 {
     StaticResource.resolveResourceAtURL(new CFURL(aURL, this.URL()).absoluteURL(), isDirectory, aCallback);
-}
+};
 function resolveResourceComponents( aResource, isDirectory, components, index, aCallback)
 {
     var count = components.length;
@@ -2878,27 +2878,27 @@ function resolveResourceAtURLSearchingIncludeURLs( aURL, anIndex, aCallback)
 StaticResource.resolveResourceAtURLSearchingIncludeURLs = function( aURL, aCallback)
 {
     resolveResourceAtURLSearchingIncludeURLs(aURL, 0, aCallback);
-}
+};
 StaticResource.prototype.addEventListener = function( anEventName, anEventListener)
 {
     this._eventDispatcher.addEventListener(anEventName, anEventListener);
-}
+};
 StaticResource.prototype.removeEventListener = function( anEventName, anEventListener)
 {
     this._eventDispatcher.removeEventListener(anEventName, anEventListener);
-}
+};
 StaticResource.prototype.isNotFound = function()
 {
     return this._isNotFound;
-}
+};
 StaticResource.prototype.isFile = function()
 {
     return !this._isDirectory;
-}
+};
 StaticResource.prototype.isDirectory = function()
 {
     return this._isDirectory;
-}
+};
 StaticResource.prototype.toString = function( includeNotFounds)
 {
     if (this.isNotFound())
@@ -2916,13 +2916,13 @@ StaticResource.prototype.toString = function( includeNotFounds)
             }
     }
     return string;
-}
+};
 var includeURLs = NULL;
 StaticResource.includeURLs = function()
 {
-    if (includeURLs)
+    if (includeURLs !== NULL)
         return includeURLs;
-    var includeURLs = [];
+    includeURLs = [];
     if (!global.OBJJ_INCLUDE_PATHS && !global.OBJJ_INCLUDE_URLS)
         includeURLs = ["Frameworks", "Frameworks/Debug"];
     else
@@ -2931,7 +2931,7 @@ StaticResource.includeURLs = function()
     while (count--)
         includeURLs[count] = new CFURL(includeURLs[count]).asDirectoryPathURL();
     return includeURLs;
-}
+};
 var TOKEN_ACCESSORS = "accessors",
     TOKEN_CLASS = "class",
     TOKEN_END = "end",
@@ -3243,7 +3243,8 @@ Preprocessor.prototype.implementation = function(tokens, aStringBuffer)
                 ivar_count = 0,
                 declaration = [],
                 attributes,
-                accessors = {};
+                accessors = {},
+                types = [];
             while((token = tokens.skip_whitespace()) && token != TOKEN_CLOSE_BRACE)
             {
                 if (token === TOKEN_PREPROCESSOR)
@@ -3253,6 +3254,8 @@ Preprocessor.prototype.implementation = function(tokens, aStringBuffer)
                         attributes = this.accessors(tokens);
                     else if (token !== TOKEN_OUTLET)
                         throw new SyntaxError(this.error_message("*** Unexpected '@' token in ivar declaration ('@"+token+"')."));
+                    else
+                        types.push("@" + token);
                 }
                 else if (token == TOKEN_SEMICOLON)
                 {
@@ -3261,9 +3264,13 @@ Preprocessor.prototype.implementation = function(tokens, aStringBuffer)
                     else
                         buffer.atoms[buffer.atoms.length] = ", ";
                     var name = declaration[declaration.length - 1];
-                    buffer.atoms[buffer.atoms.length] = "new objj_ivar(\"" + name + "\")";
+                    if (this._flags & Preprocessor.Flags.IncludeTypeSignatures)
+                        buffer.atoms[buffer.atoms.length] = "new objj_ivar(\"" + name + "\", \"" + types.slice(0, types.length - 1). join(" ") + "\")";
+                    else
+                        buffer.atoms[buffer.atoms.length] = "new objj_ivar(\"" + name + "\")";
                     ivar_names[name] = 1;
                     declaration = [];
+                    types = [];
                     if (attributes)
                     {
                         accessors[name] = attributes;
@@ -3271,7 +3278,10 @@ Preprocessor.prototype.implementation = function(tokens, aStringBuffer)
                     }
                 }
                 else
+                {
                     declaration.push(token);
+                    types.push(token);
+                }
             }
             if (declaration.length)
                 throw new SyntaxError(this.error_message("*** Expected ';' in ivar declaration, found '}'."));
@@ -3402,7 +3412,7 @@ Preprocessor.prototype.method = function( tokens, ivar_names)
             types[parameters.length + 1] = type || null;
             parameters[parameters.length] = token;
             if (token in ivar_names)
-                throw new SyntaxError(this.error_message("*** Method ( "+selector+" ) uses a parameter name that is already in use ( "+token+" )"));
+                CPLog.warn(this.error_message("*** Warning: Method ( "+selector+" ) uses a parameter name that is already in use ( "+token+" )"));
         }
         else if (token == TOKEN_OPEN_PARENTHESIS)
         {
@@ -4160,13 +4170,50 @@ var _class_initialize = function( aClass)
         meta.info = (meta.info | (CLS_INITIALIZED)) & ~(CLS_INITIALIZING);
     }
 }
-var _objj_forward = new objj_method("forward", function(self, _cmd)
+var _objj_forward = function(self, _cmd)
 {
-    return objj_msgSend(self, "forward::", _cmd, arguments);
-});
+    var isa = self.isa,
+        implementation = isa.method_dtable[SEL_forwardingTargetForSelector_];
+    if (implementation)
+    {
+        var target = implementation.method_imp.call(this, self, SEL_forwardingTargetForSelector_, _cmd);
+        if (target && target !== self)
+        {
+            arguments[0] = target;
+            return objj_msgSend.apply(this, arguments);
+        }
+    }
+    implementation = isa.method_dtable[SEL_methodSignatureForSelector_];
+    if (implementation)
+    {
+        var forwardInvocationImplementation = isa.method_dtable[SEL_forwardInvocation_];
+        if (forwardInvocationImplementation)
+        {
+            var signature = implementation.method_imp.call(this, self, SEL_methodSignatureForSelector_, _cmd);
+            if (signature)
+            {
+                var invocationClass = objj_lookUpClass("CPInvocation");
+                if (invocationClass)
+                {
+                    var invocation = objj_msgSend(invocationClass, SEL_invocationWithMethodSignature_, signature),
+                        index = 0,
+                        count = arguments.length;
+                    for (; index < count; ++index)
+                        objj_msgSend(invocation, SEL_setArgument_atIndex_, arguments[index], index);
+                    forwardInvocationImplementation.method_imp.call(this, self, SEL_forwardInvocation_, invocation);
+                    return objj_msgSend(invocation, SEL_returnValue);
+                }
+            }
+        }
+    }
+    implementation = isa.method_dtable[SEL_doesNotRecognizeSelector_];
+    if (implementation)
+        return implementation.method_imp.call(this, self, SEL_doesNotRecognizeSelector_, _cmd);
+    throw class_getName(isa) + " does not implement doesNotRecognizeSelector:. Did you forget a superclass for " + class_getName(isa) + "?";
+};
 class_getMethodImplementation = function( aClass, aSelector)
 {
-    if (!((((aClass.info & (CLS_META))) ? aClass : aClass.isa).info & (CLS_INITIALIZED))) _class_initialize(aClass); var method = aClass.method_dtable[aSelector]; if (!method) method = _objj_forward; var implementation = method.method_imp;;
+    if (!((((aClass.info & (CLS_META))) ? aClass : aClass.isa).info & (CLS_INITIALIZED))) _class_initialize(aClass); var method = aClass.method_dtable[aSelector]; var implementation = method ? method.method_imp : _objj_forward;;
     return implementation;
 }
 class_getMethodImplementation.displayName = "class_getMethodImplementation";
@@ -4290,7 +4337,7 @@ objj_msgSend = function( aReceiver, aSelector)
     if (aReceiver == nil)
         return nil;
     var isa = aReceiver.isa;
-    if (!((((isa.info & (CLS_META))) ? isa : isa.isa).info & (CLS_INITIALIZED))) _class_initialize(isa); var method = isa.method_dtable[aSelector]; if (!method) method = _objj_forward; var implementation = method.method_imp;;
+    if (!((((isa.info & (CLS_META))) ? isa : isa.isa).info & (CLS_INITIALIZED))) _class_initialize(isa); var method = isa.method_dtable[aSelector]; var implementation = method ? method.method_imp : _objj_forward;;
     switch(arguments.length)
     {
         case 2: return implementation(aReceiver, aSelector);
@@ -4304,7 +4351,7 @@ objj_msgSendSuper = function( aSuper, aSelector)
 {
     var super_class = aSuper.super_class;
     arguments[0] = aSuper.receiver;
-    if (!((((super_class.info & (CLS_META))) ? super_class : super_class.isa).info & (CLS_INITIALIZED))) _class_initialize(super_class); var method = super_class.method_dtable[aSelector]; if (!method) method = _objj_forward; var implementation = method.method_imp;;
+    if (!((((super_class.info & (CLS_META))) ? super_class : super_class.isa).info & (CLS_INITIALIZED))) _class_initialize(super_class); var method = super_class.method_dtable[aSelector]; var implementation = method ? method.method_imp : _objj_forward;;
     return implementation.apply(aSuper.receiver, arguments);
 }
 objj_msgSendSuper.displayName = "objj_msgSendSuper";
@@ -4353,6 +4400,25 @@ sel_registerName = function( aName)
     return aName;
 }
 sel_registerName.displayName = "sel_registerName";
+objj_class.prototype.toString = objj_object.prototype.toString = function()
+{
+    var isa = this.isa;
+    if (class_getInstanceMethod(isa, SEL_description))
+        return objj_msgSend(this, SEL_description);
+    if (class_isMetaClass(isa))
+        return this.name;
+    return "[" + isa.name + " Object](-description not implemented)";
+}
+var SEL_description = sel_getUid("description"),
+    SEL_forwardingTargetForSelector_ = sel_getUid("forwardingTargetForSelector:"),
+    SEL_methodSignatureForSelector_ = sel_getUid("methodSignatureForSelector:"),
+    SEL_forwardInvocation_ = sel_getUid("forwardInvocation:"),
+    SEL_doesNotRecognizeSelector_ = sel_getUid("doesNotRecognizeSelector:"),
+    SEL_invocationWithMethodSignature_ = sel_getUid("invocationWithMethodSignature:"),
+    SEL_setTarget_ = sel_getUid("setTarget:"),
+    SEL_setSelector_ = sel_getUid("setSelector:"),
+    SEL_setArgument_atIndex_ = sel_getUid("setArgument:atIndex:"),
+    SEL_returnValue = sel_getUid("returnValue");
 objj_eval = function( aString)
 {
     var url = exports.pageURL;
@@ -4425,8 +4491,12 @@ objj_backtrace_decorator = function(msgSend)
         }
         catch (anException)
         {
-            CPLog.warn("Exception " + anException + " in " + objj_debug_message_format(aReceiver, aSelector));
-            objj_backtrace_print(CPLog.warn);
+            if (objj_backtrace.length)
+            {
+                CPLog.warn("Exception " + anException + " in " + objj_debug_message_format(aReceiver, aSelector));
+                objj_backtrace_print(CPLog.warn);
+                objj_backtrace = [];
+            }
             throw anException;
         }
         finally
