@@ -1,0 +1,28 @@
+# Our own stuff.
+.git
+install_cappuccino*
+README.markdown
+
+# Narwhal's README would be confusing in a Cappuccino install.
+README.md
+
+# These tusk packages are already installed.
+zips/*
+
+# These bin softlinks are recreated by hand.
+bin/capp
+bin/cib-dump
+bin/cplutil
+bin/flatten
+bin/jake
+bin/narwhal-jsc
+bin/nib2cib
+bin/objj
+bin/objjc
+bin/ojautotest
+bin/ojautotest-run
+bin/ojdepcheck
+bin/ojtest
+bin/press
+bin/shrinksafe
+bin/source-test.sh
