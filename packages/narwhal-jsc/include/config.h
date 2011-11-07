@@ -1,1 +1,0 @@
-#define HAVE_JAVASCRIPT_H 1
