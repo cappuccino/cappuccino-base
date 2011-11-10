@@ -1,4 +1,4 @@
-@STATIC;1.0;p;19;_CPAttachedWindow.jt;16870;@STATIC;1.0;I;21;Foundation/CPObject.ji;10;CPButton.ji;10;CPWindow.jt;16794;objj_executeFile("Foundation/CPObject.j", NO);
+@STATIC;1.0;p;19;_CPAttachedWindow.jt;16896;@STATIC;1.0;I;21;Foundation/CPObject.ji;10;CPButton.ji;10;CPWindow.jt;16820;objj_executeFile("Foundation/CPObject.j", NO);
 objj_executeFile("CPButton.j", YES);
 objj_executeFile("CPWindow.j", YES);
 CPClosableOnBlurWindowMask = 1 << 4;
@@ -47,7 +47,7 @@ _appearance = newValue;
 },["void","id"]), new objj_method(sel_getUid("initWithContentRect:"), function $_CPAttachedWindow__initWithContentRect_(self, _cmd, aFrame)
 { with(self)
 {
-    self = objj_msgSend(self, "initWithContentRect:styleMask:", aFrame, nil)
+    self = objj_msgSend(self, "initWithContentRect:styleMask:", aFrame, nil);
     return self;
 }
 },["id","CGRect"]), new objj_method(sel_getUid("initWithContentRect:styleMask:"), function $_CPAttachedWindow__initWithContentRect_styleMask_(self, _cmd, aFrame, aStyleMask)
@@ -145,7 +145,7 @@ _appearance = newValue;
     originRight.x += aRect.size.width;
     originRight.y += (aRect.size.height / 2.0) - (CPRectGetHeight(objj_msgSend(self, "frame")) / 2.0)
     originLeft.x -= CPRectGetWidth(objj_msgSend(self, "frame"));
-    originLeft.y += (aRect.size.height / 2.0) - (CPRectGetHeight(objj_msgSend(self, "frame")) / 2.0)
+    originLeft.y += (aRect.size.height / 2.0) - (CPRectGetHeight(objj_msgSend(self, "frame")) / 2.0);
     originBottom.x += aRect.size.width / 2.0 - CPRectGetWidth(objj_msgSend(self, "frame")) / 2.0;
     originBottom.y += aRect.size.height;
     originTop.x += aRect.size.width / 2.0 - CPRectGetWidth(objj_msgSend(self, "frame")) / 2.0;
@@ -240,7 +240,7 @@ _appearance = newValue;
 },["void","CPView","int"]), new objj_method(sel_getUid("positionRelativeToRect:"), function $_CPAttachedWindow__positionRelativeToRect_(self, _cmd, aRect)
 { with(self)
 {
-    objj_msgSend(self, "positionRelativeToRect:preferredEdge:", aRect, nil)
+    objj_msgSend(self, "positionRelativeToRect:preferredEdge:", aRect, nil);
 }
 },["void","CPRect"]), new objj_method(sel_getUid("positionRelativeToRect:preferredEdge:"), function $_CPAttachedWindow__positionRelativeToRect_preferredEdge_(self, _cmd, aRect, anEdge)
 { with(self)
@@ -297,16 +297,18 @@ _appearance = newValue;
         _DOMElement.style.opacity = 0;
         _DOMElement.style.WebkitTransform = "scale(0)";
         _DOMElement.style.WebkitTransformOrigin = tranformOrigin;
-        window.setTimeout(function(){
+        window.setTimeout(function()
+        {
             _DOMElement.style.height = _frame.size.height + "px";
             _DOMElement.style.width = _frame.size.width + "px";
             _DOMElement.style.opacity = 1;
             _DOMElement.style.WebkitTransform = "scale(1.1)";
-            var transitionEndFunction = function(){
+            var transitionEndFunction = function()
+            {
                 _DOMElement.style.WebkitTransform = "scale(1)";
                 _DOMElement.removeEventListener("webkitTransitionEnd", transitionEndFunction, YES);
             };
-            _DOMElement.addEventListener("webkitTransitionEnd", transitionEndFunction, YES)
+            _DOMElement.addEventListener("webkitTransitionEnd", transitionEndFunction, YES);
         },0);
     }
     objj_msgSend(objj_msgSend(CPNotificationCenter, "defaultCenter"), "addObserver:selector:name:object:", self, sel_getUid("_attachedWindowDidMove:"), CPWindowDidMoveNotification, self);
@@ -10597,7 +10599,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 },["id","CGPoint","CPPasteboard"])]);
 }
 
-p;9;CPEvent.jt;18353;@STATIC;1.0;I;21;Foundation/CPObject.ji;8;CPText.jt;18295;objj_executeFile("Foundation/CPObject.j", NO);
+p;9;CPEvent.jt;18196;@STATIC;1.0;I;21;Foundation/CPObject.ji;8;CPText.jt;18138;objj_executeFile("Foundation/CPObject.j", NO);
 objj_executeFile("CPText.j", YES);
 CPLeftMouseDown = 1;
 CPLeftMouseUp = 2;
@@ -10944,16 +10946,12 @@ class_addMethods(the_class, [new objj_method(sel_getUid("_initWithType:"), funct
             c === CPEnterCharacter ||
             c === CPNewlineCharacter ||
             c === CPCarriageReturnCharacter ||
-            c === CPEscapeFunctionKey ||
-            (!firstResponderIsText &&
-                (c === CPSpaceFunctionKey ||
-                 c === CPDeleteCharacter ||
-                 c === CPBackspaceCharacter)))
+            c === CPEscapeFunctionKey)
         {
             return YES;
         }
     }
-    return NO;
+    return !firstResponderIsText;
 }
 },["BOOL"])]);
 class_addMethods(meta_class, [new objj_method(sel_getUid("keyEventWithType:location:modifierFlags:timestamp:windowNumber:context:characters:charactersIgnoringModifiers:isARepeat:keyCode:"), function $CPEvent__keyEventWithType_location_modifierFlags_timestamp_windowNumber_context_characters_charactersIgnoringModifiers_isARepeat_keyCode_(self, _cmd, anEventType, aPoint, modifierFlags, aTimestamp, aWindowNumber, aGraphicsContext, characters, unmodCharacters, repeatKey, code)
@@ -15494,7 +15492,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("initialize"), function
 },["id","CPString"])]);
 }
 
-p;11;CPPopover.jt;11334;@STATIC;1.0;I;21;Foundation/CPObject.ji;10;CPButton.ji;9;CPColor.ji;9;CPImage.ji;13;CPImageView.ji;13;CPResponder.ji;8;CPView.ji;19;_CPAttachedWindow.jt;11175;objj_executeFile("Foundation/CPObject.j", NO);
+p;11;CPPopover.jt;11354;@STATIC;1.0;I;21;Foundation/CPObject.ji;10;CPButton.ji;9;CPColor.ji;9;CPImage.ji;13;CPImageView.ji;13;CPResponder.ji;8;CPView.ji;19;_CPAttachedWindow.jt;11195;objj_executeFile("Foundation/CPObject.j", NO);
 objj_executeFile("CPButton.j", YES);
 objj_executeFile("CPColor.j", YES);
 objj_executeFile("CPImage.j", YES);
@@ -15663,7 +15661,7 @@ _behavior = newValue;
         objj_msgSend(_delegate, "popoverWillShow:", self);
     if (!_contentViewController)
          objj_msgSend(CPException, "raise:reason:", CPInternalInconsistencyException, "contentViewController must not be nil");
-    if (_needsCompute)
+    if (_needsCompute || !_attachedWindow)
     {
         var styleMask = (_behavior == CPPopoverBehaviorTransient) ? CPClosableOnBlurWindowMask : nil;
         _attachedWindow = objj_msgSend(objj_msgSend(_CPAttachedWindow, "alloc"), "initWithContentRect:styleMask:", CPRectMakeZero(), styleMask);
@@ -15746,7 +15744,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 },["void","CPCoder"])]);
 }
 
-p;15;CPPopUpButton.jt;23945;@STATIC;1.0;i;10;CPButton.ji;12;CPGeometry.ji;8;CPMenu.ji;12;CPMenuItem.jt;23864;objj_executeFile("CPButton.j", YES);
+p;15;CPPopUpButton.jt;24005;@STATIC;1.0;i;10;CPButton.ji;12;CPGeometry.ji;8;CPMenu.ji;12;CPMenuItem.jt;23924;objj_executeFile("CPButton.j", YES);
 objj_executeFile("CPGeometry.j", YES);
 objj_executeFile("CPMenu.j", YES);
 objj_executeFile("CPMenuItem.j", YES);
@@ -15768,7 +15766,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:pullsDown
         objj_msgSend(self, "setValue:forThemeAttribute:", CPLineBreakByTruncatingTail, "line-break-mode");
         objj_msgSend(self, "setMenu:", objj_msgSend(objj_msgSend(CPMenu, "alloc"), "initWithTitle:", ""));
         objj_msgSend(self, "setPullsDown:", shouldPullDown);
-        var options = CPKeyValueObservingOptionNew |CPKeyValueObservingOptionOld;
+        var options = CPKeyValueObservingOptionNew | CPKeyValueObservingOptionOld;
         objj_msgSend(self, "addObserver:forKeyPath:options:context:", self, "menu.items", options, nil);
         objj_msgSend(self, "addObserver:forKeyPath:options:context:", self, "_firstItem.changeCount", options, nil);
         objj_msgSend(self, "addObserver:forKeyPath:options:context:", self, "selectedItem.changeCount", options, nil);
@@ -15832,6 +15830,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:pullsDown
 { with(self)
 {
     objj_msgSend(objj_msgSend(self, "menu"), "removeAllItems");
+    objj_msgSend(self, "synchronizeTitleAndSelectedItem");
 }
 },["void"]), new objj_method(sel_getUid("removeItemWithTitle:"), function $CPPopUpButton__removeItemWithTitle_(self, _cmd, aTitle)
 { with(self)
@@ -17100,7 +17099,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("visibleFrame"), functio
 },["CGRect"])]);
 }
 
-p;12;CPScroller.jt;30675;@STATIC;1.0;i;11;CPControl.jt;30639;objj_executeFile("CPControl.j", YES);
+p;12;CPScroller.jt;30676;@STATIC;1.0;i;11;CPControl.jt;30640;objj_executeFile("CPControl.j", YES);
 CPScrollerNoPart = 0;
 CPScrollerDecrementPage = 1;
 CPScrollerKnob = 2;
@@ -17173,7 +17172,7 @@ _allowFadingOut = newValue;
 },["id","CGRect"]), new objj_method(sel_getUid("style"), function $CPScroller__style(self, _cmd)
 { with(self)
 {
-    return _style
+    return _style;
 }
 },["void"]), new objj_method(sel_getUid("setStyle:"), function $CPScroller__setStyle_(self, _cmd, aStyle)
 { with(self)
@@ -17602,8 +17601,8 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("defaultThemeClass"), f
         "track-inset":{ top:(0), right:(0), bottom:(0), left:(0) },
         "knob-inset": { top:(0), right:(0), bottom:(0), left:(0) },
         "minimum-knob-length":21.0,
-        "track-border-overlay": 9.0,
-    })
+        "track-border-overlay": 9.0
+    });
 }
 },["id"]), new objj_method(sel_getUid("scrollerWidth"), function $CPScroller__scrollerWidth(self, _cmd)
 { with(self)
@@ -26446,7 +26445,7 @@ CPCarriageReturnCharacter = "\u000d";
 CPBackTabCharacter = "\u0019";
 CPDeleteCharacter = "\u007f";
 
-p;13;CPTextField.jt;41109;@STATIC;1.0;i;11;CPControl.ji;17;CPStringDrawing.ji;17;CPCompatibility.ji;21;_CPImageAndTextView.jt;41003;objj_executeFile("CPControl.j", YES);
+p;13;CPTextField.jt;41276;@STATIC;1.0;i;11;CPControl.ji;17;CPStringDrawing.ji;17;CPCompatibility.ji;21;_CPImageAndTextView.jt;41170;objj_executeFile("CPControl.j", YES);
 objj_executeFile("CPStringDrawing.j", YES);
 objj_executeFile("CPCompatibility.j", YES);
 objj_executeFile("_CPImageAndTextView.j", YES);
@@ -26707,6 +26706,11 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
 },["void","SEL"]), new objj_method(sel_getUid("insertNewline:"), function $CPTextField__insertNewline_(self, _cmd, sender)
 { with(self)
 {
+    var newValue = objj_msgSend(self, "_inputElement").value;
+    if (newValue !== _stringValue)
+    {
+        objj_msgSend(self, "_setStringValue:", newValue);
+    }
     if (objj_msgSend(self, "_valueIsValid:", _stringValue))
     {
         if (_isEditing)
@@ -38112,7 +38116,7 @@ _font = newValue;
 },["void","CPMenu"])]);
 }
 
-p;8;CPMenu.jt;37800;@STATIC;1.0;I;20;Foundation/CPArray.jI;25;Foundation/CPDictionary.jI;33;Foundation/CPNotificationCenter.jI;21;Foundation/CPString.ji;16;_CPMenuManager.ji;15;CPApplication.ji;12;CPClipView.ji;12;CPMenuItem.ji;9;CPPanel.ji;18;_CPMenuBarWindow.ji;15;_CPMenuWindow.jt;37530;objj_executeFile("Foundation/CPArray.j", NO);
+p;8;CPMenu.jt;37917;@STATIC;1.0;I;20;Foundation/CPArray.jI;25;Foundation/CPDictionary.jI;33;Foundation/CPNotificationCenter.jI;21;Foundation/CPString.ji;16;_CPMenuManager.ji;15;CPApplication.ji;12;CPClipView.ji;12;CPMenuItem.ji;9;CPPanel.ji;18;_CPMenuBarWindow.ji;15;_CPMenuWindow.jt;37647;objj_executeFile("Foundation/CPArray.j", NO);
 objj_executeFile("Foundation/CPDictionary.j", NO);
 objj_executeFile("Foundation/CPNotificationCenter.j", NO);
 objj_executeFile("Foundation/CPString.j", NO);
@@ -38199,8 +38203,10 @@ class_addMethods(the_class, [new objj_method(sel_getUid("menuBarHeight"), functi
     var count = objj_msgSend(_items, "count");
     while (count--)
         objj_msgSend(_items[count], "setMenu:", nil);
-    _items = objj_msgSend(CPMutableArray, "array");
     _highlightedIndex = CPNotFound;
+    objj_msgSend(self, "willChangeValueForKey:", "items");
+    _items = objj_msgSend(CPMutableArray, "array");
+    objj_msgSend(self, "didChangeValueForKey:", "items");
 }
 },["void"]), new objj_method(sel_getUid("itemChanged:"), function $CPMenu__itemChanged_(self, _cmd, aMenuItem)
 { with(self)
@@ -47647,7 +47653,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithLevel:"), funct
 },["CPArray"])]);
 }
 
-p;22;CPPlatformWindow+DOM.jt;55958;@STATIC;1.0;I;21;Foundation/CPObject.jI;22;Foundation/CPRunLoop.ji;9;CPEvent.ji;8;CPText.ji;17;CPCompatibility.ji;18;CPDOMWindowLayer.ji;12;CPPlatform.ji;18;CPPlatformWindow.ji;26;CPPlatformWindow+DOMKeys.jt;55744;objj_executeFile("Foundation/CPObject.j", NO);
+p;22;CPPlatformWindow+DOM.jt;56029;@STATIC;1.0;I;21;Foundation/CPObject.jI;22;Foundation/CPRunLoop.ji;9;CPEvent.ji;8;CPText.ji;17;CPCompatibility.ji;18;CPDOMWindowLayer.ji;12;CPPlatform.ji;18;CPPlatformWindow.ji;26;CPPlatformWindow+DOMKeys.jt;55815;objj_executeFile("Foundation/CPObject.j", NO);
 objj_executeFile("Foundation/CPRunLoop.j", NO);
 objj_executeFile("CPEvent.j", YES);
 objj_executeFile("CPText.j", YES);
@@ -48079,7 +48085,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
                             else
                                 _keyCode = aDOMEvent.keyCode;
                             var characters;
-                            if (aDOMEvent.which === 0 || aDOMEvent.charCode === 0)
+                            if (aDOMEvent.which === 0 || aDOMEvent.charCode === 0 || (aDOMEvent.which === undefined && aDOMEvent.charCode === undefined))
                                 characters = KeyCodesToUnicodeMap[_keyCode];
                             if (!characters)
                                 characters = String.fromCharCode(_keyCode).toLowerCase();
