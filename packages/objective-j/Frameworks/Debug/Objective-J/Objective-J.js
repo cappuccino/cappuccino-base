@@ -3560,7 +3560,7 @@ Preprocessor.prototype.preprocess = function(tokens, aStringBuffer, terminator, 
             }
             else
             {
-                buffer.atoms[buffer.atoms.length] = token + "= function";
+                buffer.atoms[buffer.atoms.length] = token + " = function";
             }
         }
         else if (token == TOKEN_PREPROCESSOR)
@@ -3665,23 +3665,23 @@ exports.Executable = Executable;
 Executable.prototype.path = function()
 {
     return this.URL().path();
-}
+};
 Executable.prototype.URL = function()
 {
     return this._URL;
-}
+};
 Executable.prototype.URL.displayName = "Executable.prototype.URL";
 Executable.prototype.functionParameters = function()
 {
     var functionParameters = ["global", "objj_executeFile", "objj_importFile"];
     return functionParameters;
-}
+};
 Executable.prototype.functionParameters.displayName = "Executable.prototype.functionParameters";
 Executable.prototype.functionArguments = function()
 {
     var functionArguments = [global, this.fileExecuter(), this.fileImporter()];
     return functionArguments;
-}
+};
 Executable.prototype.functionArguments.displayName = "Executable.prototype.functionArguments";
 Executable.prototype.execute = function()
 {
@@ -3690,12 +3690,12 @@ Executable.prototype.execute = function()
     var result = this._function.apply(global, this.functionArguments());
     CONTEXT_BUNDLE = oldContextBundle;
     return result;
-}
+};
 Executable.prototype.execute.displayName = "Executable.prototype.execute";
 Executable.prototype.code = function()
 {
     return this._code;
-}
+};
 Executable.prototype.code.displayName = "Executable.prototype.code";
 Executable.prototype.setCode = function(code)
 {

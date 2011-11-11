@@ -317,7 +317,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("setBackgroundColor:"),
 },["CPColor"])]);
 }
 
-p;19;BKThemeDescriptor.jt;12852;@STATIC;1.0;I;21;Foundation/CPObject.jt;12806;objj_executeFile("Foundation/CPObject.j", NO);
+p;19;BKThemeDescriptor.jt;12855;@STATIC;1.0;I;21;Foundation/CPObject.jt;12809;objj_executeFile("Foundation/CPObject.j", NO);
 var ItemSizes = { },
     ThemedObjects = { },
     ThemedShowcaseObjects = { },
@@ -542,7 +542,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("allThemeDescriptorClas
 }
 },["void","CPArray","CPView","CPArray"])]);
 }
-BKLabelFromIdentifier= function(anIdentifier)
+BKLabelFromIdentifier = function(anIdentifier)
 {
     var string = anIdentifier.substr("themed".length),
         index = 0,
@@ -576,9 +576,9 @@ BKLabelFromIdentifier= function(anIdentifier)
     }
     return label;
 }
-PatternIsVertical = YES,
+PatternIsVertical = YES;
 PatternIsHorizontal = NO;
-PatternColor= function()
+PatternColor = function()
 {
     if (arguments.length < 3)
     {
@@ -603,7 +603,7 @@ PatternColor= function()
         return nil;
     }
 }
-PatternImage= function(name, width, height)
+PatternImage = function(name, width, height)
 {
     return objj_msgSend(_CPCibCustomResource, "imageResourceWithName:size:", name, CGSizeMake(width, height));
 }

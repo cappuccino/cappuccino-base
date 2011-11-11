@@ -3509,7 +3509,7 @@ Preprocessor.prototype.preprocess = function(tokens, aStringBuffer, terminator, 
             }
             else
             {
-                buffer.atoms[buffer.atoms.length] = token + "= function";
+                buffer.atoms[buffer.atoms.length] = token + " = function";
             }
         }
         else if (token == TOKEN_PREPROCESSOR)
@@ -3614,42 +3614,42 @@ exports.Executable = Executable;
 Executable.prototype.path = function()
 {
     return this.URL().path();
-}
+};
 Executable.prototype.URL = function()
 {
     return this._URL;
-}
+};
 ;
 Executable.prototype.functionParameters = function()
 {
     var functionParameters = ["global", "objj_executeFile", "objj_importFile"];
     functionParameters = functionParameters.concat("require", "exports", "module", "system", "print", "window");
     return functionParameters;
-}
+};
 ;
 Executable.prototype.functionArguments = function()
 {
     var functionArguments = [global, this.fileExecuter(), this.fileImporter()];
     functionArguments = functionArguments.concat(Executable.commonJSArguments());
     return functionArguments;
-}
+};
 ;
 Executable.setCommonJSParameters = function()
 {
     this._commonJSParameters = Array.prototype.slice.call(arguments);
-}
+};
 Executable.commonJSParameters = function()
 {
     return this._commonJSParameters || [];
-}
+};
 Executable.setCommonJSArguments = function()
 {
     this._commonJSArguments = Array.prototype.slice.call(arguments);
-}
+};
 Executable.commonJSArguments = function()
 {
     return this._commonJSArguments || [];
-}
+};
 Executable.prototype.toMarkedString = function()
 {
     var markedString = "@STATIC;1.0;",
@@ -3660,7 +3660,7 @@ Executable.prototype.toMarkedString = function()
         markedString += dependencies[index].toMarkedString();
     var code = this.code();
     return markedString + MARKER_TEXT + ";" + code.length + ";" + code;
-}
+};
 Executable.prototype.execute = function()
 {
     var oldContextBundle = CONTEXT_BUNDLE;
@@ -3668,12 +3668,12 @@ Executable.prototype.execute = function()
     var result = this._function.apply(global, this.functionArguments());
     CONTEXT_BUNDLE = oldContextBundle;
     return result;
-}
+};
 ;
 Executable.prototype.code = function()
 {
     return this._code;
-}
+};
 ;
 Executable.prototype.setCode = function(code)
 {
@@ -4716,7 +4716,7 @@ exports.repl = function()
         }
         require("browser/timeout").serviceTimeouts();
     }
-}
+};
 exports.make_narwhal_factory = function(path)
 {
     return function(require, exports, module, system, print)
@@ -4725,7 +4725,7 @@ exports.make_narwhal_factory = function(path)
         Executable.setCommonJSArguments(require, exports, module, system, print, window);
         Executable.fileImporterForURL(FILE.dirname(path))(path, YES);
     }
-}
+};
 }
 var pkg = null;
 function getPackage() {

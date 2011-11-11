@@ -3058,7 +3058,7 @@ objj_msgSend(_114,"encodeBool:forKey:",_data._isNaN,_10f);
 objj_msgSend(_114,"encodeObject:forKey:",_data._mantissa,_110);
 }
 })]);
-p;14;CPDictionary.jt;8730;@STATIC;1.0;i;9;CPArray.ji;14;CPEnumerator.ji;13;CPException.ji;8;CPNull.ji;10;CPObject.jt;8634;
+p;14;CPDictionary.jt;8731;@STATIC;1.0;i;9;CPArray.ji;14;CPEnumerator.ji;13;CPException.ji;8;CPNull.ji;10;CPObject.jt;8635;
 objj_executeFile("CPArray.j",YES);
 objj_executeFile("CPEnumerator.j",YES);
 objj_executeFile("CPException.j",YES);
@@ -3152,7 +3152,8 @@ return _21;
 with(_22){
 var _25=_keys.length,_26=0,_27=[],_28=nil,_29=nil;
 for(;_26<_25;++_26){
-_28=_keys[_26],_29=_buckets[_28];
+_28=_keys[_26];
+_29=_buckets[_28];
 if(_29.isa&&_24&&_24.isa&&objj_msgSend(_29,"respondsToSelector:",sel_getUid("isEqual:"))&&objj_msgSend(_29,"isEqual:",_24)){
 _27.push(_28);
 }else{

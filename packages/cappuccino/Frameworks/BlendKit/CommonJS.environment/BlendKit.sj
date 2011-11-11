@@ -283,7 +283,7 @@ with(_56){
 return _43;
 }
 })]);
-p;19;BKThemeDescriptor.jt;7386;@STATIC;1.0;I;21;Foundation/CPObject.jt;7341;
+p;19;BKThemeDescriptor.jt;7387;@STATIC;1.0;I;21;Foundation/CPObject.jt;7342;
 objj_executeFile("Foundation/CPObject.j",NO);
 var _1={},_2={},_3={},_4={},_5=nil,_6=nil,_7=nil;
 var _8=objj_allocateClassPair(CPObject,"BKThemeDescriptor"),_9=_8.isa;
@@ -489,7 +489,8 @@ _5e=NO;
 }
 return _5c;
 };
-PatternIsVertical=YES,PatternIsHorizontal=NO;
+PatternIsVertical=YES;
+PatternIsHorizontal=NO;
 PatternColor=function(){
 if(arguments.length<3){
 var _61=arguments[0],_62=[];

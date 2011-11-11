@@ -1,4 +1,4 @@
-@STATIC;1.0;p;19;_CPAttachedWindow.jt;16896;@STATIC;1.0;I;21;Foundation/CPObject.ji;10;CPButton.ji;10;CPWindow.jt;16820;objj_executeFile("Foundation/CPObject.j", NO);
+@STATIC;1.0;p;19;_CPAttachedWindow.jt;16897;@STATIC;1.0;I;21;Foundation/CPObject.ji;10;CPButton.ji;10;CPWindow.jt;16821;objj_executeFile("Foundation/CPObject.j", NO);
 objj_executeFile("CPButton.j", YES);
 objj_executeFile("CPWindow.j", YES);
 CPClosableOnBlurWindowMask = 1 << 4;
@@ -143,7 +143,7 @@ _appearance = newValue;
         originTop = CPPointCreateCopy(aRect.origin),
         originBottom = CPPointCreateCopy(aRect.origin);
     originRight.x += aRect.size.width;
-    originRight.y += (aRect.size.height / 2.0) - (CPRectGetHeight(objj_msgSend(self, "frame")) / 2.0)
+    originRight.y += (aRect.size.height / 2.0) - (CPRectGetHeight(objj_msgSend(self, "frame")) / 2.0);
     originLeft.x -= CPRectGetWidth(objj_msgSend(self, "frame"));
     originLeft.y += (aRect.size.height / 2.0) - (CPRectGetHeight(objj_msgSend(self, "frame")) / 2.0);
     originBottom.x += aRect.size.width / 2.0 - CPRectGetWidth(objj_msgSend(self, "frame")) / 2.0;
@@ -356,7 +356,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("_windowViewClassForSty
 },["id","CGSize","CPView","int"])]);
 }
 
-p;15;_CPCornerView.jt;2615;@STATIC;1.0;i;8;CPView.jt;2584;objj_executeFile("CPView.j", YES);
+p;15;_CPCornerView.jt;2616;@STATIC;1.0;i;8;CPView.jt;2585;objj_executeFile("CPView.j", YES);
 {var the_class = objj_allocateClassPair(CPView, "_CPCornerView"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("drawRect:"), function $_CPCornerView__drawRect_(self, _cmd, aRect)
@@ -384,7 +384,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("drawRect:"), function $
 },["void"]), new objj_method(sel_getUid("initWithFrame:"), function $_CPCornerView__initWithFrame_(self, _cmd, aFrame)
 { with(self)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("_CPCornerView").super_class }, "initWithFrame:", aFrame)
+    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("_CPCornerView").super_class }, "initWithFrame:", aFrame);
     if (self)
         objj_msgSend(self, "_init");
     return self;
@@ -411,14 +411,14 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("defaultThemeClass"), f
 },["id"])]);
 }
 
-p;18;_CPDisplayServer.jt;2199;@STATIC;1.0;I;22;Foundation/CPRunLoop.jt;2153;objj_executeFile("Foundation/CPRunLoop.j", NO);
+p;18;_CPDisplayServer.jt;2201;@STATIC;1.0;I;22;Foundation/CPRunLoop.jt;2155;objj_executeFile("Foundation/CPRunLoop.j", NO);
 ;
 var displayObjects = [],
     displayObjectsByUID = { },
     layoutObjects = [],
     layoutObjectsByUID = { },
     runLoop = objj_msgSend(CPRunLoop, "mainRunLoop");
-_CPDisplayServerAddDisplayObject= function(anObject)
+_CPDisplayServerAddDisplayObject = function(anObject)
 {
     var UID = objj_msgSend(anObject, "UID");
     if (typeof displayObjectsByUID[UID] !== "undefined")
@@ -427,7 +427,7 @@ _CPDisplayServerAddDisplayObject= function(anObject)
     displayObjectsByUID[UID] = index;
     displayObjects[index] = anObject;
 }
-_CPDisplayServerAddLayoutObject= function(anObject)
+_CPDisplayServerAddLayoutObject = function(anObject)
 {
     var UID = objj_msgSend(anObject, "UID");
     if (typeof layoutObjectsByUID[UID] !== "undefined")
@@ -1718,8 +1718,8 @@ return _window;
     objj_msgSend(_informativeLabel, "setTextShadowOffset:", objj_msgSend(self, "currentValueForThemeAttribute:", "informative-text-shadow-offset"));
     objj_msgSend(_informativeLabel, "setAlignment:", objj_msgSend(self, "currentValueForThemeAttribute:", "informative-text-alignment"));
     objj_msgSend(_informativeLabel, "setLineBreakMode:", CPLineBreakByWordWrapping);
-    informativeLabelWidth = CGRectGetWidth(objj_msgSend(objj_msgSend(_window, "contentView"), "frame")) - inset.left - inset.right,
-    informativeLabelOriginY = objj_msgSend(_messageLabel, "frameOrigin").y + objj_msgSend(_messageLabel, "frameSize").height + defaultElementsMargin,
+    informativeLabelWidth = CGRectGetWidth(objj_msgSend(objj_msgSend(_window, "contentView"), "frame")) - inset.left - inset.right;
+    informativeLabelOriginY = objj_msgSend(_messageLabel, "frameOrigin").y + objj_msgSend(_messageLabel, "frameSize").height + defaultElementsMargin;
     informativeLabelTextSize = objj_msgSend(objj_msgSend(_informativeLabel, "stringValue"), "sizeWithFont:inWidth:", objj_msgSend(_informativeLabel, "font"), informativeLabelWidth);
     objj_msgSend(_informativeLabel, "setFrame:", CGRectMake(inset.left, informativeLabelOriginY, informativeLabelTextSize.width, informativeLabelTextSize.height + sizeWithFontCorrection));
 }
@@ -1988,7 +1988,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("alertWithMessageText:d
 },["id"])]);
 }
 
-p;13;CPAnimation.jt;8228;@STATIC;1.0;I;21;Foundation/CPObject.jI;20;Foundation/CPTimer.ji;23;CAMediaTimingFunction.jt;8130;objj_executeFile("Foundation/CPObject.j", NO);
+p;13;CPAnimation.jt;8235;@STATIC;1.0;I;21;Foundation/CPObject.jI;20;Foundation/CPTimer.ji;23;CAMediaTimingFunction.jt;8137;objj_executeFile("Foundation/CPObject.j", NO);
 objj_executeFile("Foundation/CPTimer.j", NO);
 objj_executeFile("CAMediaTimingFunction.j", YES);
 CPAnimationEaseInOut = 0;
@@ -2138,7 +2138,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithDuration:animat
 }
 },["float"])]);
 }
-var CubicBezierAtTime = CubicBezierAtTime= function(t, p1x, p1y, p2x, p2y, duration)
+var CubicBezierAtTime = CubicBezierAtTime = function(t, p1x, p1y, p2x, p2y, duration)
 {
     var ax = 0,
         bx = 0,
@@ -2146,27 +2146,27 @@ var CubicBezierAtTime = CubicBezierAtTime= function(t, p1x, p1y, p2x, p2y, durat
         ay = 0,
         by = 0,
         cy = 0;
-    sampleCurveX= function(t)
+    sampleCurveX = function(t)
     {
         return ((ax * t + bx) * t + cx) * t;
     }
-    sampleCurveY= function(t)
+    sampleCurveY = function(t)
     {
         return ((ay * t + by) * t + cy) * t;
     }
-    sampleCurveDerivativeX= function(t)
+    sampleCurveDerivativeX = function(t)
     {
         return (3.0 * ax * t + 2.0 * bx) * t + cx;
     }
-    solveEpsilon= function(duration)
+    solveEpsilon = function(duration)
     {
         return 1.0 / (200.0 * duration);
     }
-    solve= function(x, epsilon)
+    solve = function(x, epsilon)
     {
         return sampleCurveY(solveCurveX(x, epsilon));
     }
-    solveCurveX= function(x, epsilon)
+    solveCurveX = function(x, epsilon)
     {
         var t0,
             t1,
@@ -2213,7 +2213,7 @@ var CubicBezierAtTime = CubicBezierAtTime= function(t, p1x, p1y, p2x, p2y, durat
     return solve(t, solveEpsilon(duration));
 };
 
-p;15;CPApplication.jt;41370;@STATIC;1.0;I;21;Foundation/CPBundle.ji;17;CPCompatibility.ji;9;CPEvent.ji;8;CPMenu.ji;13;CPResponder.ji;22;CPDocumentController.ji;14;CPThemeBlend.ji;14;CPCibLoading.ji;12;CPPlatform.jt;41177;objj_executeFile("Foundation/CPBundle.j", NO);
+p;15;CPApplication.jt;41371;@STATIC;1.0;I;21;Foundation/CPBundle.ji;17;CPCompatibility.ji;9;CPEvent.ji;8;CPMenu.ji;13;CPResponder.ji;22;CPDocumentController.ji;14;CPThemeBlend.ji;14;CPCibLoading.ji;12;CPPlatform.jt;41178;objj_executeFile("Foundation/CPBundle.j", NO);
 objj_executeFile("CPCompatibility.j", YES);
 objj_executeFile("CPEvent.j", YES);
 objj_executeFile("CPMenu.j", YES);
@@ -2882,7 +2882,7 @@ _CPRunModalLoop = function(anEvent)
     if (theWindow == modalSession._window || objj_msgSend(theWindow, "worksWhenModal"))
         objj_msgSend(theWindow, "sendEvent:", anEvent);
 }
-CPApplicationMain= function(args, namedArgs)
+CPApplicationMain = function(args, namedArgs)
 {
     var mainBundle = objj_msgSend(CPBundle, "mainBundle"),
         principalClass = objj_msgSend(mainBundle, "principalClass");
@@ -2985,8 +2985,8 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("actions"), function $_
     objj_msgSend(redoMenuItem, "setKeyEquivalentModifierMask:", CPRedoKeyEquivalentModifierMask);
     objj_msgSend(editMenu, "addItem:", undoMenuItem);
     objj_msgSend(editMenu, "addItem:", redoMenuItem);
-    objj_msgSend(editMenu, "addItem:", objj_msgSend(objj_msgSend(CPMenuItem, "alloc"), "initWithTitle:action:keyEquivalent:", "Cut", sel_getUid("cut:"), "x")),
-    objj_msgSend(editMenu, "addItem:", objj_msgSend(objj_msgSend(CPMenuItem, "alloc"), "initWithTitle:action:keyEquivalent:", "Copy", sel_getUid("copy:"), "c")),
+    objj_msgSend(editMenu, "addItem:", objj_msgSend(objj_msgSend(CPMenuItem, "alloc"), "initWithTitle:action:keyEquivalent:", "Cut", sel_getUid("cut:"), "x"));
+    objj_msgSend(editMenu, "addItem:", objj_msgSend(objj_msgSend(CPMenuItem, "alloc"), "initWithTitle:action:keyEquivalent:", "Copy", sel_getUid("copy:"), "c"));
     objj_msgSend(editMenu, "addItem:", objj_msgSend(objj_msgSend(CPMenuItem, "alloc"), "initWithTitle:action:keyEquivalent:", "Paste", sel_getUid("paste:"), "v"));
     objj_msgSend(editMenuItem, "setSubmenu:", editMenu);
     objj_msgSend(editMenuItem, "setHidden:", YES);
@@ -6865,7 +6865,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("setRepresentedObject:")
 },["CPCollectionView"])]);
 }
 
-p;9;CPColor.jt;21036;@STATIC;1.0;I;21;Foundation/CPObject.ji;9;CGColor.ji;17;CPCompatibility.ji;9;CPImage.jt;20942;objj_executeFile("Foundation/CPObject.j", NO);
+p;9;CPColor.jt;21037;@STATIC;1.0;I;21;Foundation/CPObject.ji;9;CGColor.ji;17;CPCompatibility.ji;9;CPImage.jt;20943;objj_executeFile("Foundation/CPObject.j", NO);
 objj_executeFile("CGColor.j", YES);
 objj_executeFile("CPCompatibility.j", YES);
 objj_executeFile("CPImage.j", YES);
@@ -6892,9 +6892,9 @@ var cachedBlackColor,
     cachedPurpleColor,
     cachedShadowColor,
     cachedClearColor;
-CPColorPatternIsVertical = YES,
+CPColorPatternIsVertical = YES;
 CPColorPatternIsHorizontal = NO;
-CPColorWithImages= function()
+CPColorWithImages = function()
 {
     if (arguments.length < 3)
     {
@@ -7377,7 +7377,7 @@ var SharedColorPanel = nil,
     ColorPickerClasses = [];
 CPWheelColorPickerMode = 1;
 CPSliderColorPickerMode = 2;
-CPColorPickerViewWidth = 265,
+CPColorPickerViewWidth = 265;
 CPColorPickerViewHeight = 370;
 {var the_class = objj_allocateClassPair(CPPanel, "CPColorPanel"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_toolbar"), new objj_ivar("_swatchView"), new objj_ivar("_previewView"), new objj_ivar("_opacitySlider"), new objj_ivar("_colorPickers"), new objj_ivar("_currentView"), new objj_ivar("_activePicker"), new objj_ivar("_color"), new objj_ivar("_target"), new objj_ivar("_action"), new objj_ivar("_mode")]);
@@ -8227,7 +8227,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 },["void","CPCoder"])]);
 }
 
-p;17;CPCompatibility.jt;5620;@STATIC;1.0;i;9;CPEvent.ji;12;CPPlatform.jt;5571;objj_executeFile("CPEvent.j", YES);
+p;17;CPCompatibility.jt;5623;@STATIC;1.0;i;9;CPEvent.ji;12;CPPlatform.jt;5574;objj_executeFile("CPEvent.j", YES);
 objj_executeFile("CPPlatform.j", YES);
 CPUnknownBrowserEngine = 0;
 CPGeckoBrowserEngine = 1;
@@ -8333,15 +8333,15 @@ if (typeof document != "undefined")
     else if (DOMElement.textContent != undefined)
         PLATFORM_FEATURES |= CPJavaScriptTextContentFeature;
 }
-CPFeatureIsCompatible= function(aFeature)
+CPFeatureIsCompatible = function(aFeature)
 {
     return PLATFORM_FEATURES & aFeature;
 }
-CPBrowserIsEngine= function(anEngine)
+CPBrowserIsEngine = function(anEngine)
 {
     return PLATFORM_ENGINE === anEngine;
 }
-CPBrowserIsOperatingSystem= function(anOperatingSystem)
+CPBrowserIsOperatingSystem = function(anOperatingSystem)
 {
     return OPERATING_SYSTEM === anOperatingSystem;
 }
@@ -8366,7 +8366,7 @@ else
     CPRedoKeyEquivalentModifierMask = CPControlKeyMask;
 }
 
-p;11;CPControl.jt;30473;@STATIC;1.0;i;27;../Foundation/CPFormatter.ji;8;CPFont.ji;10;CPShadow.ji;8;CPView.ji;19;CPKeyValueBinding.jt;30358;objj_executeFile("../Foundation/CPFormatter.j", YES);
+p;11;CPControl.jt;30476;@STATIC;1.0;i;27;../Foundation/CPFormatter.ji;8;CPFont.ji;10;CPShadow.ji;8;CPView.ji;19;CPKeyValueBinding.jt;30361;objj_executeFile("../Foundation/CPFormatter.j", YES);
 objj_executeFile("CPFont.j", YES);
 objj_executeFile("CPShadow.j", YES);
 objj_executeFile("CPView.j", YES);
@@ -8995,11 +8995,11 @@ var _CPControlSizeIdentifiers = [],
 _CPControlSizeIdentifiers[CPRegularControlSize] = "Regular";
 _CPControlSizeIdentifiers[CPSmallControlSize] = "Small";
 _CPControlSizeIdentifiers[CPMiniControlSize] = "Mini";
-_CPControlIdentifierForControlSize= function(aControlSize)
+_CPControlIdentifierForControlSize = function(aControlSize)
 {
     return _CPControlSizeIdentifiers[aControlSize];
 }
-_CPControlColorWithPatternImage= function(sizes, aClassName)
+_CPControlColorWithPatternImage = function(sizes, aClassName)
 {
     var index = 1,
         count = arguments.length,
@@ -9015,7 +9015,7 @@ _CPControlColorWithPatternImage= function(sizes, aClassName)
     }
     return color;
 }
-_CPControlThreePartImagePattern= function(isVertical, sizes, aClassName)
+_CPControlThreePartImagePattern = function(isVertical, sizes, aClassName)
 {
     var index = 2,
         count = arguments.length,
@@ -10599,7 +10599,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 },["id","CGPoint","CPPasteboard"])]);
 }
 
-p;9;CPEvent.jt;18196;@STATIC;1.0;I;21;Foundation/CPObject.ji;8;CPText.jt;18138;objj_executeFile("Foundation/CPObject.j", NO);
+p;9;CPEvent.jt;18198;@STATIC;1.0;I;21;Foundation/CPObject.ji;8;CPText.jt;18140;objj_executeFile("Foundation/CPObject.j", NO);
 objj_executeFile("CPText.j", YES);
 CPLeftMouseDown = 1;
 CPLeftMouseUp = 2;
@@ -10994,12 +10994,12 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("keyEventWithType:locat
 }
 },["void"])]);
 }
-_CPEventFirePeriodEvent= function()
+_CPEventFirePeriodEvent = function()
 {
     objj_msgSend(CPApp, "sendEvent:", objj_msgSend(CPEvent, "otherEventWithType:location:modifierFlags:timestamp:windowNumber:context:subtype:data1:data2:", CPPeriodic, { x:0.0, y:0.0 }, 0, 0, 0, nil, 0, 0, 0));
 }
 var CPEventClass = objj_msgSend(CPEvent, "class");
-_CPEventFromNativeMouseEvent= function(aNativeEvent, anEventType, aPoint, modifierFlags, aTimestamp, aWindowNumber, aGraphicsContext, anEventNumber, aClickCount, aPressure)
+_CPEventFromNativeMouseEvent = function(aNativeEvent, anEventType, aPoint, modifierFlags, aTimestamp, aWindowNumber, aGraphicsContext, anEventNumber, aClickCount, aPressure)
 {
     aNativeEvent.isa = CPEventClass;
     aNativeEvent._type = anEventType;
@@ -11470,7 +11470,7 @@ var _CPFontDetectPickTwoDifferentFonts = function(candidates)
 }
 objj_msgSend(CPFontManager, "setFontManagerFactory:", objj_msgSend(CPFontManager, "class"));
 
-p;12;CPGeometry.jt;5648;@STATIC;1.0;i;12;CGGeometry.jt;5612;objj_executeFile("CGGeometry.j", YES);
+p;12;CPGeometry.jt;5687;@STATIC;1.0;i;12;CGGeometry.jt;5651;objj_executeFile("CGGeometry.j", YES);
 CPMinXEdge = 0;
 CPMinYEdge = 1;
 CPMaxXEdge = 2;
@@ -11478,24 +11478,24 @@ CPMaxYEdge = 3;
 CPMakePoint = CGPointMake;
 CPMakeSize = CGSizeMake;
 CPMakeRect = CGRectMake;
-CPPointCreateCopy= function(aPoint)
+CPPointCreateCopy = function(aPoint)
 {
     return { x: aPoint.x, y: aPoint.y };
 }
-CPPointMake= function(x, y)
+CPPointMake = function(x, y)
 {
     return { x: x, y: y };
 }
-CPRectInset= function(aRect, dX, dY)
+CPRectInset = function(aRect, dX, dY)
 {
     return CPRectMake( aRect.origin.x + dX, aRect.origin.y + dY,
                         aRect.size.width - 2 * dX, aRect.size.height - 2 * dY);
 }
-CPRectIntegral= function(aRect)
+CPRectIntegral = function(aRect)
 {
     alert("CPRectIntegral unimplemented");
 }
-CPRectIntersection= function(lhsRect, rhsRect)
+CPRectIntersection = function(lhsRect, rhsRect)
 {
     var intersection = CPRectMake(
         Math.max(CPRectGetMinX(lhsRect), CPRectGetMinX(rhsRect)),
@@ -11505,19 +11505,19 @@ CPRectIntersection= function(lhsRect, rhsRect)
     intersection.size.height = Math.min(CPRectGetMaxY(lhsRect), CPRectGetMaxY(rhsRect)) - CPRectGetMinY(intersection);
     return CPRectIsEmpty(intersection) ? CPRectMakeZero() : intersection;
 }
-CPRectCreateCopy= function(aRect)
+CPRectCreateCopy = function(aRect)
 {
     return { origin: CPPointCreateCopy(aRect.origin), size: CPSizeCreateCopy(aRect.size) };
 }
-CPRectMake= function(x, y, width, height)
+CPRectMake = function(x, y, width, height)
 {
     return { origin: CPPointMake(x, y), size: CPSizeMake(width, height) };
 }
-CPRectOffset= function(aRect, dX, dY)
+CPRectOffset = function(aRect, dX, dY)
 {
     return CPRectMake(aRect.origin.x + dX, aRect.origin.y + dY, aRect.size.width, aRect.size.height);
 }
-CPRectStandardize= function(aRect)
+CPRectStandardize = function(aRect)
 {
     var width = CPRectGetWidth(aRect),
         height = CPRectGetHeight(aRect),
@@ -11534,7 +11534,7 @@ CPRectStandardize= function(aRect)
     }
     return standardized;
 }
-CPRectUnion= function(lhsRect, rhsRect)
+CPRectUnion = function(lhsRect, rhsRect)
 {
     var minX = Math.min(CPRectGetMinX(lhsRect), CPRectGetMinX(rhsRect)),
         minY = Math.min(CPRectGetMinY(lhsRect), CPRectGetMinY(rhsRect)),
@@ -11542,133 +11542,133 @@ CPRectUnion= function(lhsRect, rhsRect)
         maxY = Math.max(CPRectGetMaxY(lhsRect), CPRectGetMaxY(rhsRect));
     return CPRectMake(minX, minY, maxX - minX, maxY - minY);
 }
-CPSizeCreateCopy= function(aSize)
+CPSizeCreateCopy = function(aSize)
 {
     return { width: aSize.width, height: aSize.height };
 }
-CPSizeMake= function(width, height)
+CPSizeMake = function(width, height)
 {
     return { width: width, height: height };
 }
-CPRectContainsPoint= function(aRect, aPoint)
+CPRectContainsPoint = function(aRect, aPoint)
 {
     return aPoint.x >= CPRectGetMinX(aRect) &&
             aPoint.y >= CPRectGetMinY(aRect) &&
             aPoint.x < CPRectGetMaxX(aRect) &&
             aPoint.y < CPRectGetMaxY(aRect);
 }
-CPRectContainsRect= function(possibleOuter, possibleInner)
+CPRectContainsRect = function(possibleOuter, possibleInner)
 {
     return CGRectContainsRect(possibleOuter, possibleInner);
 }
-CPPointEqualToPoint= function(lhsPoint, rhsPoint)
+CPPointEqualToPoint = function(lhsPoint, rhsPoint)
 {
     return lhsPoint.x == rhsPoint.x && lhsPoint.y == rhsPoint.y;
 }
-CPRectEqualToRect= function(lhsRect, rhsRect)
+CPRectEqualToRect = function(lhsRect, rhsRect)
 {
     return CPPointEqualToPoint(lhsRect.origin, rhsRect.origin) &&
             CPSizeEqualToSize(lhsRect.size, rhsRect.size);
 }
-CPRectGetHeight= function(aRect)
+CPRectGetHeight = function(aRect)
 {
     return aRect.size.height;
 }
-CPRectGetMaxX= function(aRect)
+CPRectGetMaxX = function(aRect)
 {
     return aRect.origin.x + aRect.size.width;
 }
-CPRectGetMaxY= function(aRect)
+CPRectGetMaxY = function(aRect)
 {
     return aRect.origin.y + aRect.size.height;
 }
-CPRectGetMidX= function(aRect)
+CPRectGetMidX = function(aRect)
 {
     return aRect.origin.x + (aRect.size.width) / 2.0;
 }
-CPRectGetMidY= function(aRect)
+CPRectGetMidY = function(aRect)
 {
     return aRect.origin.y + (aRect.size.height) / 2.0;
 }
-CPRectGetMinX= function(aRect)
+CPRectGetMinX = function(aRect)
 {
     return aRect.origin.x;
 }
-CPRectGetMinY= function(aRect)
+CPRectGetMinY = function(aRect)
 {
     return aRect.origin.y;
 }
-CPRectGetWidth= function(aRect)
+CPRectGetWidth = function(aRect)
 {
     return aRect.size.width;
 }
-CPRectIntersectsRect= function(lhsRect, rhsRect)
+CPRectIntersectsRect = function(lhsRect, rhsRect)
 {
     return !CPRectIsEmpty(CPRectIntersection(lhsRect, rhsRect));
 }
-CPRectIsEmpty= function(aRect)
+CPRectIsEmpty = function(aRect)
 {
     return aRect.size.width <= 0.0 || aRect.size.height <= 0.0;
 }
-CPRectIsNull= function(aRect)
+CPRectIsNull = function(aRect)
 {
     return aRect.size.width <= 0.0 || aRect.size.height <= 0.0;
 }
-CPDivideRect= function(inRect, slice, rem, amount, edge)
+CPDivideRect = function(inRect, slice, rem, amount, edge)
 {
     CGRectDivide(inRect, slice, rem, amount, edge);
 }
-CPSizeEqualToSize= function(lhsSize, rhsSize)
+CPSizeEqualToSize = function(lhsSize, rhsSize)
 {
     return lhsSize.width == rhsSize.width && lhsSize.height == rhsSize.height;
 }
-CPStringFromPoint= function(aPoint)
+CPStringFromPoint = function(aPoint)
 {
     return "{" + aPoint.x + ", " + aPoint.y + "}";
 }
-CPStringFromSize= function(aSize)
+CPStringFromSize = function(aSize)
 {
     return "{" + aSize.width + ", " + aSize.height + "}";
 }
-CPStringFromRect= function(aRect)
+CPStringFromRect = function(aRect)
 {
     return "{" + CPStringFromPoint(aRect.origin) + ", " + CPStringFromSize(aRect.size) + "}";
 }
-CPPointFromString= function(aString)
+CPPointFromString = function(aString)
 {
     var comma = aString.indexOf(',');
     return { x:parseFloat(aString.substr(1, comma - 1), 10), y:parseFloat(aString.substring(comma + 1, aString.length), 10) };
 }
-CPSizeFromString= function(aString)
+CPSizeFromString = function(aString)
 {
     var comma = aString.indexOf(',');
     return { width:parseFloat(aString.substr(1, comma - 1), 10), height:parseFloat(aString.substring(comma + 1, aString.length), 10) };
 }
-CPRectFromString= function(aString)
+CPRectFromString = function(aString)
 {
     var comma = aString.indexOf(',', aString.indexOf(',') + 1);
     return { origin:CPPointFromString(aString.substr(1, comma - 1)), size:CPSizeFromString(aString.substring(comma + 2, aString.length)) };
 }
-CPPointFromEvent= function(anEvent)
+CPPointFromEvent = function(anEvent)
 {
     return CPPointMake(anEvent.clientX, anEvent.clientY, 0);
 }
-CPSizeMakeZero= function()
+CPSizeMakeZero = function()
 {
     return CPSizeMake(0, 0);
 }
-CPRectMakeZero= function()
+CPRectMakeZero = function()
 {
     return CPRectMake(0, 0, 0, 0);
 }
-CPPointMakeZero= function()
+CPPointMakeZero = function()
 {
     return CPPointMake(0, 0, 0);
 }
 
-p;12;CPGraphics.jt;2855;@STATIC;1.0;i;9;CPColor.ji;19;CPGraphicsContext.jt;2799;objj_executeFile("CPColor.j", YES);
+p;12;CPGraphics.jt;2857;@STATIC;1.0;i;9;CPColor.ji;19;CPGraphicsContext.jt;2801;objj_executeFile("CPColor.j", YES);
 objj_executeFile("CPGraphicsContext.j", YES);
-CPDrawTiledRects= function(
+CPDrawTiledRects = function(
                 boundsRect,
                 clipRect,
                       sides,
@@ -11681,7 +11681,7 @@ CPDrawTiledRects= function(
         colors.push(objj_msgSend(CPColor, "colorWithCalibratedWhite:alpha:", grays[i], 1.0));
     return CPDrawColorTiledRects(boundsRect, clipRect, sides, colors);
 }
-CPDrawColorTiledRects= function(
+CPDrawColorTiledRects = function(
                 boundsRect,
                 clipRect,
                       sides,
@@ -11770,7 +11770,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("currentContext"), func
 },["CPGraphicsContext","CGContext","BOOL"])]);
 }
 
-p;9;CPImage.jt;13488;@STATIC;1.0;I;21;Foundation/CPBundle.jI;33;Foundation/CPNotificationCenter.jI;21;Foundation/CPObject.jI;22;Foundation/CPRunLoop.jI;21;Foundation/CPString.ji;12;CPGeometry.jt;13308;objj_executeFile("Foundation/CPBundle.j", NO);
+p;9;CPImage.jt;13490;@STATIC;1.0;I;21;Foundation/CPBundle.jI;33;Foundation/CPNotificationCenter.jI;21;Foundation/CPObject.jI;22;Foundation/CPRunLoop.jI;21;Foundation/CPString.ji;12;CPGeometry.jt;13310;objj_executeFile("Foundation/CPBundle.j", NO);
 objj_executeFile("Foundation/CPNotificationCenter.j", NO);
 objj_executeFile("Foundation/CPObject.j", NO);
 objj_executeFile("Foundation/CPRunLoop.j", NO);
@@ -11791,7 +11791,7 @@ var imagesForNames = { },
     ImageDescriptionFormat = "%s {\n   filename: \"%s\",\n   size: { width:%f, height:%f }\n}";
 AppKitImageForNames[CPImageNameColorPanel] = CGSizeMake(26.0, 29.0);
 AppKitImageForNames[CPImageNameColorPanelHighlighted] = CGSizeMake(26.0, 29.0);
-CPImageInBundle= function(aFilename, aSize, aBundle)
+CPImageInBundle = function(aFilename, aSize, aBundle)
 {
     if (!aBundle)
         aBundle = objj_msgSend(CPBundle, "mainBundle");
@@ -11799,7 +11799,7 @@ CPImageInBundle= function(aFilename, aSize, aBundle)
         return objj_msgSend(objj_msgSend(CPImage, "alloc"), "initWithContentsOfFile:size:", objj_msgSend(aBundle, "pathForResource:", aFilename), aSize);
     return objj_msgSend(objj_msgSend(CPImage, "alloc"), "initWithContentsOfFile:", objj_msgSend(aBundle, "pathForResource:", aFilename));
 }
-CPAppKitImage= function(aFilename, aSize)
+CPAppKitImage = function(aFilename, aSize)
 {
     return CPImageInBundle(aFilename, aSize, objj_msgSend(CPBundle, "bundleForClass:", objj_msgSend(CPView, "class")));
 }
@@ -12633,7 +12633,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("initialize"), function
 },["CPArray","CPString","unsigned"])]);
 }
 
-p;19;CPKeyValueBinding.jt;20710;@STATIC;1.0;I;21;Foundation/CPObject.jI;20;Foundation/CPArray.jI;25;Foundation/CPDictionary.jI;31;Foundation/CPValueTransformer.jt;20573;objj_executeFile("Foundation/CPObject.j", NO);
+p;19;CPKeyValueBinding.jt;20712;@STATIC;1.0;I;21;Foundation/CPObject.jI;20;Foundation/CPArray.jI;25;Foundation/CPDictionary.jI;31;Foundation/CPValueTransformer.jt;20575;objj_executeFile("Foundation/CPObject.j", NO);
 objj_executeFile("Foundation/CPArray.j", NO);
 objj_executeFile("Foundation/CPDictionary.j", NO);
 objj_executeFile("Foundation/CPValueTransformer.j", NO);
@@ -12942,7 +12942,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("setValueFor:"), functio
 }
 },["void","CPString","id","CPDictionary","id"])]);
 }
-var resolveMultipleValues = resolveMultipleValues= function( key, bindings, operation)
+var resolveMultipleValues = resolveMultipleValues = function( key, bindings, operation)
 {
     var bindingName = key,
         theBinding,
@@ -12960,7 +12960,7 @@ var resolveMultipleValues = resolveMultipleValues= function( key, bindings, oper
     }
     return !operation;
 }
-var invokeAction = invokeAction= function( targetKey, argumentKey, bindings)
+var invokeAction = invokeAction = function( targetKey, argumentKey, bindings)
 {
     var theBinding = objj_msgSend(bindings, "objectForKey:", targetKey),
         infoDictionary = theBinding._info,
@@ -27247,7 +27247,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("setValueFor:"), functio
 },["void","CPString"])]);
 }
 
-p;9;CPTheme.jt;20940;@STATIC;1.0;I;21;Foundation/CPObject.jI;21;Foundation/CPString.jI;30;Foundation/CPKeyedUnarchiver.jt;20833;objj_executeFile("Foundation/CPObject.j", NO);
+p;9;CPTheme.jt;20944;@STATIC;1.0;I;21;Foundation/CPObject.jI;21;Foundation/CPString.jI;30;Foundation/CPKeyedUnarchiver.jt;20837;objj_executeFile("Foundation/CPObject.j", NO);
 objj_executeFile("Foundation/CPString.j", NO);
 objj_executeFile("Foundation/CPKeyedUnarchiver.j", NO);
 var CPThemesByName = { },
@@ -27450,7 +27450,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initForReadingWithData:
 var CPThemeStates = {},
     CPThemeStateNames = {},
     CPThemeStateCount = 0;
-CPThemeState= function(aStateName)
+CPThemeState = function(aStateName)
 {
     var state = CPThemeStates[aStateName];
     if (state === undefined)
@@ -27480,7 +27480,7 @@ CPThemeState= function(aStateName)
     }
     return state;
 }
-CPThemeStateName= function(aState)
+CPThemeStateName = function(aState)
 {
     var name = CPThemeStateNames[aState];
     if (name !== undefined)
@@ -27715,7 +27715,7 @@ var numberOfOnes = function(aNumber)
     return count;
 }
 numberOfOnes.displayName = "numberOfOnes";
-CPThemeAttributeEncode= function(aCoder, aThemeAttribute)
+CPThemeAttributeEncode = function(aCoder, aThemeAttribute)
 {
     var values = aThemeAttribute._values,
         count = objj_msgSend(values, "count"),
@@ -27736,7 +27736,7 @@ CPThemeAttributeEncode= function(aCoder, aThemeAttribute)
     }
     return NO;
 }
-CPThemeAttributeDecode= function(aCoder, anAttributeName, aDefaultValue, aTheme, aClass)
+CPThemeAttributeDecode = function(aCoder, anAttributeName, aDefaultValue, aTheme, aClass)
 {
     var key = "$a" + anAttributeName;
     if (!objj_msgSend(aCoder, "containsValueForKey:", key))
@@ -33545,9 +33545,9 @@ objj_executeFile("_CPCibKeyedUnarchiver.j", YES);
 objj_executeFile("_CPCibObjectData.j", YES);
 objj_executeFile("_CPCibProxyObject.j", YES);
 objj_executeFile("_CPCibWindowTemplate.j", YES);
-CPCibOwner = "CPCibOwner",
-CPCibTopLevelObjects = "CPCibTopLevelObjects",
-CPCibReplacementClasses = "CPCibReplacementClasses",
+CPCibOwner = "CPCibOwner";
+CPCibTopLevelObjects = "CPCibTopLevelObjects";
+CPCibReplacementClasses = "CPCibReplacementClasses";
 CPCibExternalObjects = "CPCibExternalObjects";
 var CPCibObjectDataKey = "CPCibObjectDataKey";
 {var the_class = objj_allocateClassPair(CPObject, "CPCib"),
@@ -34089,9 +34089,9 @@ class_addMethods(the_class, [new objj_method(sel_getUid("setFromValue:"), functi
 },["id"])]);
 }
 
-p;16;CABackingStore.jt;980;@STATIC;1.0;i;12;CGGeometry.ji;17;CPCompatibility.jt;923;objj_executeFile("CGGeometry.j", YES);
+p;16;CABackingStore.jt;981;@STATIC;1.0;i;12;CGGeometry.ji;17;CPCompatibility.jt;924;objj_executeFile("CGGeometry.j", YES);
 objj_executeFile("CPCompatibility.j", YES);
-CABackingStoreGetContext= function(aBackingStore)
+CABackingStoreGetContext = function(aBackingStore)
 {
     return aBackingStore.context;
 }
@@ -34149,7 +34149,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("setFlashMovie:"), funct
 },["CPFlashMovie"])]);
 }
 
-p;9;CALayer.jt;32701;@STATIC;1.0;I;21;Foundation/CPObject.ji;16;CABackingStore.ji;11;CGContext.ji;12;CGGeometry.jt;32601;objj_executeFile("Foundation/CPObject.j", NO);
+p;9;CALayer.jt;32705;@STATIC;1.0;I;21;Foundation/CPObject.ji;16;CABackingStore.ji;11;CGContext.ji;12;CGGeometry.jt;32605;objj_executeFile("Foundation/CPObject.j", NO);
 objj_executeFile("CABackingStore.j", YES);
 objj_executeFile("CGContext.j", YES);
 objj_executeFile("CGGeometry.j", YES);
@@ -34711,7 +34711,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("layer"), function $CAL
 }
 },["void"])]);
 }
-_CALayerUpdateSublayerTransformForSublayers= function(aLayer)
+_CALayerUpdateSublayerTransformForSublayers = function(aLayer)
 {
     var bounds = aLayer._bounds,
         anchorPoint = aLayer._anchorPoint,
@@ -34722,7 +34722,7 @@ _CALayerUpdateSublayerTransformForSublayers= function(aLayer)
         CGAffineTransformConcat(aLayer._sublayerTransform,
         CGAffineTransformMakeTranslation(translateX, translateY)));
 }
-_CALayerUpdateDOM= function(aLayer, aMask)
+_CALayerUpdateDOM = function(aLayer, aMask)
 {
     var DOMElementStyle = aLayer._DOMElement.style;
     if (aMask & CALayerZPositionUpdateMask)
@@ -34749,7 +34749,7 @@ _CALayerUpdateDOM= function(aLayer, aMask)
         }
     }
 }
-_CALayerRecalculateGeometry= function(aLayer, aGeometryChange)
+_CALayerRecalculateGeometry = function(aLayer, aGeometryChange)
 {
     var bounds = aLayer._bounds,
         superlayer = aLayer._superlayer,
@@ -34805,7 +34805,7 @@ _CALayerRecalculateGeometry= function(aLayer, aGeometryChange)
     for (; index < count; ++index)
         _CALayerRecalculateGeometry(sublayers[index], aGeometryChange);
 }
-_CALayerGetTransform= function(fromLayer, toLayer)
+_CALayerGetTransform = function(fromLayer, toLayer)
 {
     var transform = CGAffineTransformMakeIdentity();
     if (fromLayer)
@@ -34906,31 +34906,31 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("functionWithName:"), f
 },["id","float","float","float","float"])]);
 }
 
-p;19;CGAffineTransform.jt;4904;@STATIC;1.0;i;12;CGGeometry.jt;4868;objj_executeFile("CGGeometry.j", YES);
-CGAffineTransformMake= function(a, b, c, d, tx, ty) { return { a:a, b:b, c:c, d:d, tx:tx, ty:ty }; }
-CGAffineTransformMakeIdentity= function() { return { a:1.0, b:0.0, c:0.0, d:1.0, tx:0.0, ty:0.0 }; }
-CGAffineTransformMakeCopy= function(anAffineTransform) { return { a:anAffineTransform.a, b:anAffineTransform.b, c:anAffineTransform.c, d:anAffineTransform.d, tx:anAffineTransform.tx, ty:anAffineTransform.ty }; }
-CGAffineTransformMakeScale= function(sx, sy) { return { a:sx, b:0.0, c:0.0, d:sy, tx:0.0, ty:0.0 }; }
-CGAffineTransformMakeTranslation= function(tx, ty) { return { a:1.0, b:0.0, c:0.0, d:1.0, tx:tx, ty:ty }; }
-CGAffineTransformTranslate= function(aTransform, tx, ty) { return { a:aTransform.a, b:aTransform.b, c:aTransform.c, d:aTransform.d, tx:aTransform.tx + aTransform.a * tx + aTransform.c * ty, ty:aTransform.ty + aTransform.b * tx + aTransform.d * ty }; }
-CGAffineTransformScale= function(aTransform, sx, sy) { return { a:aTransform.a * sx, b:aTransform.b * sx, c:aTransform.c * sy, d:aTransform.d * sy, tx:aTransform.tx, ty:aTransform.ty }; }
-CGAffineTransformConcat= function(lhs, rhs) { return { a:lhs.a * rhs.a + lhs.b * rhs.c, b:lhs.a * rhs.b + lhs.b * rhs.d, c:lhs.c * rhs.a + lhs.d * rhs.c, d:lhs.c * rhs.b + lhs.d * rhs.d, tx:lhs.tx * rhs.a + lhs.ty * rhs.c + rhs.tx, ty:lhs.tx * rhs.b + lhs.ty * rhs.d + rhs.ty }; }
-CGPointApplyAffineTransform= function(aPoint, aTransform) { return { x:aPoint.x * aTransform.a + aPoint.y * aTransform.c + aTransform.tx, y:aPoint.x * aTransform.b + aPoint.y * aTransform.d + aTransform.ty }; }
-CGSizeApplyAffineTransform= function(aSize, aTransform) { return { width:aSize.width * aTransform.a + aSize.height * aTransform.c, height:aSize.width * aTransform.b + aSize.height * aTransform.d }; }
-CGAffineTransformIsIdentity= function(aTransform) { return (aTransform.a == 1 && aTransform.b == 0 && aTransform.c == 0 && aTransform.d == 1 && aTransform.tx == 0 && aTransform.ty == 0); }
-CGAffineTransformEqualToTransform= function(lhs, rhs) { return (lhs.a == rhs.a && lhs.b == rhs.b && lhs.c == rhs.c && lhs.d == rhs.d && lhs.tx == rhs.tx && lhs.ty == rhs.ty); }
-CGStringCreateWithCGAffineTransform= function(aTransform) { return (" [[ " + aTransform.a + ", " + aTransform.b + ", 0 ], [ " + aTransform.c + ", " + aTransform.d + ", 0 ], [ " + aTransform.tx + ", " + aTransform.ty + ", 1]]"); }
-CGAffineTransformCreateCopy= function(aTransform)
+p;19;CGAffineTransform.jt;4923;@STATIC;1.0;i;12;CGGeometry.jt;4887;objj_executeFile("CGGeometry.j", YES);
+CGAffineTransformMake = function(a, b, c, d, tx, ty) { return { a:a, b:b, c:c, d:d, tx:tx, ty:ty }; }
+CGAffineTransformMakeIdentity = function() { return { a:1.0, b:0.0, c:0.0, d:1.0, tx:0.0, ty:0.0 }; }
+CGAffineTransformMakeCopy = function(anAffineTransform) { return { a:anAffineTransform.a, b:anAffineTransform.b, c:anAffineTransform.c, d:anAffineTransform.d, tx:anAffineTransform.tx, ty:anAffineTransform.ty }; }
+CGAffineTransformMakeScale = function(sx, sy) { return { a:sx, b:0.0, c:0.0, d:sy, tx:0.0, ty:0.0 }; }
+CGAffineTransformMakeTranslation = function(tx, ty) { return { a:1.0, b:0.0, c:0.0, d:1.0, tx:tx, ty:ty }; }
+CGAffineTransformTranslate = function(aTransform, tx, ty) { return { a:aTransform.a, b:aTransform.b, c:aTransform.c, d:aTransform.d, tx:aTransform.tx + aTransform.a * tx + aTransform.c * ty, ty:aTransform.ty + aTransform.b * tx + aTransform.d * ty }; }
+CGAffineTransformScale = function(aTransform, sx, sy) { return { a:aTransform.a * sx, b:aTransform.b * sx, c:aTransform.c * sy, d:aTransform.d * sy, tx:aTransform.tx, ty:aTransform.ty }; }
+CGAffineTransformConcat = function(lhs, rhs) { return { a:lhs.a * rhs.a + lhs.b * rhs.c, b:lhs.a * rhs.b + lhs.b * rhs.d, c:lhs.c * rhs.a + lhs.d * rhs.c, d:lhs.c * rhs.b + lhs.d * rhs.d, tx:lhs.tx * rhs.a + lhs.ty * rhs.c + rhs.tx, ty:lhs.tx * rhs.b + lhs.ty * rhs.d + rhs.ty }; }
+CGPointApplyAffineTransform = function(aPoint, aTransform) { return { x:aPoint.x * aTransform.a + aPoint.y * aTransform.c + aTransform.tx, y:aPoint.x * aTransform.b + aPoint.y * aTransform.d + aTransform.ty }; }
+CGSizeApplyAffineTransform = function(aSize, aTransform) { return { width:aSize.width * aTransform.a + aSize.height * aTransform.c, height:aSize.width * aTransform.b + aSize.height * aTransform.d }; }
+CGAffineTransformIsIdentity = function(aTransform) { return (aTransform.a == 1 && aTransform.b == 0 && aTransform.c == 0 && aTransform.d == 1 && aTransform.tx == 0 && aTransform.ty == 0); }
+CGAffineTransformEqualToTransform = function(lhs, rhs) { return (lhs.a == rhs.a && lhs.b == rhs.b && lhs.c == rhs.c && lhs.d == rhs.d && lhs.tx == rhs.tx && lhs.ty == rhs.ty); }
+CGStringCreateWithCGAffineTransform = function(aTransform) { return (" [[ " + aTransform.a + ", " + aTransform.b + ", 0 ], [ " + aTransform.c + ", " + aTransform.d + ", 0 ], [ " + aTransform.tx + ", " + aTransform.ty + ", 1]]"); }
+CGAffineTransformCreateCopy = function(aTransform)
 {
     return { a:aTransform.a, b:aTransform.b, c:aTransform.c, d:aTransform.d, tx:aTransform.tx, ty:aTransform.ty };
 }
-CGAffineTransformMakeRotation= function(anAngle)
+CGAffineTransformMakeRotation = function(anAngle)
 {
     var sin = SIN(anAngle),
         cos = COS(anAngle);
     return { a:cos, b:sin, c:-sin, d:cos, tx:0.0, ty:0.0 };
 }
-CGAffineTransformRotate= function(aTransform, anAngle)
+CGAffineTransformRotate = function(aTransform, anAngle)
 {
     var sin = SIN(anAngle),
         cos = COS(anAngle);
@@ -34943,7 +34943,7 @@ CGAffineTransformRotate= function(aTransform, anAngle)
             ty:aTransform.ty
         };
 }
-CGAffineTransformInvert= function(aTransform)
+CGAffineTransformInvert = function(aTransform)
 {
     var determinant = 1 / (aTransform.a * aTransform.d - aTransform.b * aTransform.c);
     return {
@@ -34955,7 +34955,7 @@ CGAffineTransformInvert= function(aTransform)
         ty:determinant * (aTransform.b * aTransform.tx - aTransform.a * aTransform.ty)
     };
 }
-CGRectApplyAffineTransform= function(aRect, anAffineTransform)
+CGRectApplyAffineTransform = function(aRect, anAffineTransform)
 {
     var top = (aRect.origin.y),
         left = (aRect.origin.x),
@@ -34971,14 +34971,14 @@ CGRectApplyAffineTransform= function(aRect, anAffineTransform)
         maxY = MAX(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y);
     return { origin: { x:minX, y:minY }, size: { width:(maxX - minX), height:(maxY - minY) } };
 }
-CPStringFromCGAffineTransform= function(anAffineTransform)
+CPStringFromCGAffineTransform = function(anAffineTransform)
 {
     return '{' + anAffineTransform.a + ", " + anAffineTransform.b + ", " + anAffineTransform.c + ", " + anAffineTransform.d + ", " + anAffineTransform.tx + ", " + anAffineTransform.ty + '}';
 }
 
-p;9;CGColor.jt;3230;@STATIC;1.0;i;14;CGColorSpace.jt;3192;objj_executeFile("CGColorSpace.j", YES);
+p;9;CGColor.jt;3247;@STATIC;1.0;i;14;CGColorSpace.jt;3209;objj_executeFile("CGColorSpace.j", YES);
 var CFTypeGlobalCount = 0;
-CFHashCode= function(aCFObject)
+CFHashCode = function(aCFObject)
 {
     if (!aCFObject.hash)
         aCFObject.hash = ++CFTypeGlobalCount;
@@ -34988,18 +34988,18 @@ kCGColorWhite = "kCGColorWhite";
 kCGColorBlack = "kCGColorBlack";
 kCGColorClear = "kCGColorClear";
 var _CGColorMap = { };
-CGColorGetConstantColor= function(aColorName)
+CGColorGetConstantColor = function(aColorName)
 {
     alert("FIX ME");
 }
-CGColorRetain= function(aColor)
+CGColorRetain = function(aColor)
 {
     return aColor;
 }
-CGColorRelease= function()
+CGColorRelease = function()
 {
 }
-CGColorCreate= function(aColorSpace, components)
+CGColorCreate = function(aColorSpace, components)
 {
     if (!aColorSpace || !components)
         return NULL;
@@ -35010,24 +35010,24 @@ CGColorCreate= function(aColorSpace, components)
         return _CGColorMap[UID];
     return _CGColorMap[UID] = { colorspace:aColorSpace, pattern:NULL, components:components };
 }
-CGColorCreateCopy= function(aColor)
+CGColorCreateCopy = function(aColor)
 {
     return aColor;
 }
-CGColorCreateGenericGray= function(gray, alpha)
+CGColorCreateGenericGray = function(gray, alpha)
 {
     return CGColorCreate(CGColorSpaceCreateDeviceRGB(), [gray,gray,gray, alpha]);
 }
-CGColorCreateGenericRGB= function(red, green, blue, alpha)
+CGColorCreateGenericRGB = function(red, green, blue, alpha)
 {
     return CGColorCreate(CGColorSpaceCreateDeviceRGB(), [red, green, blue, alpha]);
 }
-CGColorCreateGenericCMYK= function(cyan, magenta, yellow, black, alpha)
+CGColorCreateGenericCMYK = function(cyan, magenta, yellow, black, alpha)
 {
     return CGColorCreate(CGColorSpaceCreateDeviceCMYK(),
                          [cyan, magenta, yellow, black, alpha]);
 }
-CGColorCreateCopyWithAlpha= function(aColor, anAlpha)
+CGColorCreateCopyWithAlpha = function(aColor, anAlpha)
 {
     if ( !aColor ) return aColor;
     var components = aColor.components.slice();
@@ -35039,13 +35039,13 @@ CGColorCreateCopyWithAlpha= function(aColor, anAlpha)
     else
         return CGColorCreate(aColor.colorspace, components);
 }
-CGColorCreateWithPattern= function(aColorSpace, aPattern, components)
+CGColorCreateWithPattern = function(aColorSpace, aPattern, components)
 {
     if (!aColorSpace || !aPattern || !components)
         return NULL;
     return { colorspace:aColorSpace, pattern:aPattern, components:components.slice() };
 }
-CGColorEqualToColor= function(lhs, rhs)
+CGColorEqualToColor = function(lhs, rhs)
 {
     if (lhs == rhs)
         return true;
@@ -35065,29 +35065,29 @@ CGColorEqualToColor= function(lhs, rhs)
         return false;
     return true;
 }
-CGColorGetAlpha= function(aColor)
+CGColorGetAlpha = function(aColor)
 {
     var components = aColor.components;
     return components[components.length - 1];
 }
-CGColorGetColorSpace= function(aColor)
+CGColorGetColorSpace = function(aColor)
 {
     return aColor.colorspace;
 }
-CGColorGetComponents= function(aColor)
+CGColorGetComponents = function(aColor)
 {
     return aColor.components;
 }
-CGColorGetNumberOfComponents= function(aColor)
+CGColorGetNumberOfComponents = function(aColor)
 {
     return aColor.components.length;
 }
-CGColorGetPattern= function(aColor)
+CGColorGetPattern = function(aColor)
 {
     return aColor.pattern;
 }
 
-p;14;CGColorSpace.jt;4691;@STATIC;1.0;t;4672;kCGColorSpaceModelUnknown = -1;
+p;14;CGColorSpace.jt;4712;@STATIC;1.0;t;4693;kCGColorSpaceModelUnknown = -1;
 kCGColorSpaceModelMonochrome = 0;
 kCGColorSpaceModelRGB = 1;
 kCGColorSpaceModelCMYK = 2;
@@ -35103,49 +35103,49 @@ kCGColorSpaceGenericRGBHDR = "CGColorSpaceGenericRGBHDR";
 kCGColorSpaceAdobeRGB1998 = "CGColorSpaceAdobeRGB1998";
 kCGColorSpaceSRGB = "CGColorSpaceSRGB";
 var _CGNamedColorSpaces = {};
-CGColorSpaceCreateCalibratedGray= function(aWhitePoint, aBlackPoint, gamma)
+CGColorSpaceCreateCalibratedGray = function(aWhitePoint, aBlackPoint, gamma)
 {
     return { model:kCGColorSpaceModelMonochrome, count:1, base:NULL };
 }
-CGColorSpaceCreateCalibratedRGB= function(aWhitePoint, aBlackPoint, gamma)
+CGColorSpaceCreateCalibratedRGB = function(aWhitePoint, aBlackPoint, gamma)
 {
     return { model:kCGColorSpaceModelRGB, count:1, base:NULL };
 }
-CGColorSpaceCreateICCBased= function(aComponentCount, range, profile, alternate)
+CGColorSpaceCreateICCBased = function(aComponentCount, range, profile, alternate)
 {
     return NULL;
 }
-CGColorSpaceCreateLab= function(aWhitePoint, aBlackPoint, aRange)
+CGColorSpaceCreateLab = function(aWhitePoint, aBlackPoint, aRange)
 {
     return NULL;
 }
-CGColorSpaceCreateDeviceCMYK= function()
+CGColorSpaceCreateDeviceCMYK = function()
 {
     return CGColorSpaceCreateWithName(kCGColorSpaceGenericCMYK);
 }
-CGColorSpaceCreateDeviceGray= function()
+CGColorSpaceCreateDeviceGray = function()
 {
     return CGColorSpaceCreateWithName(kCGColorSpaceGenericGray);
 }
-CGColorSpaceCreateDeviceRGB= function()
+CGColorSpaceCreateDeviceRGB = function()
 {
     return CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
 }
-CGColorSpaceCreateWithPlatformColorSpace= function()
+CGColorSpaceCreateWithPlatformColorSpace = function()
 {
     return NULL;
 }
-CGColorSpaceCreateIndexed= function(aBaseColorSpace, lastIndex, colorTable)
+CGColorSpaceCreateIndexed = function(aBaseColorSpace, lastIndex, colorTable)
 {
     return NULL;
 }
-CGColorSpaceCreatePattern= function(aBaseColorSpace)
+CGColorSpaceCreatePattern = function(aBaseColorSpace)
 {
     if (aBaseColorSpace)
         return { model:kCGColorSpaceModelPattern, count:aBaseColorSpace.count, base:aBaseColorSpace };
     return { model:kCGColorSpaceModelPattern, count:0, base:NULL };
 }
-CGColorSpaceCreateWithName= function(aName)
+CGColorSpaceCreateWithName = function(aName)
 {
     var colorSpace = _CGNamedColorSpaces[aName];
     if (colorSpace)
@@ -35162,38 +35162,38 @@ CGColorSpaceCreateWithName= function(aName)
     }
     return NULL;
 }
-CGColorSpaceCopyICCProfile= function(aColorSpace)
+CGColorSpaceCopyICCProfile = function(aColorSpace)
 {
     return NULL;
 }
-CGColorSpaceGetNumberOfComponents= function(aColorSpace)
+CGColorSpaceGetNumberOfComponents = function(aColorSpace)
 {
     return aColorSpace.count;
 }
-CGColorSpaceGetTypeID= function(aColorSpace)
+CGColorSpaceGetTypeID = function(aColorSpace)
 {
 }
-CGColorSpaceGetModel= function(aColorSpace)
+CGColorSpaceGetModel = function(aColorSpace)
 {
     return aColorSpace.model;
 }
-CGColorSpaceGetBaseColorSpace= function(aColorSpace)
+CGColorSpaceGetBaseColorSpace = function(aColorSpace)
 {
 }
-CGColorSpaceGetColorTableCount= function(aColorSpace)
+CGColorSpaceGetColorTableCount = function(aColorSpace)
 {
 }
-CGColorSpaceGetColorTable= function(aColorSpace)
+CGColorSpaceGetColorTable = function(aColorSpace)
 {
 }
-CGColorSpaceRelease= function(aColorSpace)
+CGColorSpaceRelease = function(aColorSpace)
 {
 }
-CGColorSpaceRetain= function(aColorSpace)
+CGColorSpaceRetain = function(aColorSpace)
 {
     return aColorSpace;
 }
-CGColorSpaceStandardizeComponents= function(aColorSpace, components)
+CGColorSpaceStandardizeComponents = function(aColorSpace, components)
 {
     var count = aColorSpace.count;
     { if (count > components.length) { components[count] = 1; return; } var component = components[count]; if (component < 0) components[count] = 0; else if (component > 1) components[count] = 1; else components[count] = ROUND(component * 1000) / 1000; };
@@ -35213,7 +35213,7 @@ CGColorSpaceStandardizeComponents= function(aColorSpace, components)
     }
 }
 
-p;11;CGContext.jt;33233;@STATIC;1.0;i;19;CGAffineTransform.ji;17;CPCompatibility.ji;12;CGGeometry.ji;8;CGPath.jt;33138;objj_executeFile("CGAffineTransform.j", YES);
+p;11;CGContext.jt;33325;@STATIC;1.0;i;19;CGAffineTransform.ji;17;CPCompatibility.ji;12;CGGeometry.ji;8;CGPath.jt;33230;objj_executeFile("CGAffineTransform.j", YES);
 objj_executeFile("CPCompatibility.j", YES);
 objj_executeFile("CGGeometry.j", YES);
 objj_executeFile("CGPath.j", YES);
@@ -35256,81 +35256,81 @@ kCGBlendModeDestinationAtop = 24;
 kCGBlendModeXOR = 25;
 kCGBlendModePlusDarker = 26;
 kCGBlendModePlusLighter = 27;
-CGContextRelease= function()
+CGContextRelease = function()
 {
 }
-CGContextRetain= function(aContext)
+CGContextRetain = function(aContext)
 {
     return aContext;
 }
 if (!CPFeatureIsCompatible(CPHTMLCanvasFeature))
 {
-CGGStateCreate= function()
+CGGStateCreate = function()
 {
     return { alpha:1.0, strokeStyle:"#000", fillStyle:"#ccc", lineWidth:1.0, lineJoin:kCGLineJoinMiter, lineCap:kCGLineCapButt, miterLimit:10.0, globalAlpha:1.0,
         blendMode:kCGBlendModeNormal,
         shadowOffset:{ width:0.0, height:0.0 }, shadowBlur:0.0, shadowColor:NULL, CTM:{ a:1.0, b:0.0, c:0.0, d:1.0, tx:0.0, ty:0.0 } };
 }
-CGGStateCreateCopy= function(aGState)
+CGGStateCreateCopy = function(aGState)
 {
     return { alpha:aGState.alpha, strokeStyle:aGState.strokeStyle, fillStyle:aGState.fillStyle, lineWidth:aGState.lineWidth,
         lineJoin:aGState.lineJoin, lineCap:aGState.lineCap, miterLimit:aGState.miterLimit, globalAlpha:aGState.globalAlpha,
         blendMode:aGState.blendMode,
         shadowOffset:{ width:aGState.shadowOffset.width, height:aGState.shadowOffset.height }, shadowBlur:aGState.shadowBlur, shadowColor:aGState.shadowColor, CTM:{ a:aGState.CTM.a, b:aGState.CTM.b, c:aGState.CTM.c, d:aGState.CTM.d, tx:aGState.CTM.tx, ty:aGState.CTM.ty } };
 }
-CGBitmapGraphicsContextCreate= function()
+CGBitmapGraphicsContextCreate = function()
 {
     return { DOMElement:document.createElement("div"), path:NULL, gState:CGGStateCreate(), gStateStack:[] };
 }
-CGContextSaveGState= function(aContext)
+CGContextSaveGState = function(aContext)
 {
     aContext.gStateStack.push(CGGStateCreateCopy(aContext.gState));
 }
-CGContextRestoreGState= function(aContext)
+CGContextRestoreGState = function(aContext)
 {
     aContext.gState = aContext.gStateStack.pop();
 }
-CGContextSetLineCap= function(aContext, aLineCap)
+CGContextSetLineCap = function(aContext, aLineCap)
 {
     aContext.gState.lineCap = aLineCap;
 }
-CGContextSetLineJoin= function(aContext, aLineJoin)
+CGContextSetLineJoin = function(aContext, aLineJoin)
 {
     aContext.gState.lineJoin = aLineJoin;
 }
-CGContextSetLineWidth= function(aContext, aLineWidth)
+CGContextSetLineWidth = function(aContext, aLineWidth)
 {
     aContext.gState.lineWidth = aLineWidth;
 }
-CGContextSetMiterLimit= function(aContext, aMiterLimit)
+CGContextSetMiterLimit = function(aContext, aMiterLimit)
 {
     aContext.gState.miterLimit = aMiterLimit;
 }
-CGContextSetBlendMode= function(aContext, aBlendMode)
+CGContextSetBlendMode = function(aContext, aBlendMode)
 {
     aContext.gState.blendMode = aBlendMode;
 }
-CGContextAddArc= function(aContext, x, y, radius, startAngle, endAngle, clockwise)
+CGContextAddArc = function(aContext, x, y, radius, startAngle, endAngle, clockwise)
 {
     CGPathAddArc(aContext.path, aContext.gState.CTM, x, y, radius, startAngle, endAngle, clockwise);
 }
-CGContextAddArcToPoint= function(aContext, x1, y1, x2, y2, radius)
+CGContextAddArcToPoint = function(aContext, x1, y1, x2, y2, radius)
 {
     CGPathAddArcToPoint(aContext.path, aContext.gState.CTM, x1, y1, x2, y2, radius);
 }
-CGContextAddCurveToPoint= function(aContext, cp1x, cp1y, cp2x, cp2y, x, y)
+CGContextAddCurveToPoint = function(aContext, cp1x, cp1y, cp2x, cp2y, x, y)
 {
     CGPathAddCurveToPoint(aContext.path, aContext.gState.CTM, cp1x, cp1y, cp2x, cp2y, x, y);
 }
-CGContextAddLines= function(aContext, points, count)
+CGContextAddLines = function(aContext, points, count)
 {
     CGPathAddLines(aContext.path, aContext.gState.CTM, points, count);
 }
-CGContextAddLineToPoint= function(aContext, x, y)
+CGContextAddLineToPoint = function(aContext, x, y)
 {
     CGPathAddLineToPoint(aContext.path, aContext.gState.CTM, x, y);
 }
-CGContextAddPath= function(aContext, aPath)
+CGContextAddPath = function(aContext, aPath)
 {
     if (!aContext || CGPathIsEmpty(aPath))
         return;
@@ -35338,37 +35338,37 @@ CGContextAddPath= function(aContext, aPath)
         aContext.path = CGPathCreateMutable();
     CGPathAddPath(aContext.path, aContext.gState.CTM, aPath);
 }
-CGContextAddQuadCurveToPoint= function(aContext, cpx, cpy, x, y)
+CGContextAddQuadCurveToPoint = function(aContext, cpx, cpy, x, y)
 {
     CGPathAddQuadCurveToPoint(aContext.path, aContext.gState.CTM, cpx, cpy, x, y);
 }
-CGContextAddRect= function(aContext, aRect)
+CGContextAddRect = function(aContext, aRect)
 {
     CGPathAddRect(aContext.path, aContext.gState.CTM, aRect);
 }
-CGContextAddRects= function(aContext, rects, count)
+CGContextAddRects = function(aContext, rects, count)
 {
     CGPathAddRects(aContext.path, aContext.gState.CTM, rects, count);
 }
-CGContextBeginPath= function(aContext)
+CGContextBeginPath = function(aContext)
 {
     aContext.path = CGPathCreateMutable();
 }
-CGContextClosePath= function(aContext)
+CGContextClosePath = function(aContext)
 {
     CGPathCloseSubpath(aContext.path);
 }
-CGContextMoveToPoint= function(aContext, x, y)
+CGContextMoveToPoint = function(aContext, x, y)
 {
     if (!aContext.path)
         aContext.path = CGPathCreateMutable();
     CGPathMoveToPoint(aContext.path, aContext.gState.CTM, x, y);
 }
-CGContextFillRect= function(aContext, aRect)
+CGContextFillRect = function(aContext, aRect)
 {
     CGContextFillRects(aContext, [aRect], 1);
 }
-CGContextFillRects= function(aContext, rects, count)
+CGContextFillRects = function(aContext, rects, count)
 {
     if (arguments[2] === undefined)
         var count = rects.length;
@@ -35377,99 +35377,99 @@ CGContextFillRects= function(aContext, rects, count)
     CGContextClosePath(aContext);
     CGContextDrawPath(aContext, kCGPathFill);
 }
-CGContextStrokeRect= function(aContext, aRect)
+CGContextStrokeRect = function(aContext, aRect)
 {
     CGContextBeginPath(aContext);
     CGContextAddRect(aContext, aRect);
     CGContextClosePath(aContext);
     CGContextDrawPath(aContext, kCGPathStroke);
 }
-CGContextStrokeRectWithWidth= function(aContext, aRect, aWidth)
+CGContextStrokeRectWithWidth = function(aContext, aRect, aWidth)
 {
     CGContextSaveGState(aContext);
     CGContextSetLineWidth(aContext, aWidth);
     CGContextStrokeRect(aContext, aRect);
     CGContextRestoreGState(aContext);
 }
-CGContextConcatCTM= function(aContext, aTransform)
+CGContextConcatCTM = function(aContext, aTransform)
 {
     var CTM = aContext.gState.CTM;
     var tx = CTM.tx * aTransform.a + CTM.ty * aTransform.c + aTransform.tx;CTM.ty = CTM.tx * aTransform.b + CTM.ty * aTransform.d + aTransform.ty;CTM.tx = tx;var a = CTM.a * aTransform.a + CTM.b * aTransform.c, b = CTM.a * aTransform.b + CTM.b * aTransform.d, c = CTM.c * aTransform.a + CTM.d * aTransform.c;CTM.d = CTM.c * aTransform.b + CTM.d * aTransform.d;CTM.a = a;CTM.b = b;CTM.c = c;;
 }
-CGContextGetCTM= function(aContext)
+CGContextGetCTM = function(aContext)
 {
     return aContext.gState.CTM;
 }
-CGContextRotateCTM= function(aContext, anAngle)
+CGContextRotateCTM = function(aContext, anAngle)
 {
     var gState = aContext.gState;
     gState.CTM = CGAffineTransformRotate(gState.CTM, anAngle);
 }
-CGContextScaleCTM= function(aContext, sx, sy)
+CGContextScaleCTM = function(aContext, sx, sy)
 {
     var gState = aContext.gState;
     gState.CTM = { a:gState.CTM.a * sx, b:gState.CTM.b * sx, c:gState.CTM.c * sy, d:gState.CTM.d * sy, tx:gState.CTM.tx, ty:gState.CTM.ty };
 }
-CGContextTranslateCTM= function(aContext, tx, ty)
+CGContextTranslateCTM = function(aContext, tx, ty)
 {
     var gState = aContext.gState;
     gState.CTM = { a:gState.CTM.a, b:gState.CTM.b, c:gState.CTM.c, d:gState.CTM.d, tx:gState.CTM.tx + gState.CTM.a * tx + gState.CTM.c * ty, ty:gState.CTM.ty + gState.CTM.b * tx + gState.CTM.d * ty };
 }
-CGContextSetShadow= function(aContext, aSize, aBlur)
+CGContextSetShadow = function(aContext, aSize, aBlur)
 {
     var gState = aContext.gState;
     gState.shadowOffset = { width:aSize.width, height:aSize.height };
     gState.shadowBlur = aBlur;
     gState.shadowColor = objj_msgSend(CPColor, "shadowColor");
 }
-CGContextSetShadowWithColor= function(aContext, aSize, aBlur, aColor)
+CGContextSetShadowWithColor = function(aContext, aSize, aBlur, aColor)
 {
     var gState = aContext.gState;
     gState.shadowOffset = { width:aSize.width, height:aSize.height };
     gState.shadowBlur = aBlur;
     gState.shadowColor = aColor;
 }
-CGContextSetAlpha= function(aContext, anAlpha)
+CGContextSetAlpha = function(aContext, anAlpha)
 {
     aContext.gState.alpha = MAX(MIN(anAlpha, 1.0), 0.0);
 }
 }
-CGContextEOFillPath= function(aContext)
+CGContextEOFillPath = function(aContext)
 {
     CGContextDrawPath(aContext, kCGPathEOFill);
 }
-CGContextFillPath= function(aContext)
+CGContextFillPath = function(aContext)
 {
     CGContextDrawPath(aContext, kCGPathFill);
     CGContextClosePath(aContext);
 }
 var KAPPA = 4.0 * ((SQRT2 - 1.0) / 3.0);
-CGContextAddEllipseInRect= function(aContext, aRect)
+CGContextAddEllipseInRect = function(aContext, aRect)
 {
     CGContextBeginPath(aContext);
     CGContextAddPath(aContext, CGPathWithEllipseInRect(aRect));
     CGContextClosePath(aContext);
 }
-CGContextFillEllipseInRect= function(aContext, aRect)
+CGContextFillEllipseInRect = function(aContext, aRect)
 {
     CGContextBeginPath(aContext);
     CGContextAddEllipseInRect(aContext, aRect);
     CGContextClosePath(aContext);
     CGContextFillPath(aContext);
 }
-CGContextStrokeEllipseInRect= function(aContext, aRect)
+CGContextStrokeEllipseInRect = function(aContext, aRect)
 {
     CGContextBeginPath(aContext);
     CGContextAddEllipseInRect(aContext, aRect);
     CGContextClosePath(aContext);
     CGContextStrokePath(aContext);
 }
-CGContextStrokePath= function(aContext)
+CGContextStrokePath = function(aContext)
 {
     CGContextDrawPath(aContext, kCGPathStroke);
     CGContextClosePath(aContext);
 }
-CGContextStrokeLineSegments= function(aContext, points, count)
+CGContextStrokeLineSegments = function(aContext, points, count)
 {
     var i = 0;
     if (count === NULL)
@@ -35482,24 +35482,24 @@ CGContextStrokeLineSegments= function(aContext, points, count)
     }
     CGContextStrokePath(aContext);
 }
-CGContextSetFillColor= function(aContext, aColor)
+CGContextSetFillColor = function(aContext, aColor)
 {
     if (aColor)
         aContext.gState.fillStyle = objj_msgSend(aColor, "cssString");
 }
-CGContextSetStrokeColor= function(aContext, aColor)
+CGContextSetStrokeColor = function(aContext, aColor)
 {
     if (aColor)
         aContext.gState.strokeStyle = objj_msgSend(aColor, "cssString");
 }
-CGContextFillRoundedRectangleInRect= function(aContext, aRect, aRadius, ne, se, sw, nw)
+CGContextFillRoundedRectangleInRect = function(aContext, aRect, aRadius, ne, se, sw, nw)
 {
     CGContextBeginPath(aContext);
     CGContextAddPath(aContext, CGPathWithRoundedRectangleInRect(aRect, aRadius, aRadius, ne, se, sw, nw));
     CGContextClosePath(aContext);
     CGContextFillPath(aContext);
 }
-CGContextStrokeRoundedRectangleInRect= function(aContext, aRect, aRadius, ne, se, sw, nw)
+CGContextStrokeRoundedRectangleInRect = function(aContext, aRect, aRadius, ne, se, sw, nw)
 {
     CGContextBeginPath(aContext);
     CGContextAddPath(aContext, CGPathWithRoundedRectangleInRect(aRect, aRadius, aRadius, ne, se, sw, nw));
@@ -35517,51 +35517,51 @@ var CANVAS_LINECAP_TABLE = [ "butt", "round", "square" ],
                                 "copy", "source-in", "source-out", "source-atop",
                                 "destination-over", "destination-in", "destination-out", "destination-atop",
                                 "xor", "source-over", "source-over" ];
-CGContextSaveGState= function(aContext)
+CGContextSaveGState = function(aContext)
 {
     aContext.save();
 }
-CGContextRestoreGState= function(aContext)
+CGContextRestoreGState = function(aContext)
 {
     aContext.restore();
 }
-CGContextSetLineCap= function(aContext, aLineCap)
+CGContextSetLineCap = function(aContext, aLineCap)
 {
     aContext.lineCap = CANVAS_LINECAP_TABLE[aLineCap];
 }
-CGContextSetLineJoin= function(aContext, aLineJoin)
+CGContextSetLineJoin = function(aContext, aLineJoin)
 {
     aContext.lineJoin = CANVAS_LINEJOIN_TABLE[aLineJoin];
 }
-CGContextSetLineWidth= function(aContext, aLineWidth)
+CGContextSetLineWidth = function(aContext, aLineWidth)
 {
     aContext.lineWidth = aLineWidth;
 }
-CGContextSetMiterLimit= function(aContext, aMiterLimit)
+CGContextSetMiterLimit = function(aContext, aMiterLimit)
 {
     aContext.miterLimit = aMiterLimit;
 }
-CGContextSetBlendMode= function(aContext, aBlendMode)
+CGContextSetBlendMode = function(aContext, aBlendMode)
 {
     aContext.globalCompositeOperation = CANVAS_COMPOSITE_TABLE[aBlendMode];
 }
-CGContextAddArc= function(aContext, x, y, radius, startAngle, endAngle, clockwise)
+CGContextAddArc = function(aContext, x, y, radius, startAngle, endAngle, clockwise)
 {
     aContext.arc(x, y, radius, startAngle, endAngle, !clockwise);
 }
-CGContextAddArcToPoint= function(aContext, x1, y1, x2, y2, radius)
+CGContextAddArcToPoint = function(aContext, x1, y1, x2, y2, radius)
 {
     aContext.arcTo(x1, y1, x2, y2, radius);
 }
-CGContextAddCurveToPoint= function(aContext, cp1x, cp1y, cp2x, cp2y, x, y)
+CGContextAddCurveToPoint = function(aContext, cp1x, cp1y, cp2x, cp2y, x, y)
 {
     aContext.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
 }
-CGContextAddLineToPoint= function(aContext, x, y)
+CGContextAddLineToPoint = function(aContext, x, y)
 {
     aContext.lineTo(x, y);
 }
-CGContextAddPath= function(aContext, aPath)
+CGContextAddPath = function(aContext, aPath)
 {
     if (!aContext || CGPathIsEmpty(aPath))
         return;
@@ -35591,11 +35591,11 @@ CGContextAddPath= function(aContext, aPath)
         }
     }
 }
-CGContextAddRect= function(aContext, aRect)
+CGContextAddRect = function(aContext, aRect)
 {
     aContext.rect((aRect.origin.x), (aRect.origin.y), (aRect.size.width), (aRect.size.height));
 }
-CGContextAddRects= function(aContext, rects, count)
+CGContextAddRects = function(aContext, rects, count)
 {
     var i = 0;
     if (count === NULL)
@@ -35606,23 +35606,23 @@ CGContextAddRects= function(aContext, rects, count)
         aContext.rect((rect.origin.x), (rect.origin.y), (rect.size.width), (rect.size.height));
     }
 }
-CGContextBeginPath= function(aContext)
+CGContextBeginPath = function(aContext)
 {
     aContext.beginPath();
 }
-CGContextClosePath= function(aContext)
+CGContextClosePath = function(aContext)
 {
     aContext.closePath();
 }
-CGContextMoveToPoint= function(aContext, x, y)
+CGContextMoveToPoint = function(aContext, x, y)
 {
     aContext.moveTo(x, y);
 }
-CGContextClearRect= function(aContext, aRect)
+CGContextClearRect = function(aContext, aRect)
 {
     aContext.clearRect((aRect.origin.x), (aRect.origin.y), (aRect.size.width), (aRect.size.height));
 }
-CGContextDrawPath= function(aContext, aMode)
+CGContextDrawPath = function(aContext, aMode)
 {
     if (aMode == kCGPathFill || aMode == kCGPathFillStroke)
         aContext.fill();
@@ -35631,11 +35631,11 @@ CGContextDrawPath= function(aContext, aMode)
     if (aMode == kCGPathStroke || aMode == kCGPathFillStroke || aMode == kCGPathEOFillStroke)
         aContext.stroke();
 }
-CGContextFillRect= function(aContext, aRect)
+CGContextFillRect = function(aContext, aRect)
 {
     aContext.fillRect((aRect.origin.x), (aRect.origin.y), (aRect.size.width), (aRect.size.height));
 }
-CGContextFillRects= function(aContext, rects, count)
+CGContextFillRects = function(aContext, rects, count)
 {
     var i = 0;
     if (count === NULL)
@@ -35646,22 +35646,22 @@ CGContextFillRects= function(aContext, rects, count)
         aContext.fillRect((rect.origin.x), (rect.origin.y), (rect.size.width), (rect.size.height));
     }
 }
-CGContextStrokeRect= function(aContext, aRect)
+CGContextStrokeRect = function(aContext, aRect)
 {
     aContext.strokeRect((aRect.origin.x), (aRect.origin.y), (aRect.size.width), (aRect.size.height));
 }
-CGContextClip= function(aContext)
+CGContextClip = function(aContext)
 {
     aContext.clip();
 }
-CGContextClipToRect= function(aContext, aRect)
+CGContextClipToRect = function(aContext, aRect)
 {
     aContext.beginPath();
     aContext.rect((aRect.origin.x), (aRect.origin.y), (aRect.size.width), (aRect.size.height));
     aContext.closePath();
     aContext.clip();
 }
-CGContextClipToRects= function(aContext, rects, count)
+CGContextClipToRects = function(aContext, rects, count)
 {
     if (count === NULL)
         var count = rects.length;
@@ -35669,11 +35669,11 @@ CGContextClipToRects= function(aContext, rects, count)
     CGContextAddRects(aContext, rects, count);
     aContext.clip();
 }
-CGContextSetAlpha= function(aContext, anAlpha)
+CGContextSetAlpha = function(aContext, anAlpha)
 {
     aContext.globalAlpha = anAlpha;
 }
-CGContextSetFillColor= function(aContext, aColor)
+CGContextSetFillColor = function(aContext, aColor)
 {
     if (objj_msgSend(aColor, "patternImage"))
     {
@@ -35691,36 +35691,36 @@ CGContextSetFillColor= function(aContext, aColor)
     else
         aContext.fillStyle = objj_msgSend(aColor, "cssString");
 }
-CGContextSetStrokeColor= function(aContext, aColor)
+CGContextSetStrokeColor = function(aContext, aColor)
 {
     aContext.strokeStyle = objj_msgSend(aColor, "cssString");
 }
-CGContextSetShadow= function(aContext, aSize, aBlur)
+CGContextSetShadow = function(aContext, aSize, aBlur)
 {
     aContext.shadowOffsetX = aSize.width;
     aContext.shadowOffsetY = aSize.height;
     aContext.shadowBlur = aBlur;
 }
-CGContextSetShadowWithColor= function(aContext, aSize, aBlur, aColor)
+CGContextSetShadowWithColor = function(aContext, aSize, aBlur, aColor)
 {
     aContext.shadowOffsetX = aSize.width;
     aContext.shadowOffsetY = aSize.height;
     aContext.shadowBlur = aBlur;
     aContext.shadowColor = objj_msgSend(aColor, "cssString");
 }
-CGContextRotateCTM= function(aContext, anAngle)
+CGContextRotateCTM = function(aContext, anAngle)
 {
     aContext.rotate(anAngle);
 }
-CGContextScaleCTM= function(aContext, sx, sy)
+CGContextScaleCTM = function(aContext, sx, sy)
 {
     aContext.scale(sx, sy);
 }
-CGContextTranslateCTM= function(aContext, tx, ty)
+CGContextTranslateCTM = function(aContext, tx, ty)
 {
     aContext.translate(tx, ty);
 }
-eigen= function(anAffineTransform)
+eigen = function(anAffineTransform)
 {
     alert("IMPLEMENT ME!");
 }
@@ -35791,15 +35791,15 @@ CGContextConcatCTM = function(aContext, anAffineTransform)
         CGContextRotateCTM(aContext, a2);
 }
 }
-CGContextDrawImage= function(aContext, aRect, anImage)
+CGContextDrawImage = function(aContext, aRect, anImage)
 {
     aContext.drawImage(anImage._image, (aRect.origin.x), (aRect.origin.y), (aRect.size.width), (aRect.size.height));
 }
-to_string= function(aColor)
+to_string = function(aColor)
 {
     return "rgba(" + ROUND(aColor.components[0] * 255) + ", " + ROUND(aColor.components[1] * 255) + ", " + ROUND(255 * aColor.components[2]) + ", " + aColor.components[3] + ")";
 }
-CGContextDrawLinearGradient= function(aContext, aGradient, aStartPoint, anEndPoint, options)
+CGContextDrawLinearGradient = function(aContext, aGradient, aStartPoint, anEndPoint, options)
 {
     var colors = aGradient.colors,
         count = colors.length,
@@ -35809,7 +35809,7 @@ CGContextDrawLinearGradient= function(aContext, aGradient, aStartPoint, anEndPoi
     aContext.fillStyle = linearGradient;
     aContext.fill();
 }
-CGBitmapGraphicsContextCreate= function()
+CGBitmapGraphicsContextCreate = function()
 {
     var DOMElement = document.createElement("canvas"),
         context = DOMElement.getContext("2d");
@@ -35824,21 +35824,21 @@ var VML_TRUTH_TABLE = [ "f", "t"],
     VML_LINEJOIN_TABLE = [ "miter", "round", "bevel" ],
     VML_ELEMENT_TABLE = [ " m ", " l ", "qb", " c ", " x ", [" at ", " wa "]];
 var _CGBitmapGraphicsContextCreate = CGBitmapGraphicsContextCreate;
-CGBitmapGraphicsContextCreate= function()
+CGBitmapGraphicsContextCreate = function()
 {
     document.namespaces.add("cg_vml_", "urn:schemas-microsoft-com:vml");
     document.createStyleSheet().cssText = "cg_vml_\\:*{behavior:url(#default#VML)}";
     CGBitmapGraphicsContextCreate = _CGBitmapGraphicsContextCreate;
     return _CGBitmapGraphicsContextCreate();
 }
-CGContextSetFillColor= function(aContext, aColor)
+CGContextSetFillColor = function(aContext, aColor)
 {
     if (objj_msgSend(aColor, "patternImage"))
         aContext.gState.fillStyle = "!" + objj_msgSend(objj_msgSend(aColor, "patternImage"), "filename");
     else
         aContext.gState.fillStyle = objj_msgSend(aColor, "cssString");
 }
-CGContextClearRect= function(aContext, aRect)
+CGContextClearRect = function(aContext, aRect)
 {
     if (aContext.buffer != nil)
         aContext.buffer = "";
@@ -35850,7 +35850,7 @@ var W = 10.0,
     H = 10.0,
     Z = 10.0,
     Z_2 = Z / 2.0;
-CGContextDrawImage= function(aContext, aRect, anImage)
+CGContextDrawImage = function(aContext, aRect, anImage)
 {
     var string = "";
     if (anImage.buffer != nil)
@@ -35878,7 +35878,7 @@ CGContextDrawImage= function(aContext, aRect, anImage)
     else
         aContext.DOMElement.insertAdjacentHTML("BeforeEnd", string);
 }
-CGContextDrawPath= function(aContext, aMode)
+CGContextDrawPath = function(aContext, aMode)
 {
     if (!aContext || CGPathIsEmpty(aContext.path))
         return;
@@ -35986,11 +35986,11 @@ CGContextDrawPath= function(aContext, aMode)
     else
         aContext.DOMElement.insertAdjacentHTML("BeforeEnd", vml.join(""));
 }
-to_string= function(aColor)
+to_string = function(aColor)
 {
     return "rgb(" + ROUND(aColor.components[0] * 255) + ", " + ROUND(aColor.components[1] * 255) + ", " + ROUND(255 * aColor.components[2]) + ")";
 }
-CGContextDrawLinearGradient= function(aContext, aGradient, aStartPoint, anEndPoint, options)
+CGContextDrawLinearGradient = function(aContext, aGradient, aStartPoint, anEndPoint, options)
 {
     if (!aContext || !aGradient)
         return;
@@ -36025,48 +36025,48 @@ CGContextDrawLinearGradient= function(aContext, aGradient, aStartPoint, anEndPoi
 }
 }
 
-p;12;CGGeometry.jt;9124;@STATIC;1.0;t;9105;CGPointMake= function(x, y) { return { x:x, y:y }; }
-CGPointMakeZero= function() { return { x:0.0, y:0.0 }; }
-CGPointMakeCopy= function(aPoint) { return { x:aPoint.x, y:aPoint.y }; }
-CGPointCreateCopy= function(aPoint) { return { x:aPoint.x, y:aPoint.y }; }
-CGPointEqualToPoint= function(lhsPoint, rhsPoint) { return (lhsPoint.x == rhsPoint.x && lhsPoint.y == rhsPoint.y); }
-CGStringFromPoint= function(aPoint) { return ("{" + aPoint.x + ", " + aPoint.y + "}"); }
-CGSizeMake= function(width, height) { return { width:width, height:height }; }
-CGSizeMakeZero= function() { return { width:0.0, height:0.0 }; }
-CGSizeMakeCopy= function(aSize) { return { width:aSize.width, height:aSize.height }; }
-CGSizeCreateCopy= function(aSize) { return { width:aSize.width, height:aSize.height }; }
-CGSizeEqualToSize= function(lhsSize, rhsSize) { return (lhsSize.width == rhsSize.width && lhsSize.height == rhsSize.height); }
-CGStringFromSize= function(aSize) { return ("{" + aSize.width + ", " + aSize.height + "}"); }
-CGRectMake= function(x, y, width, height) { return { origin: { x:x, y:y }, size: { width:width, height:height } }; }
-CGRectMakeZero= function() { return { origin: { x:0.0, y:0.0 }, size: { width:0.0, height:0.0 } }; }
-CGRectMakeCopy= function(aRect) { return { origin: { x:aRect.origin.x, y:aRect.origin.y }, size: { width:aRect.size.width, height:aRect.size.height } }; }
-CGRectCreateCopy= function(aRect) { return { origin: { x:aRect.origin.x, y:aRect.origin.y }, size: { width:aRect.size.width, height:aRect.size.height } }; }
-CGRectEqualToRect= function(lhsRect, rhsRect) { return ((lhsRect.origin.x == rhsRect.origin.x && lhsRect.origin.y == rhsRect.origin.y) && (lhsRect.size.width == rhsRect.size.width && lhsRect.size.height == rhsRect.size.height)); }
-CGStringFromRect= function(aRect) { return ("{" + ("{" + aRect.origin.x + ", " + aRect.origin.y + "}") + ", " + ("{" + aRect.size.width + ", " + aRect.size.height + "}") + "}"); }
-CGRectOffset= function(aRect, dX, dY) { return { origin: { x:aRect.origin.x + dX, y:aRect.origin.y + dY }, size: { width:aRect.size.width, height:aRect.size.height } }; }
-CGRectInset= function(aRect, dX, dY) { return { origin: { x:aRect.origin.x + dX, y:aRect.origin.y + dY }, size: { width:aRect.size.width - 2 * dX, height:aRect.size.height - 2 * dY } }; }
-CGRectGetHeight= function(aRect) { return (aRect.size.height); }
-CGRectGetMaxX= function(aRect) { return (aRect.origin.x + aRect.size.width); }
-CGRectGetMaxY= function(aRect) { return (aRect.origin.y + aRect.size.height); }
-CGRectGetMidX= function(aRect) { return (aRect.origin.x + (aRect.size.width) / 2.0); }
-CGRectGetMidY= function(aRect) { return (aRect.origin.y + (aRect.size.height) / 2.0); }
-CGRectGetMinX= function(aRect) { return (aRect.origin.x); }
-CGRectGetMinY= function(aRect) { return (aRect.origin.y); }
-CGRectGetWidth= function(aRect) { return (aRect.size.width); }
-CGRectIsEmpty= function(aRect) { return (aRect.size.width <= 0.0 || aRect.size.height <= 0.0); }
-CGRectIsNull= function(aRect) { return (aRect.size.width <= 0.0 || aRect.size.height <= 0.0); }
-CGRectContainsPoint= function(aRect, aPoint) { return (aPoint.x >= (aRect.origin.x) && aPoint.y >= (aRect.origin.y) && aPoint.x < (aRect.origin.x + aRect.size.width) && aPoint.y < (aRect.origin.y + aRect.size.height)); }
-CGInsetMake= function(top, right, bottom, left) { return { top:(top), right:(right), bottom:(bottom), left:(left) }; }
-CGInsetMakeZero= function() { return { top:(0), right:(0), bottom:(0), left:(0) }; }
-CGInsetMakeCopy= function(anInset) { return { top:(anInset.top), right:(anInset.right), bottom:(anInset.bottom), left:(anInset.left) }; }
-CGInsetIsEmpty= function(anInset) { return ((anInset).top === 0 && (anInset).right === 0 && (anInset).bottom === 0 && (anInset).left === 0); }
-CGInsetEqualToInset= function(lhsInset, rhsInset) { return ((lhsInset).top === (rhsInset).top && (lhsInset).right === (rhsInset).right && (lhsInset).bottom === (rhsInset).bottom && (lhsInset).left === (rhsInset).left); }
+p;12;CGGeometry.jt;9173;@STATIC;1.0;t;9154;CGPointMake = function(x, y) { return { x:x, y:y }; }
+CGPointMakeZero = function() { return { x:0.0, y:0.0 }; }
+CGPointMakeCopy = function(aPoint) { return { x:aPoint.x, y:aPoint.y }; }
+CGPointCreateCopy = function(aPoint) { return { x:aPoint.x, y:aPoint.y }; }
+CGPointEqualToPoint = function(lhsPoint, rhsPoint) { return (lhsPoint.x == rhsPoint.x && lhsPoint.y == rhsPoint.y); }
+CGStringFromPoint = function(aPoint) { return ("{" + aPoint.x + ", " + aPoint.y + "}"); }
+CGSizeMake = function(width, height) { return { width:width, height:height }; }
+CGSizeMakeZero = function() { return { width:0.0, height:0.0 }; }
+CGSizeMakeCopy = function(aSize) { return { width:aSize.width, height:aSize.height }; }
+CGSizeCreateCopy = function(aSize) { return { width:aSize.width, height:aSize.height }; }
+CGSizeEqualToSize = function(lhsSize, rhsSize) { return (lhsSize.width == rhsSize.width && lhsSize.height == rhsSize.height); }
+CGStringFromSize = function(aSize) { return ("{" + aSize.width + ", " + aSize.height + "}"); }
+CGRectMake = function(x, y, width, height) { return { origin: { x:x, y:y }, size: { width:width, height:height } }; }
+CGRectMakeZero = function() { return { origin: { x:0.0, y:0.0 }, size: { width:0.0, height:0.0 } }; }
+CGRectMakeCopy = function(aRect) { return { origin: { x:aRect.origin.x, y:aRect.origin.y }, size: { width:aRect.size.width, height:aRect.size.height } }; }
+CGRectCreateCopy = function(aRect) { return { origin: { x:aRect.origin.x, y:aRect.origin.y }, size: { width:aRect.size.width, height:aRect.size.height } }; }
+CGRectEqualToRect = function(lhsRect, rhsRect) { return ((lhsRect.origin.x == rhsRect.origin.x && lhsRect.origin.y == rhsRect.origin.y) && (lhsRect.size.width == rhsRect.size.width && lhsRect.size.height == rhsRect.size.height)); }
+CGStringFromRect = function(aRect) { return ("{" + ("{" + aRect.origin.x + ", " + aRect.origin.y + "}") + ", " + ("{" + aRect.size.width + ", " + aRect.size.height + "}") + "}"); }
+CGRectOffset = function(aRect, dX, dY) { return { origin: { x:aRect.origin.x + dX, y:aRect.origin.y + dY }, size: { width:aRect.size.width, height:aRect.size.height } }; }
+CGRectInset = function(aRect, dX, dY) { return { origin: { x:aRect.origin.x + dX, y:aRect.origin.y + dY }, size: { width:aRect.size.width - 2 * dX, height:aRect.size.height - 2 * dY } }; }
+CGRectGetHeight = function(aRect) { return (aRect.size.height); }
+CGRectGetMaxX = function(aRect) { return (aRect.origin.x + aRect.size.width); }
+CGRectGetMaxY = function(aRect) { return (aRect.origin.y + aRect.size.height); }
+CGRectGetMidX = function(aRect) { return (aRect.origin.x + (aRect.size.width) / 2.0); }
+CGRectGetMidY = function(aRect) { return (aRect.origin.y + (aRect.size.height) / 2.0); }
+CGRectGetMinX = function(aRect) { return (aRect.origin.x); }
+CGRectGetMinY = function(aRect) { return (aRect.origin.y); }
+CGRectGetWidth = function(aRect) { return (aRect.size.width); }
+CGRectIsEmpty = function(aRect) { return (aRect.size.width <= 0.0 || aRect.size.height <= 0.0); }
+CGRectIsNull = function(aRect) { return (aRect.size.width <= 0.0 || aRect.size.height <= 0.0); }
+CGRectContainsPoint = function(aRect, aPoint) { return (aPoint.x >= (aRect.origin.x) && aPoint.y >= (aRect.origin.y) && aPoint.x < (aRect.origin.x + aRect.size.width) && aPoint.y < (aRect.origin.y + aRect.size.height)); }
+CGInsetMake = function(top, right, bottom, left) { return { top:(top), right:(right), bottom:(bottom), left:(left) }; }
+CGInsetMakeZero = function() { return { top:(0), right:(0), bottom:(0), left:(0) }; }
+CGInsetMakeCopy = function(anInset) { return { top:(anInset.top), right:(anInset.right), bottom:(anInset.bottom), left:(anInset.left) }; }
+CGInsetIsEmpty = function(anInset) { return ((anInset).top === 0 && (anInset).right === 0 && (anInset).bottom === 0 && (anInset).left === 0); }
+CGInsetEqualToInset = function(lhsInset, rhsInset) { return ((lhsInset).top === (rhsInset).top && (lhsInset).right === (rhsInset).right && (lhsInset).bottom === (rhsInset).bottom && (lhsInset).left === (rhsInset).left); }
 CGMinXEdge = 0;
 CGMinYEdge = 1;
 CGMaxXEdge = 2;
 CGMaxYEdge = 3;
 CGRectNull = { origin: { x:Infinity, y:Infinity }, size: { width:0.0, height:0.0 } };
-CGRectDivide= function(inRect, slice, rem, amount, edge)
+CGRectDivide = function(inRect, slice, rem, amount, edge)
 {
     slice.origin = { x:inRect.origin.x, y:inRect.origin.y };
     slice.size = { width:inRect.size.width, height:inRect.size.height };
@@ -36095,17 +36095,17 @@ CGRectDivide= function(inRect, slice, rem, amount, edge)
             rem.size.height -= amount;
     }
 }
-CGRectContainsRect= function(lhsRect, rhsRect)
+CGRectContainsRect = function(lhsRect, rhsRect)
 {
     var union = CGRectUnion(lhsRect, rhsRect);
     return ((union.origin.x == lhsRect.origin.x && union.origin.y == lhsRect.origin.y) && (union.size.width == lhsRect.size.width && union.size.height == lhsRect.size.height));
 }
-CGRectIntersectsRect= function(lhsRect, rhsRect)
+CGRectIntersectsRect = function(lhsRect, rhsRect)
 {
     var intersection = CGRectIntersection(lhsRect, rhsRect);
     return !(intersection.size.width <= 0.0 || intersection.size.height <= 0.0);
 }
-CGRectIntegral= function(aRect)
+CGRectIntegral = function(aRect)
 {
     aRect = CGRectStandardize(aRect);
     var x = FLOOR((aRect.origin.x)),
@@ -36116,14 +36116,14 @@ CGRectIntegral= function(aRect)
     aRect.origin.y = y;
     return aRect;
 }
-CGRectIntersection= function(lhsRect, rhsRect)
+CGRectIntersection = function(lhsRect, rhsRect)
 {
     var intersection = { origin: { x:MAX((lhsRect.origin.x), (rhsRect.origin.x)), y:MAX((lhsRect.origin.y), (rhsRect.origin.y)) }, size: { width:0, height:0 } };
     intersection.size.width = MIN((lhsRect.origin.x + lhsRect.size.width), (rhsRect.origin.x + rhsRect.size.width)) - (intersection.origin.x);
     intersection.size.height = MIN((lhsRect.origin.y + lhsRect.size.height), (rhsRect.origin.y + rhsRect.size.height)) - (intersection.origin.y);
     return (intersection.size.width <= 0.0 || intersection.size.height <= 0.0) ? { origin: { x:0.0, y:0.0 }, size: { width:0.0, height:0.0 } } : intersection;
 }
-CGRectStandardize= function(aRect)
+CGRectStandardize = function(aRect)
 {
     var width = (aRect.size.width),
         height = (aRect.size.height),
@@ -36140,7 +36140,7 @@ CGRectStandardize= function(aRect)
     }
     return standardized;
 }
-CGRectUnion= function(lhsRect, rhsRect)
+CGRectUnion = function(lhsRect, rhsRect)
 {
     var lhsRectIsNull = !lhsRect || lhsRect === CGRectNull,
         rhsRectIsNull = !rhsRect || rhsRect === CGRectNull;
@@ -36154,41 +36154,41 @@ CGRectUnion= function(lhsRect, rhsRect)
         maxY = MAX((lhsRect.origin.y + lhsRect.size.height), (rhsRect.origin.y + rhsRect.size.height));
     return { origin: { x:minX, y:minY }, size: { width:maxX - minX, height:maxY - minY } };
 }
-CGPointFromString= function(aString)
+CGPointFromString = function(aString)
 {
     var comma = aString.indexOf(',');
     return { x:parseInt(aString.substr(1, comma - 1)), y:parseInt(aString.substring(comma + 1, aString.length)) };
 }
-CGSizeFromString= function(aString)
+CGSizeFromString = function(aString)
 {
     var comma = aString.indexOf(',');
     return { width:parseInt(aString.substr(1, comma - 1)), height:parseInt(aString.substring(comma + 1, aString.length)) };
 }
-CGRectFromString= function(aString)
+CGRectFromString = function(aString)
 {
     var comma = aString.indexOf(',', aString.indexOf(',') + 1);
     return { origin:CGPointFromString(aString.substr(1, comma - 1)), size:CGSizeFromString(aString.substring(comma + 2, aString.length)) };
 }
-CGPointFromEvent= function(anEvent)
+CGPointFromEvent = function(anEvent)
 {
     return { x:anEvent.clientX, y:anEvent.clientY };
 }
-CGInsetFromString= function(aString)
+CGInsetFromString = function(aString)
 {
     var numbers = aString.substr(1, aString.length - 2).split(',');
     return { top:(parseFloat(numbers[0])), right:(parseFloat(numbers[1])), bottom:(parseFloat(numbers[2])), left:(parseFloat(numbers[3])) };
 }
 CGInsetFromCPString = CGInsetFromString;
-CPStringFromCGInset= function(anInset)
+CPStringFromCGInset = function(anInset)
 {
     return '{' + anInset.top + ", " + anInset.left + ", " + anInset.bottom + ", " + anInset.right + '}';
 }
 
-p;12;CGGradient.jt;1150;@STATIC;1.0;i;9;CGColor.ji;14;CGColorSpace.jt;1099;objj_executeFile("CGColor.j", YES);
+p;12;CGGradient.jt;1154;@STATIC;1.0;i;9;CGColor.ji;14;CGColorSpace.jt;1103;objj_executeFile("CGColor.j", YES);
 objj_executeFile("CGColorSpace.j", YES);
 kCGGradientDrawsBeforeStartLocation = 1 << 0;
 kCGGradientDrawsAfterEndLocation = 1 << 1;
-CGGradientCreateWithColorComponents= function(aColorSpace, components, locations, count)
+CGGradientCreateWithColorComponents = function(aColorSpace, components, locations, count)
 {
     if ( locations === undefined || locations === NULL )
     {
@@ -36207,19 +36207,19 @@ CGGradientCreateWithColorComponents= function(aColorSpace, components, locations
     }
     return CGGradientCreateWithColors(aColorSpace, colors, locations);
 }
-CGGradientCreateWithColors= function(aColorSpace, colors, locations)
+CGGradientCreateWithColors = function(aColorSpace, colors, locations)
 {
     return { colorspace:aColorSpace, colors:colors, locations:locations };
 }
-CGGradientRelease= function()
+CGGradientRelease = function()
 {
 }
-CGGradientRetain= function(aGradient)
+CGGradientRetain = function(aGradient)
 {
     return aGradient;
 }
 
-p;8;CGPath.jt;12376;@STATIC;1.0;i;12;CGGeometry.ji;19;CGAffineTransform.jt;12315;objj_executeFile("CGGeometry.j", YES);
+p;8;CGPath.jt;12397;@STATIC;1.0;i;12;CGGeometry.ji;19;CGAffineTransform.jt;12336;objj_executeFile("CGGeometry.j", YES);
 objj_executeFile("CGAffineTransform.j", YES);
 kCGPathElementMoveToPoint = 0;
 kCGPathElementAddLineToPoint = 1;
@@ -36228,28 +36228,28 @@ kCGPathElementAddCurveToPoint = 3;
 kCGPathElementCloseSubpath = 4;
 kCGPathElementAddArc = 5;
 kCGPathElementAddArcToPoint = 6;
-CGPathCreateMutable= function()
+CGPathCreateMutable = function()
 {
     return { count:0, start:NULL, current:NULL, elements:[] };
 }
-CGPathCreateMutableCopy= function(aPath)
+CGPathCreateMutableCopy = function(aPath)
 {
     var path = CGPathCreateMutable();
     CGPathAddPath(path, aPath);
     return path;
 }
-CGPathCreateCopy= function(aPath)
+CGPathCreateCopy = function(aPath)
 {
     return CGPathCreateMutableCopy(aPath);
 }
-CGPathRelease= function(aPath)
+CGPathRelease = function(aPath)
 {
 }
-CGPathRetain= function(aPath)
+CGPathRetain = function(aPath)
 {
     return aPath;
 }
-CGPathAddArc= function(aPath, aTransform, x, y, aRadius, aStartAngle, anEndAngle, isClockwise)
+CGPathAddArc = function(aPath, aTransform, x, y, aRadius, aStartAngle, anEndAngle, isClockwise)
 {
     if (aTransform && !(aTransform.a == 1 && aTransform.b == 0 && aTransform.c == 0 && aTransform.d == 1 && aTransform.tx == 0 && aTransform.ty == 0))
     {
@@ -36277,10 +36277,10 @@ CGPathAddArc= function(aPath, aTransform, x, y, aRadius, aStartAngle, anEndAngle
     aPath.current = { x:x + aRadius * COS(anEndAngle), y:y + aRadius * SIN(anEndAngle) };
     aPath.elements[aPath.count++] = { type:kCGPathElementAddArc, x:x, y:y, radius:aRadius, startAngle:aStartAngle, endAngle:anEndAngle };
 }
-CGPathAddArcToPoint= function(aPath, aTransform, x1, y1, x2, y2, aRadius)
+CGPathAddArcToPoint = function(aPath, aTransform, x1, y1, x2, y2, aRadius)
 {
 }
-CGPathAddCurveToPoint= function(aPath, aTransform, cp1x, cp1y, cp2x, cp2y, x, y)
+CGPathAddCurveToPoint = function(aPath, aTransform, cp1x, cp1y, cp2x, cp2y, x, y)
 {
     var cp1 = { x:cp1x, y:cp1y },
         cp2 = { x:cp2x, y:cp2y },
@@ -36294,7 +36294,7 @@ CGPathAddCurveToPoint= function(aPath, aTransform, cp1x, cp1y, cp2x, cp2y, x, y)
    aPath.current = end;
    aPath.elements[aPath.count++] = { type:kCGPathElementAddCurveToPoint, cp1x:cp1.x, cp1y:cp1.y, cp2x:cp2.x, cp2y:cp2.y, x:end.x, y:end.y };
 }
-CGPathAddLines= function(aPath, aTransform, points, count)
+CGPathAddLines = function(aPath, aTransform, points, count)
 {
     var i = 1;
     if (count === NULL)
@@ -36305,7 +36305,7 @@ CGPathAddLines= function(aPath, aTransform, points, count)
     for (; i < count; ++i)
         CGPathAddLineToPoint(aPath, aTransform, points[i].x, points[i].y);
 }
-CGPathAddLineToPoint= function(aPath, aTransform, x, y)
+CGPathAddLineToPoint = function(aPath, aTransform, x, y)
 {
     var point = { x:x, y:y };
     if (aTransform != NULL)
@@ -36313,7 +36313,7 @@ CGPathAddLineToPoint= function(aPath, aTransform, x, y)
     aPath.elements[aPath.count++] = { type: kCGPathElementAddLineToPoint, x:point.x, y:point.y };
     aPath.current = point;
 }
-CGPathAddPath= function(aPath, aTransform, anotherPath)
+CGPathAddPath = function(aPath, aTransform, anotherPath)
 {
     for (var i = 0, count = anotherPath.count; i < count; ++i)
     {
@@ -36342,7 +36342,7 @@ CGPathAddPath= function(aPath, aTransform, anotherPath)
         }
     }
 }
-CGPathAddQuadCurveToPoint= function(aPath, aTransform, cpx, cpy, x, y)
+CGPathAddQuadCurveToPoint = function(aPath, aTransform, cpx, cpy, x, y)
 {
     var cp = { x:cpx, y:cpy },
         end = { x:x, y:y };
@@ -36354,11 +36354,11 @@ CGPathAddQuadCurveToPoint= function(aPath, aTransform, cpx, cpy, x, y)
     aPath.elements[aPath.count++] = { type:kCGPathElementAddQuadCurveToPoint, cpx:cp.x, cpy:cp.y, x:end.x, y:end.y }
     aPath.current = end;
 }
-CGPathAddRect= function(aPath, aTransform, aRect)
+CGPathAddRect = function(aPath, aTransform, aRect)
 {
     CGPathAddRects(aPath, aTransform, [aRect], 1);
 }
-CGPathAddRects= function(aPath, aTransform, rects, count)
+CGPathAddRects = function(aPath, aTransform, rects, count)
 {
     var i = 0;
     if (count === NULL)
@@ -36373,7 +36373,7 @@ CGPathAddRects= function(aPath, aTransform, rects, count)
         CGPathCloseSubpath(aPath);
     }
 }
-CGPathMoveToPoint= function(aPath, aTransform, x, y)
+CGPathMoveToPoint = function(aPath, aTransform, x, y)
 {
     var point = { x:x, y:y },
         count = aPath.count;
@@ -36391,7 +36391,7 @@ CGPathMoveToPoint= function(aPath, aTransform, x, y)
         aPath.elements[aPath.count++] = { type:kCGPathElementMoveToPoint, x:point.x, y:point.y };
 }
 var KAPPA = 4.0 * ((SQRT2 - 1.0) / 3.0);
-CGPathWithEllipseInRect= function(aRect)
+CGPathWithEllipseInRect = function(aRect)
 {
     var path = CGPathCreateMutable();
     if ((aRect.size.width) == (aRect.size.height))
@@ -36409,7 +36409,7 @@ CGPathWithEllipseInRect= function(aRect)
     CGPathCloseSubpath(path);
     return path;
 }
-CGPathWithRoundedRectangleInRect= function(aRect, xRadius, yRadius , ne, se, sw, nw)
+CGPathWithRoundedRectangleInRect = function(aRect, xRadius, yRadius , ne, se, sw, nw)
 {
     var path = CGPathCreateMutable(),
         xMin = (aRect.origin.x),
@@ -36448,14 +36448,14 @@ CGPathWithRoundedRectangleInRect= function(aRect, xRadius, yRadius , ne, se, sw,
     CGPathCloseSubpath(path);
     return path;
 }
-CGPathCloseSubpath= function(aPath)
+CGPathCloseSubpath = function(aPath)
 {
     var count = aPath.count;
     if (count == 0 || aPath.elements[count - 1].type == kCGPathElementCloseSubpath)
         return;
     aPath.elements[aPath.count++] = { type:kCGPathElementCloseSubpath, points:[aPath.start] };
 }
-CGPathEqualToPath= function(aPath, anotherPath)
+CGPathEqualToPath = function(aPath, anotherPath)
 {
     if (aPath == anotherPath)
         return YES;
@@ -36479,11 +36479,11 @@ CGPathEqualToPath= function(aPath, anotherPath)
     }
     return YES;
 }
-CGPathGetCurrentPoint= function(aPath)
+CGPathGetCurrentPoint = function(aPath)
 {
     return { x:aPath.current.x, y:aPath.current.y };
 }
-CGPathIsEmpty= function(aPath)
+CGPathIsEmpty = function(aPath)
 {
     return !aPath || aPath.count == 0;
 }
@@ -36909,8 +36909,8 @@ p;16;_CPMenuManager.jt;25148;@STATIC;1.0;I;21;Foundation/CPObject.jt;25102;
 objj_executeFile("Foundation/CPObject.j", NO);
 
 
-_CPMenuManagerScrollingStateUp = -1,
-_CPMenuManagerScrollingStateDown = 1,
+_CPMenuManagerScrollingStateUp = -1;
+_CPMenuManagerScrollingStateDown = 1;
 _CPMenuManagerScrollingStateNone = 0;
 
 var STICKY_TIME_INTERVAL = 500,
@@ -40623,7 +40623,7 @@ _dictionary = newValue;
     return aString;
 }
 },["CPString","CPString"])]);
-}p;26;_CPRuleEditorPopUpButton.jt;6589;@STATIC;1.0;t;6570;
+}p;26;_CPRuleEditorPopUpButton.jt;6591;@STATIC;1.0;t;6572;
 
 
 
@@ -40647,7 +40647,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:"), funct
         style.border = "1px solid rgb(189, 189, 189)";
         style.filter = IE_FILTER;
 
-        objj_msgSend(self, "setTextColor:", objj_msgSend(CPColor, "colorWithWhite:alpha:", 101/255, 1));
+        objj_msgSend(self, "setTextColor:", objj_msgSend(CPColor, "colorWithWhite:alpha:", 101 / 255, 1));
         objj_msgSend(self, "setBordered:", NO);
      }
 
@@ -40731,12 +40731,12 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("initialize"), function
 {
     if (CPBrowserIsEngine(CPWebKitBrowserEngine))
     {
-        GRADIENT_NORMAL = "-webkit-gradient(linear, left top, left bottom, from(rgb(252, 252, 252)), to(rgb(223, 223, 223)))",
+        GRADIENT_NORMAL = "-webkit-gradient(linear, left top, left bottom, from(rgb(252, 252, 252)), to(rgb(223, 223, 223)))";
         GRADIENT_HIGHLIGHTED = "-webkit-gradient(linear, left top, left bottom, from(rgb(223, 223, 223)), to(rgb(252, 252, 252)))";
     }
     else if (CPBrowserIsEngine(CPGeckoBrowserEngine))
     {
-        GRADIENT_NORMAL = "-moz-linear-gradient(top,  rgb(252, 252, 252),  rgb(223, 223, 223))",
+        GRADIENT_NORMAL = "-moz-linear-gradient(top,  rgb(252, 252, 252),  rgb(223, 223, 223))";
         GRADIENT_HIGHLIGHTED = "-moz-linear-gradient(top,  rgb(223, 223, 223),  rgb(252, 252, 252))";
     }
 }
@@ -41616,7 +41616,7 @@ _predicateAction = newValue;
         if (isPopup)
         {
             itemArray = objj_msgSend(objj_msgSend(templateView, "itemArray"), "valueForKey:", "title");
-            itemsCount = objj_msgSend(itemArray, "count"),
+            itemsCount = objj_msgSend(itemArray, "count");
             menuIndex = 0;
         }
         for (; menuIndex < itemsCount; menuIndex++)
@@ -41850,17 +41850,17 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 },["void","id"])]);
 }
 
-p;30;CPPredicateEditorRowTemplate.jt;30666;@STATIC;1.0;t;30646;CPUndefinedAttributeType = 0,
-CPInteger16AttributeType = 100,
-CPInteger32AttributeType = 200,
-CPInteger64AttributeType = 300,
-CPDecimalAttributeType = 400,
-CPDoubleAttributeType = 500,
-CPFloatAttributeType = 600,
-CPStringAttributeType = 700,
-CPBooleanAttributeType = 800,
-CPDateAttributeType = 900,
-CPBinaryDataAttributeType = 1000,
+p;30;CPPredicateEditorRowTemplate.jt;30666;@STATIC;1.0;t;30646;CPUndefinedAttributeType = 0;
+CPInteger16AttributeType = 100;
+CPInteger32AttributeType = 200;
+CPInteger64AttributeType = 300;
+CPDecimalAttributeType = 400;
+CPDoubleAttributeType = 500;
+CPFloatAttributeType = 600;
+CPStringAttributeType = 700;
+CPBooleanAttributeType = 800;
+CPDateAttributeType = 900;
+CPBinaryDataAttributeType = 1000;
 CPTransformableAttributeType = 1800;
 {var the_class = objj_allocateClassPair(CPObject, "CPPredicateEditorRowTemplate"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_templateType"), new objj_ivar("_predicateOptions"), new objj_ivar("_predicateModifier"), new objj_ivar("_leftAttributeType"), new objj_ivar("_rightAttributeType"), new objj_ivar("_leftIsWildcard"), new objj_ivar("_rightIsWildcard"), new objj_ivar("_views")]);
@@ -45572,7 +45572,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("initialize"), function
 },["CGRect","CGRect"])]);
 }
 
-p;10;CPWindow.jt;89805;@STATIC;1.0;I;25;Foundation/CPCountedSet.jI;33;Foundation/CPNotificationCenter.jI;26;Foundation/CPUndoManager.ji;12;CGGeometry.ji;13;CPAnimation.ji;18;CPPlatformWindow.ji;13;CPResponder.ji;10;CPScreen.ji;15;_CPWindowView.ji;23;_CPStandardWindowView.ji;23;_CPDocModalWindowView.ji;22;_CPToolTipWindowView.ji;18;_CPHUDWindowView.ji;25;_CPBorderlessWindowView.ji;31;_CPBorderlessBridgeWindowView.ji;23;_CPAttachedWindowView.ji;14;CPDragServer.ji;8;CPView.jt;89344;objj_executeFile("Foundation/CPCountedSet.j", NO);
+p;10;CPWindow.jt;89806;@STATIC;1.0;I;25;Foundation/CPCountedSet.jI;33;Foundation/CPNotificationCenter.jI;26;Foundation/CPUndoManager.ji;12;CGGeometry.ji;13;CPAnimation.ji;18;CPPlatformWindow.ji;13;CPResponder.ji;10;CPScreen.ji;15;_CPWindowView.ji;23;_CPStandardWindowView.ji;23;_CPDocModalWindowView.ji;22;_CPToolTipWindowView.ji;18;_CPHUDWindowView.ji;25;_CPBorderlessWindowView.ji;31;_CPBorderlessBridgeWindowView.ji;23;_CPAttachedWindowView.ji;14;CPDragServer.ji;8;CPView.jt;89345;objj_executeFile("Foundation/CPCountedSet.j", NO);
 objj_executeFile("Foundation/CPNotificationCenter.j", NO);
 objj_executeFile("Foundation/CPUndoManager.j", NO);
 objj_executeFile("CGGeometry.j", YES);
@@ -47329,7 +47329,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithWindow:targetFr
 }
 },["void","float"])]);
 }
-_CPWindowFullPlatformWindowSessionMake= function(aWindowView, aContentRect, hasShadow, aLevel)
+_CPWindowFullPlatformWindowSessionMake = function(aWindowView, aContentRect, hasShadow, aLevel)
 {
     return { windowView:aWindowView, contentRect:aContentRect, hasShadow:hasShadow, level:aLevel };
 }
@@ -47653,7 +47653,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithLevel:"), funct
 },["CPArray"])]);
 }
 
-p;22;CPPlatformWindow+DOM.jt;56029;@STATIC;1.0;I;21;Foundation/CPObject.jI;22;Foundation/CPRunLoop.ji;9;CPEvent.ji;8;CPText.ji;17;CPCompatibility.ji;18;CPDOMWindowLayer.ji;12;CPPlatform.ji;18;CPPlatformWindow.ji;26;CPPlatformWindow+DOMKeys.jt;55815;objj_executeFile("Foundation/CPObject.j", NO);
+p;22;CPPlatformWindow+DOM.jt;56031;@STATIC;1.0;I;21;Foundation/CPObject.jI;22;Foundation/CPRunLoop.ji;9;CPEvent.ji;8;CPText.ji;17;CPCompatibility.ji;18;CPDOMWindowLayer.ji;12;CPPlatform.ji;18;CPPlatformWindow.ji;26;CPPlatformWindow+DOMKeys.jt;55817;objj_executeFile("Foundation/CPObject.j", NO);
 objj_executeFile("Foundation/CPRunLoop.j", NO);
 objj_executeFile("CPEvent.j", YES);
 objj_executeFile("CPText.j", YES);
@@ -48734,7 +48734,7 @@ var CPDOMEventStop = function(aDOMEvent, aPlatformWindow)
         aPlatformWindow._DOMFocusElement.blur();
     }
 }
-CPWindowObjectList= function()
+CPWindowObjectList = function()
 {
     var platformWindows = objj_msgSend(CPPlatformWindow, "visiblePlatformWindows"),
         platformWindowEnumerator = objj_msgSend(platformWindows, "objectEnumerator"),
@@ -48755,7 +48755,7 @@ CPWindowObjectList= function()
     }
     return windowObjects;
 }
-CPWindowList= function()
+CPWindowList = function()
 {
     var windowObjectList = CPWindowObjectList(),
         windowList = [];

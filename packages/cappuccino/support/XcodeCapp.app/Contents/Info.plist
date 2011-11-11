@@ -7,21 +7,23 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>xcodecapp-cocoa</string>
+	<string>XcodeCapp</string>
 	<key>CFBundleIconFile</key>
-	<string>xcodecapp-cocoa.icns</string>
+	<string>XcodeCapp.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.cappuccino.xcodecapp-cocoa</string>
+	<string>org.cappuccino.xcodecapp</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>xcodecapp-cocoa</string>
+	<string>XcodeCapp</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>2.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.0</string>
+	<string>2.0</string>
 	<key>DTCompiler</key>
 	<string></string>
 	<key>DTPlatformBuild</key>
@@ -36,6 +38,8 @@
 	<string>0420</string>
 	<key>DTXcodeBuild</key>
 	<string>4D199</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.developer-tools</string>
 	<key>LSUIElement</key>
 	<true/>
 	<key>NSMainNibFile</key>

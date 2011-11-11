@@ -2970,7 +2970,7 @@ if(_2d0){
 ++_2d5[1];
 }
 }else{
-_2d1.atoms[_2d1.atoms.length]=_2d3+"= function";
+_2d1.atoms[_2d1.atoms.length]=_2d3+" = function";
 }
 }else{
 if(_2d3==_275){

@@ -1,4 +1,4 @@
-@STATIC;1.0;p;13;CPArray+KVO.jt;22685;@STATIC;1.0;i;9;CPArray.ji;8;CPNull.jt;22640;objj_executeFile("CPArray.j", YES);
+@STATIC;1.0;p;13;CPArray+KVO.jt;22690;@STATIC;1.0;i;9;CPArray.ji;8;CPNull.jt;22645;objj_executeFile("CPArray.j", YES);
 objj_executeFile("CPNull.j", YES);
 {
 var the_class = objj_getClass("CPObject")
@@ -398,7 +398,7 @@ var avgOperator,
     minOperator,
     countOperator,
     sumOperator;
-kvoOperators["avg"] = avgOperator= function(self, _cmd, param)
+kvoOperators["avg"] = avgOperator = function(self, _cmd, param)
 {
     var objects = objj_msgSend(self, "valueForKeyPath:", param),
         length = objj_msgSend(objects, "count"),
@@ -410,7 +410,7 @@ kvoOperators["avg"] = avgOperator= function(self, _cmd, param)
         average += objj_msgSend(objects[index], "doubleValue");
     return average / length;
 }
-kvoOperators["max"] = maxOperator= function(self, _cmd, param)
+kvoOperators["max"] = maxOperator = function(self, _cmd, param)
 {
     var objects = objj_msgSend(self, "valueForKeyPath:", param),
         index = objj_msgSend(objects, "count") - 1,
@@ -423,7 +423,7 @@ kvoOperators["max"] = maxOperator= function(self, _cmd, param)
     }
     return max;
 }
-kvoOperators["min"] = minOperator= function(self, _cmd, param)
+kvoOperators["min"] = minOperator = function(self, _cmd, param)
 {
     var objects = objj_msgSend(self, "valueForKeyPath:", param),
         index = objj_msgSend(objects, "count") - 1,
@@ -436,11 +436,11 @@ kvoOperators["min"] = minOperator= function(self, _cmd, param)
     }
     return min;
 }
-kvoOperators["count"] = countOperator= function(self, _cmd, param)
+kvoOperators["count"] = countOperator = function(self, _cmd, param)
 {
     return objj_msgSend(self, "count");
 }
-kvoOperators["sum"] = sumOperator= function(self, _cmd, param)
+kvoOperators["sum"] = sumOperator = function(self, _cmd, param)
 {
     var objects = objj_msgSend(self, "valueForKeyPath:", param),
         index = objj_msgSend(objects, "count"),
@@ -491,7 +491,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 },["void","id","CPString"])]);
 }
 
-p;20;CPAttributedString.jt;21082;@STATIC;1.0;i;9;CPArray.ji;14;CPDictionary.ji;13;CPException.ji;10;CPObject.ji;9;CPRange.ji;10;CPString.jt;20969;objj_executeFile("CPArray.j", YES);
+p;20;CPAttributedString.jt;21086;@STATIC;1.0;i;9;CPArray.ji;14;CPDictionary.ji;13;CPException.ji;10;CPObject.ji;9;CPRange.ji;10;CPString.jt;20973;objj_executeFile("CPArray.j", YES);
 objj_executeFile("CPDictionary.j", YES);
 objj_executeFile("CPException.j", YES);
 objj_executeFile("CPObject.j", YES);
@@ -909,7 +909,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithString:"), func
 {var the_class = objj_allocateClassPair(CPAttributedString, "CPMutableAttributedString"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
 }
-var isEqual = isEqual= function(a, b)
+var isEqual = isEqual = function(a, b)
 {
     if (a == b)
         return YES;
@@ -917,15 +917,15 @@ var isEqual = isEqual= function(a, b)
         return YES;
     return NO;
 }
-var makeRangeEntry = makeRangeEntry= function( aRange, attributes)
+var makeRangeEntry = makeRangeEntry = function( aRange, attributes)
 {
     return {range:aRange, attributes:objj_msgSend(attributes, "copy")};
 }
-var copyRangeEntry = copyRangeEntry= function( aRangeEntry)
+var copyRangeEntry = copyRangeEntry = function( aRangeEntry)
 {
     return makeRangeEntry(CPCopyRange(aRangeEntry.range), objj_msgSend(aRangeEntry.attributes, "copy"));
 }
-var splitRangeEntry = splitRangeEntryAtIndex= function( aRangeEntry, anIndex)
+var splitRangeEntry = splitRangeEntryAtIndex = function( aRangeEntry, anIndex)
 {
     var newRangeEntry = copyRangeEntry(aRangeEntry),
         cachedIndex = CPMaxRange(aRangeEntry.range);
@@ -4478,7 +4478,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 }
 Date.prototype.isa = CPDate;
 
-p;11;CPDecimal.jt;28406;@STATIC;1.0;i;9;CPArray.ji;10;CPNumber.jt;28358;objj_executeFile("CPArray.j", YES);
+p;11;CPDecimal.jt;28435;@STATIC;1.0;i;9;CPArray.ji;10;CPNumber.jt;28387;objj_executeFile("CPArray.j", YES);
 objj_executeFile("CPNumber.j", YES);
 CPDecimalMaxDigits = 38;
 CPDecimalMaxExponent = 127;
@@ -4498,7 +4498,7 @@ CPDecimalNumberOverflowException = "CPDecimalNumberOverflowException";
 CPDecimalNumberUnderflowException = "CPDecimalNumberUnderflowException";
 CPDecimalNumberExactnessException = "CPDecimalNumberExactnessException";
 CPDecimalNumberDivideByZeroException = "CPDecimalNumberDivideByZeroException";
-CPDecimalMakeWithString= function(string, locale)
+CPDecimalMakeWithString = function(string, locale)
 {
     if (!string)
         return CPDecimalMakeNaN();
@@ -4544,7 +4544,7 @@ CPDecimalMakeWithString= function(string, locale)
     CPDecimalCompact(dcm);
     return dcm;
 }
-CPDecimalMakeWithParts= function(mantissa, exponent)
+CPDecimalMakeWithParts = function(mantissa, exponent)
 {
     var m = [],
         isNegative = NO;
@@ -4566,21 +4566,21 @@ CPDecimalMakeWithParts= function(mantissa, exponent)
     CPDecimalCompact(dcm);
     return dcm;
 }
-CPDecimalMakeZero= function()
+CPDecimalMakeZero = function()
 {
     return CPDecimalMakeWithParts(0, 0);
 }
-CPDecimalMakeOne= function()
+CPDecimalMakeOne = function()
 {
     return CPDecimalMakeWithParts(1, 0);
 }
-CPDecimalMakeNaN= function()
+CPDecimalMakeNaN = function()
 {
     var d = CPDecimalMakeWithParts(0, 0);
     d._isNaN = YES;
     return d;
 }
-_CPDecimalMakeMaximum= function()
+_CPDecimalMakeMaximum = function()
 {
     var s = "",
         i = 0;
@@ -4589,7 +4589,7 @@ _CPDecimalMakeMaximum= function()
     s += "e" + CPDecimalMaxExponent;
     return CPDecimalMakeWithString(s);
 }
-_CPDecimalMakeMinimum= function()
+_CPDecimalMakeMinimum = function()
 {
     var s = "-",
         i = 0;
@@ -4598,7 +4598,7 @@ _CPDecimalMakeMinimum= function()
     s += "e" + CPDecimalMaxExponent;
     return CPDecimalMakeWithString(s);
 }
-CPDecimalIsZero= function(dcm)
+CPDecimalIsZero = function(dcm)
 {
     if (!dcm._isNaN)
     {
@@ -4609,7 +4609,7 @@ CPDecimalIsZero= function(dcm)
     }
     return NO;
 }
-CPDecimalIsOne= function(dcm)
+CPDecimalIsOne = function(dcm)
 {
     CPDecimalCompact(dcm);
     if (!dcm._isNaN)
@@ -4619,7 +4619,7 @@ CPDecimalIsOne= function(dcm)
     }
     return NO;
 }
-_CPDecimalSet= function(t,s)
+_CPDecimalSet = function(t,s)
 {
     t._exponent = s._exponent;
     t._isNegative = s._isNegative;
@@ -4627,7 +4627,7 @@ _CPDecimalSet= function(t,s)
     t._isNaN = s._isNaN;
     t._mantissa = Array.prototype.slice.call(s._mantissa, 0);
 }
-_CPDecimalSetZero= function(result)
+_CPDecimalSetZero = function(result)
 {
     result._mantissa = [0];
     result._exponent = 0;
@@ -4635,7 +4635,7 @@ _CPDecimalSetZero= function(result)
     result._isCompact = YES;
     result._isNaN = NO;
 }
-_CPDecimalSetOne= function(result)
+_CPDecimalSetOne = function(result)
 {
     result._mantissa = [1];
     result._exponent = 0;
@@ -4643,11 +4643,11 @@ _CPDecimalSetOne= function(result)
     result._isCompact = YES;
     result._isNaN = NO;
 }
-CPDecimalIsNotANumber= function(dcm)
+CPDecimalIsNotANumber = function(dcm)
 {
     return (dcm._isNaN)?YES:NO;
 }
-CPDecimalCopy= function(dcm)
+CPDecimalCopy = function(dcm)
 {
     return {_exponent:dcm._exponent,
             _isNegative:dcm._isNegative,
@@ -4656,7 +4656,7 @@ CPDecimalCopy= function(dcm)
             _mantissa:Array.prototype.slice.call(dcm._mantissa, 0)
             };
 }
-CPDecimalCompare= function(leftOperand, rightOperand)
+CPDecimalCompare = function(leftOperand, rightOperand)
 {
     if (leftOperand._isNaN && rightOperand._isNaN)
         return CPOrderedSame;
@@ -4721,7 +4721,7 @@ CPDecimalCompare= function(leftOperand, rightOperand)
     }
     return CPOrderedSame;
 }
-_SimpleAdd= function(result, leftOperand, rightOperand, roundingMode, longMode)
+_SimpleAdd = function(result, leftOperand, rightOperand, roundingMode, longMode)
 {
     var factor = (longMode)?2:1;
     _CPDecimalSet(result, leftOperand);
@@ -4772,7 +4772,7 @@ _SimpleAdd= function(result, leftOperand, rightOperand, roundingMode, longMode)
     }
     return error;
 }
-CPDecimalAdd= function(result, leftOperand, rightOperand, roundingMode, longMode)
+CPDecimalAdd = function(result, leftOperand, rightOperand, roundingMode, longMode)
 {
     if (leftOperand._isNaN || rightOperand._isNaN)
     {
@@ -4849,7 +4849,7 @@ CPDecimalAdd= function(result, leftOperand, rightOperand, roundingMode, longMode
     else
         return adderror;
 }
-_SimpleSubtract= function(result, leftOperand, rightOperand, roundingMode)
+_SimpleSubtract = function(result, leftOperand, rightOperand, roundingMode)
 {
     var error = CPCalculationNoError,
         borrow = 0,
@@ -4887,7 +4887,7 @@ _SimpleSubtract= function(result, leftOperand, rightOperand, roundingMode)
     }
     return error;
 }
-CPDecimalSubtract= function(result, leftOperand, rightOperand, roundingMode)
+CPDecimalSubtract = function(result, leftOperand, rightOperand, roundingMode)
 {
     if (leftOperand._isNaN || rightOperand._isNaN)
     {
@@ -4966,7 +4966,7 @@ CPDecimalSubtract= function(result, leftOperand, rightOperand, roundingMode)
     else
         return error1;
 }
-_SimpleDivide= function(result, leftOperand, rightOperand, roundingMode)
+_SimpleDivide = function(result, leftOperand, rightOperand, roundingMode)
 {
     var error = CPCalculationNoError,
         n1 = CPDecimalMakeZero(),
@@ -5034,7 +5034,7 @@ _SimpleDivide= function(result, leftOperand, rightOperand, roundingMode)
     }
     return error;
 }
-CPDecimalDivide= function(result, leftOperand, rightOperand, roundingMode)
+CPDecimalDivide = function(result, leftOperand, rightOperand, roundingMode)
 {
     var error = CPCalculationNoError,
         exp = leftOperand._exponent - rightOperand._exponent,
@@ -5084,7 +5084,7 @@ CPDecimalDivide= function(result, leftOperand, rightOperand, roundingMode)
     result._isNegative = neg;
     return error;
 }
-_SimpleMultiply= function(result, leftOperand, rightOperand, roundingMode, powerMode)
+_SimpleMultiply = function(result, leftOperand, rightOperand, roundingMode, powerMode)
 {
     var error = CPCalculationNoError,
         carry = 0,
@@ -5134,7 +5134,7 @@ _SimpleMultiply= function(result, leftOperand, rightOperand, roundingMode, power
     }
     return error;
 }
-CPDecimalMultiply= function(result, leftOperand, rightOperand, roundingMode, powerMode)
+CPDecimalMultiply = function(result, leftOperand, rightOperand, roundingMode, powerMode)
 {
     var error = CPCalculationNoError,
         exp = leftOperand._exponent + rightOperand._exponent,
@@ -5203,7 +5203,7 @@ CPDecimalMultiply= function(result, leftOperand, rightOperand, roundingMode, pow
     result._isNegative = neg;
     return error;
 }
-CPDecimalMultiplyByPowerOf10= function(result, dcm, power, roundingMode)
+CPDecimalMultiplyByPowerOf10 = function(result, dcm, power, roundingMode)
 {
     _CPDecimalSet(result, dcm);
     var p = result._exponent + power;
@@ -5220,7 +5220,7 @@ CPDecimalMultiplyByPowerOf10= function(result, dcm, power, roundingMode)
     result._exponent += power;
     return CPCalculationNoError;
 }
-CPDecimalPower= function(result, dcm, power, roundingMode)
+CPDecimalPower = function(result, dcm, power, roundingMode)
 {
     var error = CPCalculationNoError,
         neg = (dcm._isNegative && (power % 2)),
@@ -5243,7 +5243,7 @@ CPDecimalPower= function(result, dcm, power, roundingMode)
     CPDecimalCompact(result);
     return error;
 }
-CPDecimalNormalize= function(dcm1, dcm2, roundingMode, longMode)
+CPDecimalNormalize = function(dcm1, dcm2, roundingMode, longMode)
 {
     var factor = (longMode)?2:1;
     if (dcm1._isNaN || dcm2._isNaN)
@@ -5334,7 +5334,7 @@ CPDecimalNormalize= function(dcm1, dcm2, roundingMode, longMode)
     }
     return CPCalculationNoError;
 }
-CPDecimalRound= function(result, dcm, scale ,roundingMode)
+CPDecimalRound = function(result, dcm, scale ,roundingMode)
 {
     if (dcm._isNaN)
         return;
@@ -5417,7 +5417,7 @@ CPDecimalRound= function(result, dcm, scale ,roundingMode)
     }
     CPDecimalCompact(result);
 }
-CPDecimalCompact= function(dcm)
+CPDecimalCompact = function(dcm)
 {
     if (!dcm || dcm._mantissa.length == 0 || CPDecimalIsNotANumber(dcm) )
         return;
@@ -5441,7 +5441,7 @@ CPDecimalCompact= function(dcm)
     }
     dcm._isCompact = YES;
 }
-CPDecimalString= function(dcm, locale)
+CPDecimalString = function(dcm, locale)
 {
     if (dcm._isNaN)
         return "NaN";
@@ -6198,7 +6198,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithDictionary:"), 
         thisValue = nil;
     for (; index < count; ++index)
     {
-        thisKey = _keys[index],
+        thisKey = _keys[index];
         thisValue = _buckets[thisKey];
         if (thisValue.isa && anObject && anObject.isa && objj_msgSend(thisValue, "respondsToSelector:", sel_getUid("isEqual:")) && objj_msgSend(thisValue, "isEqual:", anObject))
             matchingKeys.push(thisKey);
@@ -6434,7 +6434,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("nextObject"), function 
 },["CPArray"])]);
 }
 
-p;13;CPException.jt;6089;@STATIC;1.0;i;9;CPCoder.ji;10;CPObject.ji;10;CPString.jt;6027;objj_executeFile("CPCoder.j", YES);
+p;13;CPException.jt;6093;@STATIC;1.0;i;9;CPCoder.ji;10;CPObject.ji;10;CPString.jt;6031;objj_executeFile("CPCoder.j", YES);
 objj_executeFile("CPObject.j", YES);
 objj_executeFile("CPString.j", YES);
 CPInvalidArgumentException = "CPInvalidArgumentException";
@@ -6550,19 +6550,19 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 Error.prototype.isa = CPException;
 Error.prototype._userInfo = null;
 objj_msgSend(CPException, "initialize");
-_CPRaiseInvalidAbstractInvocation= function(anObject, aSelector)
+_CPRaiseInvalidAbstractInvocation = function(anObject, aSelector)
 {
     objj_msgSend(CPException, "raise:reason:", CPInvalidArgumentException, "*** -" + sel_getName(aSelector) + " cannot be sent to an abstract object of class " + objj_msgSend(anObject, "className") + ": Create a concrete instance!");
 }
-_CPRaiseInvalidArgumentException= function(anObject, aSelector, aMessage)
+_CPRaiseInvalidArgumentException = function(anObject, aSelector, aMessage)
 {
     objj_msgSend(CPException, "raise:reason:", CPInvalidArgumentException, ((class_isMetaClass(anObject.isa) ? "+" : "-") + "[" + objj_msgSend(anObject, "className") + " " + aSelector + "]: ") + aMessage);
 }
-_CPRaiseRangeException= function(anObject, aSelector, anIndex, aCount)
+_CPRaiseRangeException = function(anObject, aSelector, anIndex, aCount)
 {
     objj_msgSend(CPException, "raise:reason:", CPRangeException, ((class_isMetaClass(anObject.isa) ? "+" : "-") + "[" + objj_msgSend(anObject, "className") + " " + aSelector + "]: ") + "index (" + anIndex + ") beyond bounds (" + aCount + ")");
 }
-_CPReportLenientDeprecation= function( aClass, oldSelector, newSelector)
+_CPReportLenientDeprecation = function( aClass, oldSelector, newSelector)
 {
     CPLog.warn("[" + CPStringFromClass(aClass) + " " + CPStringFromSelector(oldSelector) + "] is deprecated, using " + CPStringFromSelector(newSelector) + " instead.");
 }
@@ -8588,7 +8588,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithObjects:count:"
 }
 objj_executeFile("CPKeyValueObserving.j", YES);
 
-p;21;CPKeyValueObserving.jt;43477;@STATIC;1.0;i;9;CPArray.ji;14;CPDictionary.ji;13;CPException.ji;8;CPNull.ji;10;CPObject.ji;7;CPSet.ji;13;CPArray+KVO.ji;11;CPSet+KVO.jt;43335;objj_executeFile("CPArray.j", YES);
+p;21;CPKeyValueObserving.jt;43478;@STATIC;1.0;i;9;CPArray.ji;14;CPDictionary.ji;13;CPException.ji;8;CPNull.ji;10;CPObject.ji;7;CPSet.ji;13;CPArray+KVO.ji;11;CPSet+KVO.jt;43336;objj_executeFile("CPArray.j", YES);
 objj_executeFile("CPDictionary.j", YES);
 objj_executeFile("CPException.j", YES);
 objj_executeFile("CPNull.j", YES);
@@ -9380,7 +9380,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithKeyPath:object:
 }
 },["void"])]);
 }
-var _CPKVOInfoMake = _CPKVOInfoMake= function(anObserver, theOptions, aContext, aForwarder)
+var _CPKVOInfoMake = _CPKVOInfoMake = function(anObserver, theOptions, aContext, aForwarder)
 {
     return {
         observer: anObserver,
@@ -10405,19 +10405,19 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("load"), function $CPOb
 },["int"])]);
 }
 
-p;15;CPObjJRuntime.jt;436;@STATIC;1.0;t;418;CPStringFromSelector= function(aSelector)
+p;15;CPObjJRuntime.jt;440;@STATIC;1.0;t;422;CPStringFromSelector = function(aSelector)
 {
     return sel_getName(aSelector);
 }
-CPSelectorFromString= function(aSelectorName)
+CPSelectorFromString = function(aSelectorName)
 {
     return sel_registerName(aSelectorName);
 }
-CPClassFromString= function(aClassName)
+CPClassFromString = function(aClassName)
 {
     return objj_getClass(aClassName);
 }
-CPStringFromClass= function(aClass)
+CPStringFromClass = function(aClass)
 {
     return class_getName(aClass);
 }
@@ -10983,66 +10983,66 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("load"), function $CPPr
 },["BOOL","SEL"])]);
 }
 
-p;9;CPRange.jt;1734;@STATIC;1.0;t;1715;CPMakeRange= function(location, length)
+p;9;CPRange.jt;1746;@STATIC;1.0;t;1727;CPMakeRange = function(location, length)
 {
     return { location: location, length: length };
 }
-CPCopyRange= function(aRange)
+CPCopyRange = function(aRange)
 {
     return { location: aRange.location, length: aRange.length };
 }
-CPMakeRangeCopy= function(aRange)
+CPMakeRangeCopy = function(aRange)
 {
     return { location:aRange.location, length:aRange.length };
 }
-CPEmptyRange= function(aRange)
+CPEmptyRange = function(aRange)
 {
     return aRange.length === 0;
 }
-CPMaxRange= function(aRange)
+CPMaxRange = function(aRange)
 {
     return aRange.location + aRange.length;
 }
-CPEqualRanges= function(lhsRange, rhsRange)
+CPEqualRanges = function(lhsRange, rhsRange)
 {
     return ((lhsRange.location === rhsRange.location) && (lhsRange.length === rhsRange.length));
 }
-CPLocationInRange= function(aLocation, aRange)
+CPLocationInRange = function(aLocation, aRange)
 {
     return (aLocation >= aRange.location) && (aLocation < CPMaxRange(aRange));
 }
-CPUnionRange= function(lhsRange, rhsRange)
+CPUnionRange = function(lhsRange, rhsRange)
 {
     var location = MIN(lhsRange.location, rhsRange.location);
     return CPMakeRange(location, MAX(CPMaxRange(lhsRange), CPMaxRange(rhsRange)) - location);
 }
-CPIntersectionRange= function(lhsRange, rhsRange)
+CPIntersectionRange = function(lhsRange, rhsRange)
 {
     if (CPMaxRange(lhsRange) < rhsRange.location || CPMaxRange(rhsRange) < lhsRange.location)
         return CPMakeRange(0, 0);
     var location = MAX(lhsRange.location, rhsRange.location);
     return CPMakeRange(location, MIN(CPMaxRange(lhsRange), CPMaxRange(rhsRange)) - location);
 }
-CPRangeInRange= function(lhsRange, rhsRange)
+CPRangeInRange = function(lhsRange, rhsRange)
 {
     return (lhsRange.location <= rhsRange.location && CPMaxRange(lhsRange) >= CPMaxRange(rhsRange));
 }
-CPStringFromRange= function(aRange)
+CPStringFromRange = function(aRange)
 {
     return "{" + aRange.location + ", " + aRange.length + "}";
 }
-CPRangeFromString= function(aString)
+CPRangeFromString = function(aString)
 {
     var comma = aString.indexOf(',');
     return { location:parseInt(aString.substr(1, comma - 1)), length:parseInt(aString.substring(comma + 1, aString.length)) };
 }
 
-p;11;CPRunLoop.jt;10720;@STATIC;1.0;i;9;CPArray.ji;8;CPDate.ji;10;CPObject.ji;10;CPString.jt;10645;objj_executeFile("CPArray.j", YES);
+p;11;CPRunLoop.jt;10721;@STATIC;1.0;i;9;CPArray.ji;8;CPDate.ji;10;CPObject.ji;10;CPString.jt;10646;objj_executeFile("CPArray.j", YES);
 objj_executeFile("CPDate.j", YES);
 objj_executeFile("CPObject.j", YES);
 objj_executeFile("CPString.j", YES);
 CPDefaultRunLoopMode = "CPDefaultRunLoopMode";
-_CPRunLoopPerformCompare= function(lhs, rhs)
+_CPRunLoopPerformCompare = function(lhs, rhs)
 {
     return objj_msgSend(rhs, "order") - objj_msgSend(lhs, "order");
 }
@@ -11553,7 +11553,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("scannerWithString:"), 
 },["id","CPString"])]);
 }
 
-p;11;CPSet+KVO.jt;18083;@STATIC;1.0;i;13;CPException.ji;10;CPObject.ji;7;CPSet.jt;18019;objj_executeFile("CPException.j", YES);
+p;11;CPSet+KVO.jt;18088;@STATIC;1.0;i;13;CPException.ji;10;CPObject.ji;7;CPSet.jt;18024;objj_executeFile("CPException.j", YES);
 objj_executeFile("CPObject.j", YES);
 objj_executeFile("CPSet.j", YES);
 {
@@ -11905,7 +11905,7 @@ var avgOperator,
     minOperator,
     countOperator,
     sumOperator;
-kvoOperators["avg"] = avgOperator= function(self, _cmd, param)
+kvoOperators["avg"] = avgOperator = function(self, _cmd, param)
 {
     var objects = objj_msgSend(objj_msgSend(self, "valueForKeyPath:", param), "allObjects"),
         length = objj_msgSend(objects, "count"),
@@ -11917,7 +11917,7 @@ kvoOperators["avg"] = avgOperator= function(self, _cmd, param)
         average += objj_msgSend(objects[index], "doubleValue");
     return average / length;
 }
-kvoOperators["max"] = maxOperator= function(self, _cmd, param)
+kvoOperators["max"] = maxOperator = function(self, _cmd, param)
 {
     var objects = objj_msgSend(objj_msgSend(self, "valueForKeyPath:", param), "allObjects"),
         index = objj_msgSend(objects, "count") - 1,
@@ -11930,7 +11930,7 @@ kvoOperators["max"] = maxOperator= function(self, _cmd, param)
     }
     return max;
 }
-kvoOperators["min"] = minOperator= function(self, _cmd, param)
+kvoOperators["min"] = minOperator = function(self, _cmd, param)
 {
     var objects = objj_msgSend(objj_msgSend(self, "valueForKeyPath:", param), "allObjects"),
         index = objj_msgSend(objects, "count") - 1,
@@ -11943,11 +11943,11 @@ kvoOperators["min"] = minOperator= function(self, _cmd, param)
     }
     return min;
 }
-kvoOperators["count"] = countOperator= function(self, _cmd, param)
+kvoOperators["count"] = countOperator = function(self, _cmd, param)
 {
     return objj_msgSend(self, "count");
 }
-kvoOperators["sum"] = sumOperator= function(self, _cmd, param)
+kvoOperators["sum"] = sumOperator = function(self, _cmd, param)
 {
     var objects = objj_msgSend(objj_msgSend(self, "valueForKeyPath:", param), "allObjects"),
         index = objj_msgSend(objects, "count"),
@@ -14255,7 +14255,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("defaultManager"), func
 },["id"])]);
 }
 
-p;9;CPValue.jt;2273;@STATIC;1.0;i;9;CPCoder.ji;10;CPObject.jt;2226;objj_executeFile("CPCoder.j", YES);
+p;9;CPValue.jt;2275;@STATIC;1.0;i;9;CPCoder.ji;10;CPObject.jt;2228;objj_executeFile("CPCoder.j", YES);
 objj_executeFile("CPObject.j", YES);
 {var the_class = objj_allocateClassPair(CPObject, "CPValue"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_JSObject")]);
@@ -14300,12 +14300,12 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 }
 },["void","CPCoder"])]);
 }
-CPJSObjectCreateJSON= function(aJSObject)
+CPJSObjectCreateJSON = function(aJSObject)
 {
     CPLog.warn("CPJSObjectCreateJSON deprecated, use JSON.stringify() or CPString's objectFromJSON");
     return JSON.stringify(aJSObject);
 }
-CPJSObjectCreateWithJSON= function(aString)
+CPJSObjectCreateWithJSON = function(aString)
 {
     CPLog.warn("CPJSObjectCreateWithJSON deprecated, use JSON.parse() or CPString's JSONFromObject");
     return JSON.parse(aString);
@@ -15493,7 +15493,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("alloc"), function $_CP
 }
 objj_executeFile("_CPJavaScriptArray.j", YES);
 
-p;16;CPMutableArray.jt;11619;@STATIC;1.0;i;9;CPArray.jt;11586;
+p;16;CPMutableArray.jt;11621;@STATIC;1.0;i;9;CPArray.jt;11588;
 
 
 objj_executeFile("CPArray.j", YES);
@@ -15740,11 +15740,11 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 }
 },["id"])]);
 }
-var selectorCompare = selectorCompare= function(object1, object2, selector)
+var selectorCompare = selectorCompare = function(object1, object2, selector)
 {
     return objj_msgSend(object1, "performSelector:withObject:", selector, object2);
 }
-var compareObjectsUsingDescriptors= compareObjectsUsingDescriptors= function(lhs, rhs, descriptors)
+var compareObjectsUsingDescriptors= compareObjectsUsingDescriptors = function(lhs, rhs, descriptors)
 {
     var result = CPOrderedSame,
         i = 0,
@@ -17199,7 +17199,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 },["void","CPCoder"])]);
 }
 
-p;13;CPPredicate.jt;33684;@STATIC;1.0;i;9;CPArray.ji;13;CPException.ji;8;CPNull.ji;10;CPObject.ji;11;CPScanner.ji;7;CPSet.ji;9;CPValue.ji;16;CPCharacterSet.ji;21;CPCompoundPredicate.ji;23;CPComparisonPredicate.ji;14;CPExpression.jt;33472;objj_executeFile("CPArray.j", YES);
+p;13;CPPredicate.jt;33685;@STATIC;1.0;i;9;CPArray.ji;13;CPException.ji;8;CPNull.ji;10;CPObject.ji;11;CPScanner.ji;7;CPSet.ji;9;CPValue.ji;16;CPCharacterSet.ji;21;CPCompoundPredicate.ji;23;CPComparisonPredicate.ji;14;CPExpression.jt;33473;objj_executeFile("CPArray.j", YES);
 objj_executeFile("CPException.j", YES);
 objj_executeFile("CPNull.j", YES);
 objj_executeFile("CPObject.j", YES);
@@ -17932,7 +17932,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithString:args:"),
 }
 },["CPExpression"])]);
 }
-var CPRaiseParseError = CPRaiseParseError= function(aScanner, target)
+var CPRaiseParseError = CPRaiseParseError = function(aScanner, target)
 {
     objj_msgSend(CPException, "raise:reason:", CPInvalidArgumentException, "unable to parse " + target + " at index " + objj_msgSend(aScanner, "scanLocation"));
 }
