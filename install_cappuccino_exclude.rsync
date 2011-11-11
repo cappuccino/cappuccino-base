@@ -3,9 +3,19 @@
 install_cappuccino*
 README.markdown
 
+# Junk
+.DS_Store
+
 # Narwhal's README would be confusing in a Cappuccino install.
 README.md
 
 # These tusk packages are already installed.
 zips/*
 
+# Don't include build files.
+*.o
+*.dylib
+*.a
+*.la
+*.lo
+*.lai
