@@ -53,6 +53,9 @@ if prompt "no"; then
     (cd bin && ln -sf narwhal js)
     (cd bin && ln -sf activate.bash activate)
 
+    # Not sure why this bit isn't already set.
+    chmod a+x packages/cappuccino/support/XcodeCapp.app/Contents/MacOS/XcodeCapp
+
     echo "Version size: `du -sh \"$destination\"`"
 
     echo "Commit the new build?"
