@@ -24092,7 +24092,7 @@ objj_msgSend(_13,"finishDecoding");
 objj_msgSend(_loadDelegate,"blendDidFinishLoading:",_e);
 }
 })]);
-p;14;CPTokenField.jt;26212;@STATIC;1.0;I;27;Foundation/CPCharacterSet.jI;23;Foundation/CPIndexSet.jI;20;Foundation/CPTimer.ji;10;CPButton.ji;14;CPScrollView.ji;13;CPTextField.ji;13;CPTableView.ji;10;CPWindow.ji;15;_CPMenuWindow.jt;26002;
+p;14;CPTokenField.jt;26294;@STATIC;1.0;I;27;Foundation/CPCharacterSet.jI;23;Foundation/CPIndexSet.jI;20;Foundation/CPTimer.ji;10;CPButton.ji;14;CPScrollView.ji;13;CPTextField.ji;13;CPTableView.ji;10;CPWindow.ji;15;_CPMenuWindow.jt;26084;
 objj_executeFile("Foundation/CPCharacterSet.j",NO);
 objj_executeFile("Foundation/CPIndexSet.j",NO);
 objj_executeFile("Foundation/CPTimer.j",NO);
@@ -24117,7 +24117,6 @@ _tokenizingCharacterSet=_c;
 }),new objj_method(sel_getUid("initWithFrame:"),function(_d,_e,_f){
 with(_d){
 if(_d=objj_msgSendSuper({receiver:_d,super_class:objj_getClass("CPTokenField").super_class},"initWithFrame:",_f)){
-_selectedRange=CPMakeRange(0,0);
 _completionDelay=objj_msgSend(CPTokenField,"defaultCompletionDelay");
 _tokenizingCharacterSet=objj_msgSend(objj_msgSend(_d,"class"),"defaultTokenizingCharacterSet");
 objj_msgSend(_d,"setBezeled:",YES);
@@ -24129,6 +24128,7 @@ return _d;
 }
 }),new objj_method(sel_getUid("_init"),function(_10,_11){
 with(_10){
+_selectedRange=CPMakeRange(0,0);
 var _12=objj_msgSend(_10,"frame");
 _tokenScrollView=objj_msgSend(objj_msgSend(CPScrollView,"alloc"),"initWithFrame:",CGRectMakeZero());
 objj_msgSend(_tokenScrollView,"setHasHorizontalScroller:",NO);
@@ -24169,11 +24169,11 @@ objj_msgSend(_autocompleteView,"reloadData");
 }
 }),new objj_method(sel_getUid("_autocompleteWithDOMEvent:"),function(_18,_19,_1a){
 with(_18){
-if(!_cachedCompletions||!objj_msgSend(_18,"hasThemeState:",_1)){
+if(!objj_msgSend(_18,"_inputElement").value&&(!_cachedCompletions||!objj_msgSend(_18,"hasThemeState:",_1))){
 return;
 }
 objj_msgSend(_18,"_hideCompletions");
-var _1b=_cachedCompletions[objj_msgSend(_autocompleteView,"selectedRow")],_1c=_1b!==""&&objj_msgSend(_18,"_inputElement").value!=="";
+var _1b=_cachedCompletions?_cachedCompletions[objj_msgSend(_autocompleteView,"selectedRow")]:nil,_1c=_1b!==""&&objj_msgSend(_18,"_inputElement").value!=="";
 if(!_1b){
 _1b=objj_msgSend(_18,"_inputElement").value;
 }
@@ -24240,7 +24240,11 @@ objj_msgSend(_28,"setNeedsLayout");
 }),new objj_method(sel_getUid("_deleteToken:"),function(_2c,_2d,_2e){
 with(_2c){
 var _2f=objj_msgSend(objj_msgSend(_2c,"_tokens"),"indexOfObject:",_2e),_30=objj_msgSend(_2c,"objectValue");
+if(_2f<_selectedRange.location){
+_selectedRange.location--;
+}else{
 objj_msgSend(_2c,"_deselectToken:",_2e);
+}
 var _31=CPCopyRange(_selectedRange);
 objj_msgSend(_30,"removeObjectAtIndex:",_2f);
 objj_msgSend(_2c,"setObjectValue:",_30);
@@ -24404,7 +24408,6 @@ with(_69){
 }),new objj_method(sel_getUid("viewDidMoveToWindow"),function(_6c,_6d){
 with(_6c){
 objj_msgSend(objj_msgSend(objj_msgSend(_6c,"window"),"contentView"),"addSubview:",_autocompleteContainer);
-_autocompleteContainer._DOMElement.style.zIndex=1000;
 }
 }),new objj_method(sel_getUid("removeFromSuperview"),function(_6e,_6f){
 with(_6e){

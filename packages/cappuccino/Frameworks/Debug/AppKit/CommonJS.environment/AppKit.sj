@@ -27809,7 +27809,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithContentsOfURL:"
 },["void","CPBundle"])]);
 }
 
-p;14;CPTokenField.jt;37150;@STATIC;1.0;I;27;Foundation/CPCharacterSet.jI;23;Foundation/CPIndexSet.jI;20;Foundation/CPTimer.ji;10;CPButton.ji;14;CPScrollView.ji;13;CPTextField.ji;13;CPTableView.ji;10;CPWindow.ji;15;_CPMenuWindow.jt;36940;objj_executeFile("Foundation/CPCharacterSet.j", NO);
+p;14;CPTokenField.jt;37257;@STATIC;1.0;I;27;Foundation/CPCharacterSet.jI;23;Foundation/CPIndexSet.jI;20;Foundation/CPTimer.ji;10;CPButton.ji;14;CPScrollView.ji;13;CPTextField.ji;13;CPTableView.ji;10;CPWindow.ji;15;_CPMenuWindow.jt;37047;objj_executeFile("Foundation/CPCharacterSet.j", NO);
 objj_executeFile("Foundation/CPIndexSet.j", NO);
 objj_executeFile("Foundation/CPTimer.j", NO);
 objj_executeFile("CPButton.j", YES);
@@ -27842,7 +27842,6 @@ _tokenizingCharacterSet = newValue;
 {
     if (self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPTokenField").super_class }, "initWithFrame:", frame))
     {
-        _selectedRange = CPMakeRange(0, 0);
         _completionDelay = objj_msgSend(CPTokenField, "defaultCompletionDelay");
         _tokenizingCharacterSet = objj_msgSend(objj_msgSend(self, "class"), "defaultTokenizingCharacterSet");
         objj_msgSend(self, "setBezeled:", YES);
@@ -27855,6 +27854,7 @@ _tokenizingCharacterSet = newValue;
 },["id","CPRect"]), new objj_method(sel_getUid("_init"), function $CPTokenField___init(self, _cmd)
 { with(self)
 {
+    _selectedRange = CPMakeRange(0, 0);
     var frame = objj_msgSend(self, "frame");
     _tokenScrollView = objj_msgSend(objj_msgSend(CPScrollView, "alloc"), "initWithFrame:", CGRectMakeZero());
     objj_msgSend(_tokenScrollView, "setHasHorizontalScroller:", NO);
@@ -27897,10 +27897,10 @@ _tokenizingCharacterSet = newValue;
 },["void"]), new objj_method(sel_getUid("_autocompleteWithDOMEvent:"), function $CPTokenField___autocompleteWithDOMEvent_(self, _cmd, DOMEvent)
 { with(self)
 {
-    if (!_cachedCompletions || !objj_msgSend(self, "hasThemeState:", CPThemeStateAutoCompleting))
+    if (!objj_msgSend(self, "_inputElement").value && (!_cachedCompletions || !objj_msgSend(self, "hasThemeState:", CPThemeStateAutoCompleting)))
         return;
     objj_msgSend(self, "_hideCompletions");
-    var token = _cachedCompletions[objj_msgSend(_autocompleteView, "selectedRow")],
+    var token = _cachedCompletions ? _cachedCompletions[objj_msgSend(_autocompleteView, "selectedRow")] : nil,
         shouldRemoveLastObject = token !== "" && objj_msgSend(self, "_inputElement").value !== "";
     if (!token)
         token = objj_msgSend(self, "_inputElement").value;
@@ -27971,7 +27971,10 @@ _tokenizingCharacterSet = newValue;
 {
     var indexOfToken = objj_msgSend(objj_msgSend(self, "_tokens"), "indexOfObject:", token),
         objectValue = objj_msgSend(self, "objectValue");
-    objj_msgSend(self, "_deselectToken:", token);
+    if (indexOfToken < _selectedRange.location)
+        _selectedRange.location--;
+    else
+        objj_msgSend(self, "_deselectToken:", token);
     var selection = CPCopyRange(_selectedRange);
     objj_msgSend(objectValue, "removeObjectAtIndex:", indexOfToken);
     objj_msgSend(self, "setObjectValue:", objectValue);
@@ -28155,7 +28158,6 @@ _tokenizingCharacterSet = newValue;
 { with(self)
 {
     objj_msgSend(objj_msgSend(objj_msgSend(self, "window"), "contentView"), "addSubview:", _autocompleteContainer);
-    _autocompleteContainer._DOMElement.style.zIndex = 1000;
 }
 },["void"]), new objj_method(sel_getUid("removeFromSuperview"), function $CPTokenField__removeFromSuperview(self, _cmd)
 { with(self)
@@ -34976,7 +34978,7 @@ CPStringFromCGAffineTransform = function(anAffineTransform)
     return '{' + anAffineTransform.a + ", " + anAffineTransform.b + ", " + anAffineTransform.c + ", " + anAffineTransform.d + ", " + anAffineTransform.tx + ", " + anAffineTransform.ty + '}';
 }
 
-p;9;CGColor.jt;3247;@STATIC;1.0;i;14;CGColorSpace.jt;3209;objj_executeFile("CGColorSpace.j", YES);
+p;9;CGColor.jt;3255;@STATIC;1.0;i;14;CGColorSpace.jt;3217;objj_executeFile("CGColorSpace.j", YES);
 var CFTypeGlobalCount = 0;
 CFHashCode = function(aCFObject)
 {
@@ -35016,7 +35018,7 @@ CGColorCreateCopy = function(aColor)
 }
 CGColorCreateGenericGray = function(gray, alpha)
 {
-    return CGColorCreate(CGColorSpaceCreateDeviceRGB(), [gray,gray,gray, alpha]);
+    return CGColorCreate(CGColorSpaceCreateDeviceRGB(), [gray, gray, gray, alpha]);
 }
 CGColorCreateGenericRGB = function(red, green, blue, alpha)
 {
@@ -35029,7 +35031,8 @@ CGColorCreateGenericCMYK = function(cyan, magenta, yellow, black, alpha)
 }
 CGColorCreateCopyWithAlpha = function(aColor, anAlpha)
 {
-    if ( !aColor ) return aColor;
+    if (!aColor)
+        return aColor;
     var components = aColor.components.slice();
     if (anAlpha == components[components.length - 1])
         return aColor;
