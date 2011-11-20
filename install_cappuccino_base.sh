@@ -45,7 +45,7 @@ if prompt "no"; then
     done
 
     # Make links relative.
-    for link in "cappuccino/bin/capp" "cappuccino/bin/cib-dump" "objective-j/bin/cplutil" "cappuccino/bin/flatten" "jake/bin/jake" "narwhal-jsc/bin/narwhal-jsc" "cappuccino/bin/nib2cib" "objective-j/bin/objj" "objective-j/bin/objjc" "OJTest/bin/ojautotest" "OJTest/bin/ojautotest-run" "cappuccino/bin/ojdepcheck" "OJTest/bin/ojtest" "cappuccino/bin/press" "shrinksafe/bin/shrinksafe" "narwhal-jsc/bin/source-test.sh" "cappuccino/bin/fontinfo" "cappuccino/bin/xcodecapp"
+    for link in "cappuccino/bin/capp" "cappuccino/bin/cib-dump" "objective-j/bin/cplutil" "cappuccino/bin/flatten" "jake/bin/jake" "narwhal-jsc/bin/narwhal-jsc" "cappuccino/bin/nib2cib" "objective-j/bin/objj" "objective-j/bin/objjc" "OJTest/bin/ojautotest" "OJTest/bin/ojautotest-run" "cappuccino/bin/ojdepcheck" "OJTest/bin/ojtest" "cappuccino/bin/press" "shrinksafe/bin/shrinksafe" "narwhal-jsc/bin/source-test.sh" "cappuccino/bin/fontinfo"
     do
         filename=`basename "$link"`
         (cd bin && ln -sf "../packages/$link" "$filename");
