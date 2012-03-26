@@ -38,13 +38,16 @@ var compressors = {
 
 
 };
+
 var compressorStats = {};
-function compressor(code) {
+function compressor(code)
+{
     var winner, winnerName;
     compressorStats['original'] = (compressorStats['original'] || 0) + code.length;
-    for (var name in compressors) {
-        var compressor = require(compressors[name].id);
-        var result = compressor.compress(code, { charset : "UTF-8", useServer : true });
+    for (var name in compressors)
+    {
+        var aCompressor = require(compressors[name].id),
+            result = aCompressor.compress(code, { charset : "UTF-8", useServer : true });
         compressorStats[name] = (compressorStats[name] || 0) + result.length;
         if (!winner || result < winner.length) {
             winner = result;
@@ -154,6 +157,9 @@ function resolveFlags(args)
         else if (argument.indexOf("-S") === 0)
             objjcFlags &= ~ObjectiveJ.Preprocessor.Flags.CheckSyntax;
 
+        else if (argument.indexOf("-T") === 0)
+            objjcFlags |= ObjectiveJ.Preprocessor.Flags.IncludeTypeSignatures;
+
         else if (argument.indexOf("-g") === 0)
             objjcFlags |= ObjectiveJ.Preprocessor.Flags.IncludeDebugSymbols;
 
@@ -180,7 +186,8 @@ exports.compile = function(aFilePath, flags)
 exports.main = function(args)
 {
     var shouldPrintOutput = false,
-        asPlainJavascript = false;
+        asPlainJavascript = false,
+        objjcFlags = 0;
 
     var argv = args.slice(1);
 
@@ -206,12 +213,22 @@ exports.main = function(args)
             continue;
         }
 
+        if (argv[0] === "-T" || argv[0] === "--incluceTypeSignatures")
+        {
+            objjcFlags |= ObjectiveJ.Preprocessor.Flags.IncludeTypeSignatures;
+            argv.shift();
+            continue;
+        }
+
         if (argv[0] === "--help" || argv[0].substr(0, 1) == '-')
         {
             print("Usage: " + args[0] + " [options] [--] file...");
-            print("  -p, --print    print the output directly to stdout");
-            print("  --unmarked     don't tag the output with @STATIC header");
-            print("  --help         print this help");
+            print("  -p, --print                    print the output directly to stdout");
+            print("  --unmarked                     don't tag the output with @STATIC header");
+            print("");
+            print("  -T, --includeTypeSignatures    include type signatures in the compiled output");
+            print("");
+            print("  --help                         print this help");
             return;
         }
 
@@ -223,9 +240,9 @@ exports.main = function(args)
 
     var resolved = resolveFlags(argv),
         outputFilePaths = resolved.outputFilePaths,
-        objjcFlags = resolved.objjcFlags,
         gccFlags = resolved.gccFlags;
 
+    objjcFlags |= resolved.objjcFlags;
     resolved.filePaths.forEach(function(filePath, index)
     {
         if (!shouldPrintOutput)
