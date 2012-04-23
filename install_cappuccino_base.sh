@@ -56,6 +56,9 @@ if prompt "no"; then
     # Not sure why this bit isn't already set.
     chmod a+x packages/cappuccino/support/XcodeCapp.app/Contents/MacOS/XcodeCapp
 
+    # Apply patches.
+    patch -p1 <"$CAPP_BUILD/../External/rhino-narwhal-java-opts.patch"
+
     echo "Version size: `du -sh \"$destination\"`"
 
     echo "Commit the new build?"
