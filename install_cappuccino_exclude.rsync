@@ -2,6 +2,7 @@
 .git
 install_cappuccino*
 README.markdown
+*.sublime*
 
 # Junk
 .DS_Store
