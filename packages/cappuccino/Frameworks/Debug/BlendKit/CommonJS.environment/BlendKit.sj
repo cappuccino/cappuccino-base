@@ -317,7 +317,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("setBackgroundColor:"),
 },["CPColor"])]);
 }
 
-p;19;BKThemeDescriptor.jt;12855;@STATIC;1.0;I;21;Foundation/CPObject.jt;12809;objj_executeFile("Foundation/CPObject.j", NO);
+p;19;BKThemeDescriptor.jt;12852;@STATIC;1.0;I;21;Foundation/CPObject.jt;12806;objj_executeFile("Foundation/CPObject.j", NO);
 var ItemSizes = { },
     ThemedObjects = { },
     ThemedShowcaseObjects = { },
@@ -445,7 +445,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("allThemeDescriptorClas
             if (objj_msgSend(object, "isKindOfClass:", objj_msgSend(CPView, "class")))
             {
                 var size = objj_msgSend(object, "frame").size,
-                    labelWidth = objj_msgSend(objj_msgSend(template, "valueForKey:", "label"), "sizeWithFont:", objj_msgSend(CPFont, "boldSystemFontOfSize:", 12.0)).width + 20.0;
+                    labelWidth = objj_msgSend(objj_msgSend(template, "valueForKey:", "label"), "sizeWithFont:", objj_msgSend(CPFont, "boldSystemFontOfSize:", 0)).width + 20.0;
                 if (size.width > itemSize.width)
                     itemSize.width = size.width;
                 if (labelWidth > itemSize.width)

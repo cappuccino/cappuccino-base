@@ -283,7 +283,7 @@ with(_56){
 return _43;
 }
 })]);
-p;19;BKThemeDescriptor.jt;7387;@STATIC;1.0;I;21;Foundation/CPObject.jt;7342;
+p;19;BKThemeDescriptor.jt;7386;@STATIC;1.0;I;21;Foundation/CPObject.jt;7341;
 objj_executeFile("Foundation/CPObject.j",NO);
 var _1={},_2={},_3={},_4={},_5=nil,_6=nil,_7=nil;
 var _8=objj_allocateClassPair(CPObject,"BKThemeDescriptor"),_9=_8.isa;
@@ -391,7 +391,7 @@ objj_msgSend(_35,"setValue:forKey:",BKLabelFromIdentifier(_32),"label");
 objj_msgSend(_29,"addObject:",_35);
 if(!_36){
 if(objj_msgSend(_34,"isKindOfClass:",objj_msgSend(CPView,"class"))){
-var _37=objj_msgSend(_34,"frame").size,_38=objj_msgSend(objj_msgSend(_35,"valueForKey:","label"),"sizeWithFont:",objj_msgSend(CPFont,"boldSystemFontOfSize:",12)).width+20;
+var _37=objj_msgSend(_34,"frame").size,_38=objj_msgSend(objj_msgSend(_35,"valueForKey:","label"),"sizeWithFont:",objj_msgSend(CPFont,"boldSystemFontOfSize:",0)).width+20;
 if(_37.width>_2b.width){
 _2b.width=_37.width;
 }

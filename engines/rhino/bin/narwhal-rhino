@@ -22,7 +22,7 @@ fi
 CLASSPATH=$NARWHAL_ENGINE_HOME/jars/jna.jar
 BOOTCLASSPATH=$NARWHAL_ENGINE_HOME/jars/js.jar
 
-JAVA_OPTS="-Dnarwhal.http_proxy=$http_proxy"
+JAVA_OPTS="-Dnarwhal.http_proxy=$http_proxy $JAVA_OPTS"
 
 if [ -n "$NARWHAL_CLASSPATH" ]; then
     CLASSPATH=$NARWHAL_CLASSPATH:$CLASSPATH

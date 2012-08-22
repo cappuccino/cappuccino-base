@@ -1,0 +1,9 @@
+{
+    "name": "yuicompressor",
+    "description": "YUI Compressor",
+    "keywords": [
+        "minify",
+        "compress"
+    ],
+    "version": "2.4.2"
+}

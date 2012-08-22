@@ -418,29 +418,42 @@ for (var i = 0; i < CPLogLevels.length; i++)
     CPLog[CPLogLevels[i]] = (function(level) { return function() { _CPLogDispatch(arguments, level); }; })(CPLogLevels[i]);
 var _CPFormatLogMessage = function(aString, aLevel, aTitle)
 {
-    var now = new Date();
-    aLevel = ( aLevel == null ? '' : ' [' + CPLogColorize(aLevel, aLevel) + ']' );
+    var now = new Date(),
+        titleAndLevel;
+    if (aLevel === null)
+        aLevel = "";
+    else
+    {
+        aLevel = aLevel || "info";
+        aLevel = "[" + CPLogColorize(aLevel, aLevel) + "]";
+    }
+    aTitle = aTitle || "";
+    if (aTitle && aLevel)
+        aTitle += " ";
+    titleAndLevel = aTitle + aLevel;
+    if (titleAndLevel)
+        titleAndLevel += ": ";
     if (typeof exports.sprintf == "function")
-        return exports.sprintf("%4d-%02d-%02d %02d:%02d:%02d.%03d %s%s: %s",
+        return exports.sprintf("%4d-%02d-%02d %02d:%02d:%02d.%03d %s%s",
             now.getFullYear(), now.getMonth() + 1, now.getDate(),
             now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds(),
-            aTitle, aLevel, aString);
+            titleAndLevel, aString);
     else
-        return now + " " + aTitle + aLevel + ": " + aString;
+        return now + " " + titleAndLevel + ": " + aString;
 }
 CPLogConsole = function(aString, aLevel, aTitle, aFormatter)
 {
     if (typeof console != "undefined")
     {
-        var message = (aFormatter || _CPFormatLogMessage)(aString, aLevel, aTitle);
-        var logger = {
-            "fatal": "error",
-            "error": "error",
-            "warn": "warn",
-            "info": "info",
-            "debug": "debug",
-            "trace": "debug"
-        }[aLevel];
+        var message = (aFormatter || _CPFormatLogMessage)(aString, aLevel, aTitle),
+            logger = {
+                "fatal": "error",
+                "error": "error",
+                "warn": "warn",
+                "info": "info",
+                "debug": "debug",
+                "trace": "debug"
+            }[aLevel];
         if (logger && console[logger])
             console[logger](message);
         else if (console.log)
@@ -523,6 +536,7 @@ SQRT = Math.sqrt;
 E = Math.E;
 LN2 = Math.LN2;
 LN10 = Math.LN10;
+LOG = Math.log;
 LOG2E = Math.LOG2E;
 LOG10E = Math.LOG10E;
 PI = Math.PI;
@@ -604,7 +618,10 @@ function Asynchronous( aFunction)
         if (asynchronousTimeoutCount > currentAsynchronousTimeoutCount)
             aFunction.apply(this, args);
         else
-            asynchronousFunctionQueue.push(function() { aFunction.apply(this, args) });
+            asynchronousFunctionQueue.push(function()
+            {
+                aFunction.apply(this, args);
+            });
     };
 }
 var NativeRequest = null;
@@ -621,7 +638,7 @@ if (window.ActiveXObject !== undefined)
             NativeRequest = function()
             {
                 return new ActiveXObject(MSXML_XMLHTTP);
-            }
+            };
             break;
         }
         catch (anException)
@@ -642,10 +659,13 @@ CFHTTPRequest = function()
     this._stateChangeHandler = function()
     {
         determineAndDispatchHTTPRequestEvents(self);
-    }
+    };
     this._nativeRequest.onreadystatechange = this._stateChangeHandler;
     if (CFHTTPRequest.AuthenticationDelegate !== nil)
-        this._eventDispatcher.addEventListener("HTTP403", function(){CFHTTPRequest.AuthenticationDelegate(self)});
+        this._eventDispatcher.addEventListener("HTTP403", function()
+            {
+                CFHTTPRequest.AuthenticationDelegate(self);
+            });
 }
 CFHTTPRequest.UninitializedState = 0;
 CFHTTPRequest.LoadingState = 1;
@@ -663,7 +683,7 @@ CFHTTPRequest.prototype.status = function()
     {
         return 0;
     }
-}
+};
 CFHTTPRequest.prototype.statusText = function()
 {
     try
@@ -674,52 +694,52 @@ CFHTTPRequest.prototype.statusText = function()
     {
         return "";
     }
-}
+};
 CFHTTPRequest.prototype.readyState = function()
 {
     return this._nativeRequest.readyState;
-}
+};
 CFHTTPRequest.prototype.success = function()
 {
     var status = this.status();
     if (status >= 200 && status < 300)
         return YES;
     return status === 0 && this.responseText() && this.responseText().length;
-}
+};
 CFHTTPRequest.prototype.responseXML = function()
 {
     var responseXML = this._nativeRequest.responseXML;
     if (responseXML && (NativeRequest === window.XMLHttpRequest))
         return responseXML;
     return parseXML(this.responseText());
-}
+};
 CFHTTPRequest.prototype.responsePropertyList = function()
 {
     var responseText = this.responseText();
     if (CFPropertyList.sniffedFormatOfString(responseText) === CFPropertyList.FormatXML_v1_0)
         return CFPropertyList.propertyListFromXML(this.responseXML());
     return CFPropertyList.propertyListFromString(responseText);
-}
+};
 CFHTTPRequest.prototype.responseText = function()
 {
     return this._nativeRequest.responseText;
-}
+};
 CFHTTPRequest.prototype.setRequestHeader = function( aHeader, aValue)
 {
     this._requestHeaders[aHeader] = aValue;
-}
+};
 CFHTTPRequest.prototype.getResponseHeader = function( aHeader)
 {
     return this._nativeRequest.getResponseHeader(aHeader);
-}
+};
 CFHTTPRequest.prototype.getAllResponseHeaders = function()
 {
     return this._nativeRequest.getAllResponseHeaders();
-}
+};
 CFHTTPRequest.prototype.overrideMimeType = function( aMimeType)
 {
     this._mimeType = aMimeType;
-}
+};
 CFHTTPRequest.prototype.open = function( aMethod, aURL, isAsynchronous, aUser, aPassword)
 {
     this._isOpen = true;
@@ -729,7 +749,7 @@ CFHTTPRequest.prototype.open = function( aMethod, aURL, isAsynchronous, aUser, a
     this._user = aUser;
     this._password = aPassword;
     return this._nativeRequest.open(aMethod, aURL, isAsynchronous, aUser, aPassword);
-}
+};
 CFHTTPRequest.prototype.send = function( aBody)
 {
     if (!this._isOpen)
@@ -754,20 +774,20 @@ CFHTTPRequest.prototype.send = function( aBody)
     {
         this._eventDispatcher.dispatchEvent({ type:"failure", request:this });
     }
-}
+};
 CFHTTPRequest.prototype.abort = function()
 {
     this._isOpen = false;
     return this._nativeRequest.abort();
-}
+};
 CFHTTPRequest.prototype.addEventListener = function( anEventName, anEventListener)
 {
     this._eventDispatcher.addEventListener(anEventName, anEventListener);
-}
+};
 CFHTTPRequest.prototype.removeEventListener = function( anEventName, anEventListener)
 {
     this._eventDispatcher.removeEventListener(anEventName, anEventListener);
-}
+};
 function determineAndDispatchHTTPRequestEvents( aRequest)
 {
     var eventDispatcher = aRequest._eventDispatcher;
@@ -1431,13 +1451,13 @@ CFData = function()
     this._JSONObject = NULL;
     this._bytes = NULL;
     this._base64 = NULL;
-}
+};
 CFData.prototype.propertyList = function()
 {
     if (!this._propertyList)
         this._propertyList = CFPropertyList.propertyListFromString(this.rawString());
     return this._propertyList;
-}
+};
 CFData.prototype.JSONObject = function()
 {
     if (!this._JSONObject)
@@ -1451,7 +1471,7 @@ CFData.prototype.JSONObject = function()
         }
     }
     return this._JSONObject;
-}
+};
 CFData.prototype.rawString = function()
 {
     if (this._rawString === NULL)
@@ -1460,23 +1480,41 @@ CFData.prototype.rawString = function()
             this._rawString = CFPropertyList.stringFromPropertyList(this._propertyList, this._propertyListFormat);
         else if (this._JSONObject)
             this._rawString = JSON.stringify(this._JSONObject);
+        else if (this._bytes)
+            this._rawString = CFData.bytesToString(this._bytes);
+        else if (this._base64)
+            this._rawString = CFData.decodeBase64ToString(this._base64, true);
         else
             throw new Error("Can't convert data to string.");
     }
     return this._rawString;
-}
+};
 CFData.prototype.bytes = function()
 {
+    if (this._bytes === NULL)
+    {
+        var bytes = CFData.stringToBytes(this.rawString());
+        this.setBytes(bytes);
+    }
     return this._bytes;
-}
+};
 CFData.prototype.base64 = function()
 {
+    if (this._base64 === NULL)
+    {
+        var base64;
+        if (this._bytes)
+            base64 = CFData.encodeBase64Array(this._bytes);
+        else
+            base64 = CFData.encodeBase64String(this.rawString());
+        this.setBase64String(base64);
+    }
     return this._base64;
-}
+};
 CFMutableData = function()
 {
     CFData.call(this);
-}
+};
 CFMutableData.prototype = new CFData();
 function clearMutableData( aData)
 {
@@ -1492,27 +1530,27 @@ CFMutableData.prototype.setPropertyList = function( aPropertyList, aFormat)
     clearMutableData(this);
     this._propertyList = aPropertyList;
     this._propertyListFormat = aFormat;
-}
+};
 CFMutableData.prototype.setJSONObject = function( anObject)
 {
     clearMutableData(this);
-    this._JSONObject = anObject
-}
+    this._JSONObject = anObject;
+};
 CFMutableData.prototype.setRawString = function( aString)
 {
     clearMutableData(this);
     this._rawString = aString;
-}
+};
 CFMutableData.prototype.setBytes = function( bytes)
 {
     clearMutableData(this);
     this._bytes = bytes;
-}
+};
 CFMutableData.prototype.setBase64String = function( aBase64String)
 {
     clearMutableData(this);
     this._base64 = aBase64String;
-}
+};
 var base64_map_to = [
         "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
         "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
@@ -1541,7 +1579,7 @@ CFData.decodeBase64ToArray = function(input, strip)
     if (pad > 0)
         return output.slice(0, -1 * pad);
     return output;
-}
+};
 CFData.encodeBase64Array = function(input)
 {
     var pad = (3 - (input.length % 3)) % 3,
@@ -1562,53 +1600,60 @@ CFData.encodeBase64Array = function(input)
     }
     if (pad > 0)
     {
-        output[output.length-1] = "=";
+        output[output.length - 1] = "=";
         input.pop();
     }
     if (pad > 1)
     {
-        output[output.length-2] = "=";
+        output[output.length - 2] = "=";
         input.pop();
     }
     return output.join("");
-}
+};
 CFData.decodeBase64ToString = function(input, strip)
 {
     return CFData.bytesToString(CFData.decodeBase64ToArray(input, strip));
-}
+};
 CFData.decodeBase64ToUtf16String = function(input, strip)
 {
     return CFData.bytesToUtf16String(CFData.decodeBase64ToArray(input, strip));
-}
+};
 CFData.bytesToString = function(bytes)
 {
     return String.fromCharCode.apply(NULL, bytes);
-}
+};
+CFData.stringToBytes = function(input)
+{
+    var temp = [];
+    for (var i = 0; i < input.length; i++)
+        temp.push(input.charCodeAt(i));
+    return temp;
+};
 CFData.encodeBase64String = function(input)
 {
     var temp = [];
     for (var i = 0; i < input.length; i++)
         temp.push(input.charCodeAt(i));
     return CFData.encodeBase64Array(temp);
-}
+};
 CFData.bytesToUtf16String = function(bytes)
 {
     var temp = [];
-    for (var i = 0; i < bytes.length; i+=2)
-        temp.push(bytes[i+1] << 8 | bytes[i]);
+    for (var i = 0; i < bytes.length; i += 2)
+        temp.push(bytes[i + 1] << 8 | bytes[i]);
     return String.fromCharCode.apply(NULL, temp);
-}
+};
 CFData.encodeBase64Utf16String = function(input)
 {
     var temp = [];
     for (var i = 0; i < input.length; i++)
     {
         var c = input.charCodeAt(i);
-        temp.push(input.charCodeAt(i) & 0xFF);
-        temp.push((input.charCodeAt(i) & 0xFF00) >> 8);
+        temp.push(c & 0xFF);
+        temp.push((c & 0xFF00) >> 8);
     }
     return CFData.encodeBase64Array(temp);
-}
+};
 var CFURLsForCachedUIDs,
     CFURLPartsForURLStrings,
     CFURLCachingEnableCount = 0;
@@ -1693,9 +1738,8 @@ function CFURLGetParts( aURL)
     {
         var split = parts.path.split("/"),
             pathComponents = parts.pathComponents,
-            index = 0,
             count = split.length;
-        for (; index < count; ++index)
+        for (index = 0; index < count; ++index)
         {
             var component = split[index];
             if (component)
@@ -1720,7 +1764,7 @@ CFURL = function( aURL, aBaseURL)
     if (aURL instanceof CFURL)
     {
         if (!aBaseURL)
-            return aURL;
+            return new CFURL(aURL.absoluteString());
         var existingBaseURL = aURL.baseURL();
         if (existingBaseURL)
             aBaseURL = new CFURL(existingBaseURL.absoluteURL(), aBaseURL);
@@ -1754,18 +1798,18 @@ CFURL = function( aURL, aBaseURL)
 CFURL.prototype.UID = function()
 {
     return this._UID;
-}
+};
 ;
 var URLMap = { };
 CFURL.prototype.mappedURL = function()
 {
     return URLMap[this.absoluteString()] || this;
-}
+};
 ;
 CFURL.setMappedURLForURL = function( fromURL, toURL)
 {
     URLMap[fromURL.absoluteString()] = toURL;
-}
+};
 ;
 CFURL.prototype.schemeAndAuthority = function()
 {
@@ -1777,19 +1821,19 @@ CFURL.prototype.schemeAndAuthority = function()
     if (authority)
         string += "//" + authority;
     return string;
-}
+};
 ;
 CFURL.prototype.absoluteString = function()
 {
     if (this._absoluteString === undefined)
         this._absoluteString = this.absoluteURL().string();
     return this._absoluteString;
-}
+};
 ;
 CFURL.prototype.toString = function()
 {
     return this.absoluteString();
-}
+};
 ;
 function resolveURL(aURL)
 {
@@ -1815,7 +1859,7 @@ function resolveURL(aURL)
         resolvedParts.portNumber = baseParts.portNumber;
         resolvedParts.queryString = parts.queryString;
         resolvedParts.fragment = parts.fragment;
-        var pathComponents = parts.pathComponents
+        var pathComponents = parts.pathComponents;
         if (pathComponents.length && pathComponents[0] === "/")
         {
             resolvedParts.path = parts.path;
@@ -1862,7 +1906,7 @@ function standardizePathComponents( pathComponents, inPlace)
     {
         var component = pathComponents[index];
         if (component === "")
-             continue;
+            continue;
         if (component === ".")
         {
             startsWithPeriod = resultIndex === 0;
@@ -1905,7 +1949,7 @@ CFURL.prototype.absoluteURL = function()
     if (this._absoluteURL === undefined)
         this._absoluteURL = resolveURL(this);
     return this._absoluteURL;
-}
+};
 ;
 CFURL.prototype.standardizedURL = function()
 {
@@ -1929,7 +1973,7 @@ CFURL.prototype.standardizedURL = function()
         }
     }
     return this._standardizedURL;
-}
+};
 ;
 function CFURLPartsCreateCopy(parts)
 {
@@ -1945,7 +1989,7 @@ function CFURLPartsCreateCopy(parts)
 CFURL.prototype.string = function()
 {
     return this._string;
-}
+};
 ;
 CFURL.prototype.authority = function()
 {
@@ -1954,7 +1998,7 @@ CFURL.prototype.authority = function()
         return authority;
     var baseURL = this.baseURL();
     return baseURL && baseURL.authority() || "";
-}
+};
 ;
 CFURL.prototype.hasDirectoryPath = function()
 {
@@ -1971,17 +2015,17 @@ CFURL.prototype.hasDirectoryPath = function()
         this._hasDirectoryPath = hasDirectoryPath;
     }
     return hasDirectoryPath;
-}
+};
 ;
 CFURL.prototype.hostName = function()
 {
     return this.authority();
-}
+};
 ;
 CFURL.prototype.fragment = function()
 {
     return ((this)._parts || CFURLGetParts(this)).fragment;
-}
+};
 ;
 CFURL.prototype.lastPathComponent = function()
 {
@@ -1995,17 +2039,30 @@ CFURL.prototype.lastPathComponent = function()
             this._lastPathComponent = pathComponents[pathComponentCount - 1];
     }
     return this._lastPathComponent;
-}
+};
 ;
 CFURL.prototype.path = function()
 {
     return ((this)._parts || CFURLGetParts(this)).path;
-}
+};
+;
+CFURL.prototype.createCopyDeletingLastPathComponent = function()
+{
+    var parts = ((this)._parts || CFURLGetParts(this)),
+        components = standardizePathComponents(parts.pathComponents, NO);
+    if (components.length > 0)
+        if (components.length > 1 || components[0] !== "/")
+            components.pop();
+    var isRoot = components.length === 1 && components[0] === "/";
+    parts.pathComponents = components;
+    parts.path = isRoot ? "/" : pathFromPathComponents(components, NO);
+    return new CFURL(URLStringFromParts(parts));
+};
 ;
 CFURL.prototype.pathComponents = function()
 {
     return ((this)._parts || CFURLGetParts(this)).pathComponents;
-}
+};
 ;
 CFURL.prototype.pathExtension = function()
 {
@@ -2015,12 +2072,12 @@ CFURL.prototype.pathExtension = function()
     lastPathComponent = lastPathComponent.replace(/^\.*/, '');
     var index = lastPathComponent.lastIndexOf(".");
     return index <= 0 ? "" : lastPathComponent.substring(index + 1);
-}
+};
 ;
 CFURL.prototype.queryString = function()
 {
     return ((this)._parts || CFURLGetParts(this)).queryString;
-}
+};
 ;
 CFURL.prototype.scheme = function()
 {
@@ -2036,32 +2093,32 @@ CFURL.prototype.scheme = function()
         this._scheme = scheme;
     }
     return scheme;
-}
+};
 ;
 CFURL.prototype.user = function()
 {
     return ((this)._parts || CFURLGetParts(this)).user;
-}
+};
 ;
 CFURL.prototype.password = function()
 {
     return ((this)._parts || CFURLGetParts(this)).password;
-}
+};
 ;
 CFURL.prototype.portNumber = function()
 {
     return ((this)._parts || CFURLGetParts(this)).portNumber;
-}
+};
 ;
 CFURL.prototype.domain = function()
 {
     return ((this)._parts || CFURLGetParts(this)).domain;
-}
+};
 ;
 CFURL.prototype.baseURL = function()
 {
     return this._baseURL;
-}
+};
 ;
 CFURL.prototype.asDirectoryPathURL = function()
 {
@@ -2071,7 +2128,7 @@ CFURL.prototype.asDirectoryPathURL = function()
     if (lastPathComponent !== "/")
         lastPathComponent = "./" + lastPathComponent;
     return new CFURL(lastPathComponent + "/", this);
-}
+};
 ;
 function CFURLGetResourcePropertiesForKeys( aURL)
 {
@@ -2082,19 +2139,19 @@ function CFURLGetResourcePropertiesForKeys( aURL)
 CFURL.prototype.resourcePropertyForKey = function( aKey)
 {
     return CFURLGetResourcePropertiesForKeys(this).valueForKey(aKey);
-}
+};
 ;
 CFURL.prototype.setResourcePropertyForKey = function( aKey, aValue)
 {
     CFURLGetResourcePropertiesForKeys(this).setValueForKey(aKey, aValue);
-}
+};
 ;
 CFURL.prototype.staticResourceData = function()
 {
     var data = new CFMutableData();
     data.setRawString(StaticResource.resourceAtURL(this).contents());
     return data;
-}
+};
 ;
 function MarkedStream( aString)
 {
@@ -2177,7 +2234,7 @@ CFBundle = function( aURL)
 CFBundle.environments = function()
 {
     return ["CommonJS","ObjJ"];
-}
+};
 ;
 CFBundle.bundleContainingURL = function( aURL)
 {
@@ -2194,12 +2251,12 @@ CFBundle.bundleContainingURL = function( aURL)
         URLString = aURL.absoluteString();
     }
     return NULL;
-}
+};
 ;
 CFBundle.mainBundle = function()
 {
     return new CFBundle(mainBundleURL);
-}
+};
 ;
 function addClassToBundle(aClass, aBundle)
 {
@@ -2209,17 +2266,17 @@ function addClassToBundle(aClass, aBundle)
 CFBundle.bundleForClass = function( aClass)
 {
     return CFBundlesForClasses[aClass.name] || CFBundle.mainBundle();
-}
+};
 ;
 CFBundle.prototype.bundleURL = function()
 {
     return this._bundleURL;
-}
+};
 ;
 CFBundle.prototype.resourcesDirectoryURL = function()
 {
     return this._resourcesDirectoryURL;
-}
+};
 ;
 CFBundle.prototype.resourceURL = function( aResourceName, aType, aSubDirectory)
  {
@@ -2229,7 +2286,7 @@ CFBundle.prototype.resourceURL = function( aResourceName, aType, aSubDirectory)
         aResourceName = aSubDirectory + "/" + aResourceName;
     var resourceURL = (new CFURL(aResourceName, this.resourcesDirectoryURL())).mappedURL();
     return resourceURL.absoluteURL();
-}
+};
 ;
 CFBundle.prototype.mostEligibleEnvironmentURL = function()
 {
@@ -2249,17 +2306,17 @@ CFBundle.prototype.executableURL = function()
             this._executableURL = new CFURL(executableSubPath, this.mostEligibleEnvironmentURL());
     }
     return this._executableURL;
-}
+};
 ;
 CFBundle.prototype.infoDictionary = function()
 {
     return this._infoDictionary;
-}
+};
 ;
 CFBundle.prototype.valueForInfoDictionaryKey = function( aKey)
 {
     return this._infoDictionary.valueForKey(aKey);
-}
+};
 ;
 CFBundle.prototype.hasSpritedImages = function()
 {
@@ -2270,12 +2327,12 @@ CFBundle.prototype.hasSpritedImages = function()
         if (environments[index] === mostEligibleEnvironment)
             return YES;
     return NO;
-}
+};
 ;
 CFBundle.prototype.environments = function()
 {
     return this._infoDictionary.valueForKey("CPBundleEnvironments") || ["ObjJ"];
-}
+};
 ;
 CFBundle.prototype.mostEligibleEnvironment = function( environments)
 {
@@ -2293,17 +2350,17 @@ CFBundle.prototype.mostEligibleEnvironment = function( environments)
                 return environment;
     }
     return NULL;
-}
+};
 ;
 CFBundle.prototype.isLoading = function()
 {
     return this._loadStatus & CFBundleLoading;
-}
+};
 ;
 CFBundle.prototype.isLoaded = function()
 {
     return !!(this._loadStatus & CFBundleLoaded);
-}
+};
 ;
 CFBundle.prototype.load = function( shouldExecute)
 {
@@ -2344,7 +2401,7 @@ CFBundle.prototype.load = function( shouldExecute)
         }
         new FileRequest(new CFURL("Info.plist", self.bundleURL()), onsuccess, onfailure);
     });
-}
+};
 ;
 function finishBundleLoadingWithError( aBundle, anError)
 {
@@ -2379,7 +2436,7 @@ function loadExecutableAndResources( aBundle, shouldExecute)
         if ((typeof CPApp === "undefined" || !CPApp || !CPApp._finishedLaunching) &&
              typeof OBJJ_PROGRESS_CALLBACK === "function" && CPApplicationSizeInBytes)
         {
-            OBJJ_PROGRESS_CALLBACK(MAX(MIN(1.0, CFTotalBytesLoaded / CPApplicationSizeInBytes), 0.0), CPApplicationSizeInBytes, aBundle.bundlePath())
+            OBJJ_PROGRESS_CALLBACK(MAX(MIN(1.0, CFTotalBytesLoaded / CPApplicationSizeInBytes), 0.0), CPApplicationSizeInBytes, aBundle.bundlePath());
         }
         if (aBundle._loadStatus === CFBundleLoading)
             aBundle._loadStatus = CFBundleLoaded;
@@ -2499,7 +2556,7 @@ function CFBundleTestSpriteSupport( MHTMLPath, aCallback)
                 break;
         }
         CPApplicationSizeInBytes += size;
-    })
+    });
     CFBundleTestSpriteTypes([
         CFBundleDataURLSpriteType,
         "data:image/gif;base64,R0lGODlhAQABAIAAAMc9BQAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
@@ -2533,11 +2590,11 @@ function CFBundleTestSpriteTypes( spriteTypes)
         }
         else
             image.onerror();
-    }
+    };
     image.onerror = function()
     {
         CFBundleTestSpriteTypes(spriteTypes.slice(2));
-    }
+    };
     image.src = spriteTypes[1];
 }
 function executeBundle( aBundle, aCallback)
@@ -2630,31 +2687,31 @@ function decompileStaticFile( aBundle, aString, aPath)
 CFBundle.prototype.addEventListener = function( anEventName, anEventListener)
 {
     this._eventDispatcher.addEventListener(anEventName, anEventListener);
-}
+};
 ;
 CFBundle.prototype.removeEventListener = function( anEventName, anEventListener)
 {
     this._eventDispatcher.removeEventListener(anEventName, anEventListener);
-}
+};
 ;
 CFBundle.prototype.onerror = function( anEvent)
 {
     throw anEvent.error;
-}
+};
 ;
 CFBundle.prototype.bundlePath = function()
 {
     return this._bundleURL.absoluteURL().path();
-}
+};
 CFBundle.prototype.path = function()
 {
     CPLog.warn("CFBundle.prototype.path is deprecated, use CFBundle.prototype.bundlePath instead.");
     return this.bundlePath.apply(this, arguments);
-}
+};
 CFBundle.prototype.pathForResource = function(aResource)
 {
     return this.resourceURL(aResource).absoluteString();
-}
+};
 var rootResources = { };
 function StaticResource( aURL, aParent, isDirectory, isResolved)
 {
@@ -4508,7 +4565,7 @@ objj_backtrace_decorator = function(msgSend)
         {
             objj_backtrace.pop();
         }
-    }
+    };
 }
 objj_supress_exceptions_decorator = function(msgSend)
 {
@@ -4523,7 +4580,7 @@ objj_supress_exceptions_decorator = function(msgSend)
         {
             CPLog.warn("Exception " + anException + " in " + objj_debug_message_format(aReceiver, aSelector));
         }
-    }
+    };
 }
 var objj_typechecks_reported = {},
     objj_typecheck_prints_backtrace = NO;
@@ -4568,7 +4625,7 @@ objj_typecheck_decorator = function(msgSend)
             }
         }
         return result;
-    }
+    };
 }
 objj_debug_typecheck = function(expectedType, object)
 {
@@ -4616,7 +4673,7 @@ objj_debug_typecheck = function(expectedType, object)
         actualType = typeof object;
     throw ("expected=" + expectedType + ", actual=" + actualType);
 }
-var mainBundleURL = new CFURL("file:" + require("file").cwd());
+var mainBundleURL = new CFURL("file:" + require("file").cwd()).asDirectoryPathURL();
 function makeAbsoluteURL( aURL)
 {
     if (aURL instanceof CFURL && aURL.scheme())

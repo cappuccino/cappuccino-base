@@ -1,4 +1,4 @@
-@STATIC;1.0;p;15;Configuration.jt;4837;@STATIC;1.0;I;25;Foundation/CPDictionary.jI;21;Foundation/CPString.jI;21;Foundation/CPObject.jt;4736;
+@STATIC;1.0;p;15;Configuration.jt;4845;@STATIC;1.0;I;25;Foundation/CPDictionary.jI;21;Foundation/CPString.jI;21;Foundation/CPObject.jt;4744;
 objj_executeFile("Foundation/CPDictionary.j",NO);
 objj_executeFile("Foundation/CPString.j",NO);
 objj_executeFile("Foundation/CPObject.j",NO);
@@ -138,7 +138,7 @@ return;
 var _30=objj_msgSend(Configuration,"userConfiguration");
 if(_2e==="list"){
 var key=nil,_31=objj_msgSend(_30,"storedKeyEnumerator");
-while(key=objj_msgSend(_31,"nextObject")){
+while((key=objj_msgSend(_31,"nextObject"))!==nil){
 print(key+"="+objj_msgSend(_30,"valueForKey:",key));
 }
 }else{
@@ -163,7 +163,7 @@ objj_msgSend(_30,"save");
 }
 }
 };
-p;10;Generate.jt;7242;@STATIC;1.0;i;15;Configuration.jt;7203;
+p;10;Generate.jt;7250;@STATIC;1.0;i;15;Configuration.jt;7211;
 objj_executeFile("Configuration.j",YES);
 var OS=require("os"),_1=require("system"),_2=require("file"),_3=require("objective-j"),_4=require("narwhal/term").stream,_5=new (require("narwhal/args").Parser)();
 _5.usage("DESTINATION_DIRECTORY");
@@ -247,7 +247,7 @@ continue;
 }
 try{
 var _17=_2.read(_16,{charset:"UTF-8"}),key=null,_18=objj_msgSend(_f,"keyEnumerator");
-while(key=objj_msgSend(_18,"nextObject")){
+while((key=objj_msgSend(_18,"nextObject"))!==nil){
 _17=_17.replace(new RegExp("__"+RegExp.escape(key)+"__","g"),objj_msgSend(_f,"valueForKey:",key));
 }
 _2.write(_16,_17,{charset:"UTF-8"});

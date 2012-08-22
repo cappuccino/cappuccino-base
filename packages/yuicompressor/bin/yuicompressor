@@ -1,0 +1,9 @@
+#!/usr/bin/env narwhal
+
+var FILE = require("file");
+var OS = require("os");
+var SYSTEM = require("system");
+
+var path = require("minify/yuicompressor").jarPath;
+
+OS.exit(OS.system(["java", "-jar", path].concat(SYSTEM.args.slice(1))));
