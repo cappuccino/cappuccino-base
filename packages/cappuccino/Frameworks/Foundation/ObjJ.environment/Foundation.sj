@@ -3436,7 +3436,7 @@ objj_msgSend(_114,"encodeBool:forKey:",_data._isNaN,_10f);
 objj_msgSend(_114,"encodeObject:forKey:",_data._mantissa,_110);
 }
 })]);
-p;14;CPDictionary.jt;10367;@STATIC;1.0;i;9;CPArray.ji;14;CPEnumerator.ji;13;CPException.ji;8;CPNull.ji;10;CPObject.jt;10270;
+p;14;CPDictionary.jt;10365;@STATIC;1.0;i;9;CPArray.ji;14;CPEnumerator.ji;13;CPException.ji;8;CPNull.ji;10;CPObject.jt;10268;
 objj_executeFile("CPArray.j",YES);
 objj_executeFile("CPEnumerator.j",YES);
 objj_executeFile("CPException.j",YES);
@@ -3664,10 +3664,10 @@ objj_msgSend(_5e,"setObject:forKey:",objj_msgSend(_60,"objectForKey:",key),key);
 }
 }),new objj_method(sel_getUid("description"),function(_63,_64){
 with(_63){
-var _65="{\n\t",_66=_keys,_67=0,_68=_count;
+var _65="@{\n",_66=_keys,_67=0,_68=_count;
 for(;_67<_68;++_67){
 var key=_66[_67],_69=valueForKey(key);
-_65+=key+" = \""+CPDescriptionOfObject(_69).split("\n").join("\n\t")+"\"\n\t";
+_65+="\t"+key+": "+CPDescriptionOfObject(_69).split("\n").join("\n\t")+",\n";
 }
 return _65+"}";
 }
@@ -4002,7 +4002,7 @@ objj_msgSend(functionOp,"addExecutionFunction:",_10);
 return functionOp;
 }
 })]);
-p;12;CPGeometry.jt;1467;@STATIC;1.0;i;13;_CGGeometry.jt;1430;
+p;12;CPGeometry.jt;1536;@STATIC;1.0;i;13;_CGGeometry.jt;1499;
 objj_executeFile("_CGGeometry.j",YES);
 CPMinXEdge=0;
 CPMinYEdge=1;
@@ -4013,6 +4013,9 @@ CPMakeSize=CGSizeMake;
 CPMakeRect=CGRectMake;
 CPPointCreateCopy=CGPointMakeCopy;
 CPPointEqualToPoint=CGPointEqualToPoint;
+CPPointInRect=function(_1,_2){
+return CGRectContainsPoint(_2,_1);
+};
 CPRectEqualToRect=CGRectEqualToRect;
 CPRectIsEmpty=CGRectIsEmpty;
 CPRectContainsRect=CGRectContainsRect;
@@ -4178,7 +4181,7 @@ with(_3a){
 objj_msgSend(_3c,"encodeObject:forKey:",_indexes,_36);
 }
 })]);
-p;12;CPIndexSet.jt;16324;@STATIC;1.0;i;9;CPArray.ji;10;CPObject.ji;9;CPRange.jt;16263;
+p;12;CPIndexSet.jt;16457;@STATIC;1.0;i;9;CPArray.ji;10;CPObject.ji;9;CPRange.jt;16396;
 objj_executeFile("CPArray.j",YES);
 objj_executeFile("CPObject.j",YES);
 objj_executeFile("CPRange.j",YES);
@@ -4191,6 +4194,9 @@ return objj_msgSend(_3,"initWithIndexesInRange:",{location:(0),length:0});
 }
 }),new objj_method(sel_getUid("initWithIndex:"),function(_5,_6,_7){
 with(_5){
+if(!(!isNaN(parseFloat(_7))&&isFinite(_7))){
+objj_msgSend(CPException,"raise:reason:",CPInvalidArgumentException,"Invalid index");
+}
 return objj_msgSend(_5,"initWithIndexesInRange:",{location:(_7),length:1});
 }
 }),new objj_method(sel_getUid("initWithIndexesInRange:"),function(_8,_9,_a){
@@ -5072,7 +5078,7 @@ with(_1d){
 return objj_msgSend(objj_msgSend(objj_msgSend(_1d,"class"),"alloc"),"initWithRequest:callback:delegate:startImmediately:",_1f,_20,_21,YES);
 }
 })]);
-p;17;CPKeyedArchiver.jt;10271;@STATIC;1.0;i;9;CPArray.ji;9;CPCoder.ji;8;CPData.ji;14;CPDictionary.ji;10;CPNumber.ji;10;CPString.ji;9;CPValue.jt;10151;
+p;17;CPKeyedArchiver.jt;10260;@STATIC;1.0;i;9;CPArray.ji;9;CPCoder.ji;8;CPData.ji;14;CPDictionary.ji;10;CPNumber.ji;10;CPString.ji;9;CPValue.jt;10140;
 objj_executeFile("CPArray.j",YES);
 objj_executeFile("CPCoder.j",YES);
 objj_executeFile("CPData.j",YES);
@@ -5098,7 +5104,6 @@ _objects=[];
 _UIDs=objj_msgSend(CPDictionary,"dictionary");
 _conditionalUIDs=objj_msgSend(CPDictionary,"dictionary");
 _replacementObjects=objj_msgSend(CPDictionary,"dictionary");
-_data=_17;
 _plistObject=objj_msgSend(CPDictionary,"dictionary");
 _plistObjects=objj_msgSend(CPArray,"arrayWithObject:",_7);
 }
@@ -7159,7 +7164,7 @@ objj_msgSend(_7d,"encodeNumber:forKey:",_7b,"self");
 Number.prototype.isa=CPNumber;
 Boolean.prototype.isa=CPNumber;
 objj_msgSend(CPNumber,"initialize");
-p;19;CPNumberFormatter.jt;8468;@STATIC;1.0;I;21;Foundation/CPString.jI;24;Foundation/CPFormatter.jI;28;Foundation/CPDecimalNumber.jt;8361;
+p;19;CPNumberFormatter.jt;8626;@STATIC;1.0;I;21;Foundation/CPString.jI;24;Foundation/CPFormatter.jI;28;Foundation/CPDecimalNumber.jt;8519;
 objj_executeFile("Foundation/CPString.j",NO);
 objj_executeFile("Foundation/CPFormatter.j",NO);
 objj_executeFile("Foundation/CPDecimalNumber.j",NO);
@@ -7266,10 +7271,14 @@ return _30;
 }
 }),new objj_method(sel_getUid("stringFromNumber:"),function(_32,_33,_34){
 with(_32){
+if(_numberStyle==CPNumberFormatterPercentStyle){
+_34*=100;
+}
 var _35=objj_msgSend(_34,"isKindOfClass:",CPDecimalNumber)?_34:objj_msgSend(objj_msgSend(CPDecimalNumber,"alloc"),"_initWithJSNumber:",_34);
 switch(_numberStyle){
 case CPNumberFormatterCurrencyStyle:
 case CPNumberFormatterDecimalStyle:
+case CPNumberFormatterPercentStyle:
 if(!_numberHandler){
 _numberHandler=objj_msgSend(CPDecimalNumberHandler,"decimalNumberHandlerWithRoundingMode:scale:raiseOnExactness:raiseOnOverflow:raiseOnUnderflow:raiseOnDivideByZero:",_roundingMode,_maximumFractionDigits,NO,NO,NO,YES);
 }
@@ -7294,6 +7303,9 @@ _3d=_currencySymbol+_3d;
 }else{
 _3d=_currencyCode+_3d;
 }
+}
+if(_numberStyle==CPNumberFormatterPercentStyle){
+_3d+="%";
 }
 return _3d;
 default:
@@ -7392,7 +7404,7 @@ objj_msgSend(_66,"encodeObject:forKey:",_currencySymbol,_5f);
 objj_msgSend(_66,"encodeBool:forKey:",_generatesDecimalNumbers,_60);
 }
 })]);
-p;10;CPObject.jt;6715;@STATIC;1.0;t;6696;
+p;10;CPObject.jt;6817;@STATIC;1.0;t;6798;
 var _1=objj_allocateClassPair(Nil,"CPObject"),_2=_1.isa;
 class_addIvars(_1,[new objj_ivar("isa")]);
 objj_registerClassPair(_1);
@@ -7612,6 +7624,9 @@ return class_getVersion(_86);
 })]);
 CPDescriptionOfObject=function(_88){
 if(_88.isa){
+if(objj_msgSend(_88,"isKindOfClass:",CPString)){
+return "@\""+objj_msgSend(_88,"description")+"\"";
+}
 return objj_msgSend(_88,"description");
 }
 if(typeof (_88)!=="object"){
@@ -9449,7 +9464,7 @@ _c4+=String.fromCharCode(_c6);
 return _c4;
 };
 String.prototype.isa=CPString;
-p;9;CPTimer.jt;5564;@STATIC;1.0;i;8;CPDate.ji;14;CPInvocation.ji;10;CPObject.ji;11;CPRunLoop.jt;5483;
+p;9;CPTimer.jt;5575;@STATIC;1.0;i;8;CPDate.ji;14;CPInvocation.ji;10;CPObject.ji;11;CPRunLoop.jt;5494;
 objj_executeFile("CPDate.j",YES);
 objj_executeFile("CPInvocation.j",YES);
 objj_executeFile("CPObject.j",YES);
@@ -9592,6 +9607,7 @@ _4d[_53]=nil;
 }
 };
 }
+_50=_50|0;
 _4d[_53]=objj_msgSend(CPTimer,"scheduledTimerWithTimeInterval:callback:repeats:",_50/1000,_54,_51);
 return _53;
 };
@@ -10102,7 +10118,7 @@ with(_b7){
 objj_msgSend(_undoManager,"_forwardInvocationToPreparedTarget:",_b9);
 }
 })]);
-p;7;CPURL.jt;6448;@STATIC;1.0;i;10;CPObject.ji;10;CPString.jt;6399;
+p;7;CPURL.jt;6456;@STATIC;1.0;i;10;CPObject.ji;10;CPString.jt;6407;
 objj_executeFile("CPObject.j",YES);
 objj_executeFile("CPString.j",YES);
 CPURLNameKey="CPURLNameKey";
@@ -10295,12 +10311,12 @@ return objj_msgSend(_59,"initWithString:relativeToURL:",objj_msgSend(_5b,"decode
 }
 }),new objj_method(sel_getUid("encodeWithCoder:"),function(_5c,_5d,_5e){
 with(_5c){
-objj_msgSend(_5e,"encodeObject:forKey:",_baseURL,_58);
-objj_msgSend(_5e,"encodeObject:forKey:",_string,_57);
+objj_msgSend(_5e,"encodeObject:forKey:",_5c._baseURL,_58);
+objj_msgSend(_5e,"encodeObject:forKey:",_5c._string,_57);
 }
 })]);
 CFURL.prototype.isa=objj_msgSend(CPURL,"class");
-p;17;CPURLConnection.jt;5476;@STATIC;1.0;i;8;CPData.ji;10;CPObject.ji;11;CPRunLoop.ji;14;CPURLRequest.ji;15;CPURLResponse.jt;5375;
+p;17;CPURLConnection.jt;5558;@STATIC;1.0;i;8;CPData.ji;10;CPObject.ji;11;CPRunLoop.ji;14;CPURLRequest.ji;15;CPURLResponse.jt;5457;
 objj_executeFile("CPData.j",YES);
 objj_executeFile("CPObject.j",YES);
 objj_executeFile("CPRunLoop.j",YES);
@@ -10380,6 +10396,7 @@ objj_msgSend(_delegate,"connection:didReceiveResponse:",_19,objj_msgSend(objj_ms
 }else{
 var _1c=objj_msgSend(objj_msgSend(CPHTTPURLResponse,"alloc"),"initWithURL:",URL);
 objj_msgSend(_1c,"_setStatusCode:",_1b);
+objj_msgSend(_1c,"_setAllResponseHeaders:",_HTTPRequest.getAllResponseHeaders());
 objj_msgSend(_delegate,"connection:didReceiveResponse:",_19,_1c);
 }
 }
@@ -10510,7 +10527,7 @@ with(_20){
 return objj_msgSend(objj_msgSend(CPURLRequest,"alloc"),"initWithURL:",_22);
 }
 })]);
-p;15;CPURLResponse.jt;932;@STATIC;1.0;i;10;CPObject.ji;7;CPURL.jt;888;
+p;15;CPURLResponse.jt;1732;@STATIC;1.0;i;10;CPObject.ji;7;CPURL.jt;1687;
 objj_executeFile("CPObject.j",YES);
 objj_executeFile("CPURL.j",YES);
 var _1=objj_allocateClassPair(CPObject,"CPURLResponse"),_2=_1.isa;
@@ -10530,7 +10547,7 @@ return _URL;
 }
 })]);
 var _1=objj_allocateClassPair(CPURLResponse,"CPHTTPURLResponse"),_2=_1.isa;
-class_addIvars(_1,[new objj_ivar("_statusCode")]);
+class_addIvars(_1,[new objj_ivar("_statusCode"),new objj_ivar("_allResponseHeaders"),new objj_ivar("_responseHeaders")]);
 objj_registerClassPair(_1);
 class_addMethods(_1,[new objj_method(sel_getUid("_setStatusCode:"),function(_8,_9,_a){
 with(_8){
@@ -10539,6 +10556,32 @@ _statusCode=_a;
 }),new objj_method(sel_getUid("statusCode"),function(_b,_c){
 with(_b){
 return _statusCode;
+}
+}),new objj_method(sel_getUid("_setAllResponseHeaders:"),function(_d,_e,_f){
+with(_d){
+_allResponseHeaders=_f;
+}
+}),new objj_method(sel_getUid("allHeaderFields"),function(_10,_11){
+with(_10){
+if(!_responseHeaders){
+_responseHeaders=objj_msgSend(objj_msgSend(_10,"class"),"parseHTTPHeaders:",_allResponseHeaders);
+}
+return _responseHeaders;
+}
+})]);
+class_addMethods(_2,[new objj_method(sel_getUid("parseHTTPHeaders:"),function(_12,_13,_14){
+with(_12){
+var r=objj_msgSend(CPMutableDictionary,"dictionary");
+if(_14){
+var _15=_14.split("\r\n"),_16=_15.length;
+while(_16--){
+var _17=_15[_16],_18=_17.indexOf(": ");
+if(_18!==CPNotFound){
+objj_msgSend(r,"setValue:forKey:",_17.substring(_18+2),_17.substring(0,_18));
+}
+}
+}
+return r;
 }
 })]);
 p;16;CPUserDefaults.jt;14141;@STATIC;1.0;i;10;CPBundle.ji;8;CPData.ji;14;CPDictionary.ji;13;CPException.ji;17;CPKeyedArchiver.ji;19;CPKeyedUnarchiver.ji;22;CPNotificationCenter.ji;10;CPObject.ji;11;CPRunLoop.ji;10;CPString.ji;7;CPURL.ji;17;CPURLConnection.ji;14;CPURLRequest.jt;13886;
@@ -11606,7 +11649,7 @@ return [_73];
 }
 })]);
 Array.prototype.isa=_CPJavaScriptArray;
-p;9;CPArray.jt;17314;@STATIC;1.0;i;14;CPEnumerator.ji;13;CPException.ji;10;CPObject.ji;9;CPRange.ji;18;CPSortDescriptor.ji;20;_CPJavaScriptArray.jt;17181;
+p;9;CPArray.jt;17315;@STATIC;1.0;i;14;CPEnumerator.ji;13;CPException.ji;10;CPObject.ji;9;CPRange.ji;18;CPSortDescriptor.ji;20;_CPJavaScriptArray.jt;17182;
 objj_executeFile("CPEnumerator.j",YES);
 objj_executeFile("CPException.j",YES);
 objj_executeFile("CPObject.j",YES);
@@ -12016,7 +12059,7 @@ return _2.call(objj_msgSend(_c9,"_javaScriptArrayCopy"),_cb);
 }
 }),new objj_method(sel_getUid("description"),function(_cc,_cd){
 with(_cc){
-var _ce=0,_cf=objj_msgSend(_cc,"count"),_d0="(";
+var _ce=0,_cf=objj_msgSend(_cc,"count"),_d0="@[";
 for(;_ce<_cf;++_ce){
 if(_ce===0){
 _d0+="\n\t";
@@ -12029,7 +12072,7 @@ _d0+=",\n\t";
 _d0+="\n";
 }
 }
-return _d0+")";
+return _d0+"]";
 }
 }),new objj_method(sel_getUid("pathsMatchingExtensions:"),function(_d2,_d3,_d4){
 with(_d2){
