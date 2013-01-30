@@ -1,4 +1,4 @@
-@import "../Frameworks/OJUnit/OJAssert.j"
+@import <OJUnit/OJAssert.j>
 
 @implementation OJAssertTest : OJTestCase
 
@@ -16,7 +16,7 @@
 {
     var objectOne = "A";
     var objectTwo = "B";
-    
+
     [OJAssert assert:objectOne notEqual:objectTwo];
 }
 
@@ -32,7 +32,7 @@
 {
     var objectOne = "A";
     var objectTwo = "A";
-    
+
     [OJAssert assertThrows:function(){[OJAssert assert:objectOne notEqual:objectTwo]}];
 }
 

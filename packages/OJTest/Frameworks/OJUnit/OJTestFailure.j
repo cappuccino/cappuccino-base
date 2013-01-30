@@ -1,5 +1,7 @@
 @import <Foundation/Foundation.j>
 
+@import "OJAssert.j"
+
 function convertRhinoBacktrace(javaException) {
     var s = new Packages.java.io.StringWriter();
     javaException.printStackTrace(new Packages.java.io.PrintWriter(s));
@@ -7,13 +9,16 @@ function convertRhinoBacktrace(javaException) {
 }
 
 function getBacktrace(e) {
-    if (!e) {
+    if (!e)
+    {
         return "";
     }
-    else if (e.rhinoException) {
+    else if (e.rhinoException)
+    {
         return convertRhinoBacktrace(e.rhinoException);
     }
-    else if (e.javaException) {
+    else if (e.javaException)
+    {
         return convertRhinoBacktrace(e.javaException);
     }
     return "";
@@ -21,8 +26,8 @@ function getBacktrace(e) {
 
 @implementation OJTestFailure : CPObject
 {
-    OJTest      _failedTest			@accessors(readonly, property=failedTest);
-    CPException _thrownException	@accessors(readonly, property=thrownException);
+    OJTest      _failedTest         @accessors(readonly, property=failedTest);
+    CPException _thrownException    @accessors(readonly, property=thrownException);
 }
 
 - (id)initWithTest:(OJTest)failedTest exception:(CPException)thrownException
