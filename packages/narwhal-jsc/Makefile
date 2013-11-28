@@ -1,5 +1,15 @@
-CPP       =g++
-CC        =gcc
+KERNEL_VERSION = $(uname -r)
+HIGHER_VERSION = `echo -e "$(KERNEL_VERSION)\n12.3.0" | sort -g -t '.' | tail -n 1`
+# use gcc for Mountain Lion or lower, more info at
+# https://github.com/cappuccino/cappuccino/issues/2022
+ifeq ("$(HIGHER_VERSION)", "12.3.0")
+    CPP       =g++
+    CC        =gcc
+else
+    CPP       =clang++
+    CC        =clang
+endif
+
 CPPFLAGS  = -0s -force_cpusubtype_ALL -mmacosx-version-min=10.4 -arch i386
 #CPPFLAGS += -g -O0
 #CPPFLAGS += -DDEBUG_ON
