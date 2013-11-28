@@ -6,12 +6,13 @@
  * Copyright __project.year__, __organization.name__ All rights reserved.
  */
 
-@import <Foundation/CPObject.j>
+@import <Foundation/Foundation.j>
+@import <AppKit/AppKit.j>
 
 
 @implementation AppController : CPObject
 {
-    CPWindow    theWindow; //this "outlet" is connected automatically by the Cib
+    @outlet CPWindow    theWindow;
 }
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
