@@ -20,19 +20,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+
 BundleTask = require("objective-j/jake/bundletask").BundleTask;
+
 function FrameworkTask(aName)
 {
     BundleTask.apply(this, arguments);
 }
+
 FrameworkTask.__proto__ = BundleTask;
 FrameworkTask.prototype.__proto__ = BundleTask.prototype;
+
 FrameworkTask.prototype.packageType = function()
 {
     return "FMWK";
 }
+
 exports.FrameworkTask = FrameworkTask;
+
 exports.framework = function(aName, aFunction)
 {
+
     return FrameworkTask.defineTask(aName, aFunction);
 }

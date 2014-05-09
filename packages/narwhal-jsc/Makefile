@@ -10,7 +10,7 @@ else
     CC        =clang
 endif
 
-CPPFLAGS  = -force_cpusubtype_ALL -mmacosx-version-min=10.4 -arch i386
+CPPFLAGS  = -Os -force_cpusubtype_ALL -mmacosx-version-min=10.4 -arch i386
 #CPPFLAGS += -g -O0
 #CPPFLAGS += -DDEBUG_ON
 #CPPFLAGS += -save-temps
@@ -97,7 +97,7 @@ config-webkit-debug:
 	# rm -f bin/narwhal-jsc
 	# ln -s narwhal-webkit-debug bin/narwhal-jsc
 
-config-jscocoa:
+config-jscocoa: 
 	echo 'export NARWHAL_JSC_MODE="jscocoa"' > narwhal-jsc.conf
 	# rm -f bin/narwhal-jsc
 	# ln -s narwhal-jscocoa bin/narwhal-jsc
