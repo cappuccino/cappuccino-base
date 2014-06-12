@@ -9,7 +9,7 @@
     [super matches:[actual class]];
 }
 
-- (BOOL)doesNotMatch:(id)actual
+- (void)doesNotMatch:(id)actual
 {
     [super doesNotMatch:[actual class]];
 }
