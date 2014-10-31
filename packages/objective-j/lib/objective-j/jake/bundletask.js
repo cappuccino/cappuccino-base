@@ -57,7 +57,10 @@ function BundleTask(aName, anApplication)
 {
     Task.apply(this, arguments);
 
-    this.setEnvironments([environment.Browser, environment.CommonJS]);
+    if (ENV["BUILD_COMMONJS"] == "NO")
+        this.setEnvironments([environment.Browser]);
+    else
+        this.setEnvironments([environment.Browser, environment.CommonJS]);
 
     this._author = null;
     this._email = null;
