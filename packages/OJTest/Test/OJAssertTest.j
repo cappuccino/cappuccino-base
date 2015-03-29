@@ -1,4 +1,4 @@
-@import <OJUnit/OJAssert.j>
+@import "../Frameworks/OJUnit/OJAssert.j"
 
 @implementation OJAssertTest : OJTestCase
 

@@ -1,4 +1,4 @@
-@STATIC;1.0;p;22;BKShowcaseController.jt;21751;@STATIC;1.0;I;21;Foundation/CPObject.jI;25;AppKit/CPCollectionView.jI;21;AppKit/CPColorPanel.jI;21;AppKit/CPScrollView.jI;20;AppKit/CPSplitView.jI;18;AppKit/CPToolbar.jI;15;AppKit/CPView.jI;27;AppKit/CPWindow_Constants.ji;19;BKThemeDescriptor.jt;21499;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("AppKit/CPCollectionView.j", NO);objj_executeFile("AppKit/CPColorPanel.j", NO);objj_executeFile("AppKit/CPScrollView.j", NO);objj_executeFile("AppKit/CPSplitView.j", NO);objj_executeFile("AppKit/CPToolbar.j", NO);objj_executeFile("AppKit/CPView.j", NO);objj_executeFile("AppKit/CPWindow_Constants.j", NO);objj_executeFile("BKThemeDescriptor.j", YES);var LEFT_PANEL_WIDTH = 176.0;
+@STATIC;1.0;p;22;BKShowcaseController.jt;31966;@STATIC;1.0;I;21;Foundation/CPObject.jI;25;AppKit/CPCollectionView.jI;21;AppKit/CPColorPanel.jI;21;AppKit/CPScrollView.jI;20;AppKit/CPSplitView.jI;18;AppKit/CPToolbar.jI;15;AppKit/CPView.jI;27;AppKit/CPWindow_Constants.ji;19;BKThemeDescriptor.jt;31714;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("AppKit/CPCollectionView.j", NO);objj_executeFile("AppKit/CPColorPanel.j", NO);objj_executeFile("AppKit/CPScrollView.j", NO);objj_executeFile("AppKit/CPSplitView.j", NO);objj_executeFile("AppKit/CPToolbar.j", NO);objj_executeFile("AppKit/CPView.j", NO);objj_executeFile("AppKit/CPWindow_Constants.j", NO);objj_executeFile("BKThemeDescriptor.j", YES);var LEFT_PANEL_WIDTH = 176.0;
 var BKLearnMoreToolbarItemIdentifier = "BKLearnMoreToolbarItemIdentifier",
     BKStateToolbarItemIdentifier = "BKStateToolbarItemIdentifier",
     BKBackgroundColorToolbarItemIdentifier = "BKBackgroundColorToolbarItemIdentifier";
@@ -6,76 +6,83 @@ var BKLearnMoreToolbarItemIdentifier = "BKLearnMoreToolbarItemIdentifier",
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_themeDescriptorClasses"), new objj_ivar("_themesCollectionView"), new objj_ivar("_themedObjectsCollectionView"), new objj_ivar("theWindow")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("applicationDidFinishLaunching:"), function $BKShowcaseController__applicationDidFinishLaunching_(self, _cmd, aNotification)
 {
-    self._themeDescriptorClasses = objj_msgSend(BKThemeDescriptor, "allThemeDescriptorClasses");
-    self.theWindow = objj_msgSend(objj_msgSend(CPWindow, "alloc"), "initWithContentRect:styleMask:", CGRectMakeZero(), CPBorderlessBridgeWindowMask);
-    var toolbar = objj_msgSend(objj_msgSend(CPToolbar, "alloc"), "initWithIdentifier:", "Toolbar");
-    objj_msgSend(toolbar, "setDelegate:", self);
-    objj_msgSend(self.theWindow, "setToolbar:", toolbar);
-    var contentView = objj_msgSend(self.theWindow, "contentView"),
-        bounds = objj_msgSend(contentView, "bounds"),
-        splitView = objj_msgSend(objj_msgSend(CPSplitView, "alloc"), "initWithFrame:", bounds);
-    objj_msgSend(splitView, "setIsPaneSplitter:", YES);
-    objj_msgSend(splitView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
-    objj_msgSend(contentView, "addSubview:", splitView);
-    var label = objj_msgSend(CPTextField, "labelWithTitle:", "THEMES");
-    objj_msgSend(label, "setFont:", objj_msgSend(CPFont, "boldSystemFontOfSize:", 11.0));
-    objj_msgSend(label, "setTextColor:", objj_msgSend(CPColor, "colorWithCalibratedRed:green:blue:alpha:", 93.0 / 255.0, 93.0 / 255.0, 93.0 / 255.0, 1.0));
-    objj_msgSend(label, "setTextShadowColor:", objj_msgSend(CPColor, "colorWithCalibratedRed:green:blue:alpha:", 225.0 / 255.0, 255.0 / 255.0, 255.0 / 255.0, 0.7));
-    objj_msgSend(label, "setTextShadowOffset:", CGSizeMake(0.0, 1.0));
-    objj_msgSend(label, "sizeToFit");
-    objj_msgSend(label, "setFrameOrigin:", CGPointMake(5.0, 4.0));
-    var themeDescriptorItem = objj_msgSend(objj_msgSend(CPCollectionViewItem, "alloc"), "init");
-    objj_msgSend(themeDescriptorItem, "setView:", objj_msgSend(objj_msgSend(BKThemeDescriptorCell, "alloc"), "init"));
-    self._themesCollectionView = objj_msgSend(objj_msgSend(CPCollectionView, "alloc"), "initWithFrame:", CGRectMake(0.0, 0.0, LEFT_PANEL_WIDTH, CGRectGetHeight(bounds)));
-    objj_msgSend(self._themesCollectionView, "setDelegate:", self);
-    objj_msgSend(self._themesCollectionView, "setItemPrototype:", themeDescriptorItem);
-    objj_msgSend(self._themesCollectionView, "setMinItemSize:", CGSizeMake(20.0, 36.0));
-    objj_msgSend(self._themesCollectionView, "setMaxItemSize:", CGSizeMake(10000000.0, 36.0));
-    objj_msgSend(self._themesCollectionView, "setMaxNumberOfColumns:", 1);
-    objj_msgSend(self._themesCollectionView, "setContent:", self._themeDescriptorClasses);
-    objj_msgSend(self._themesCollectionView, "setAutoresizingMask:", CPViewWidthSizable);
-    objj_msgSend(self._themesCollectionView, "setVerticalMargin:", 0.0);
-    objj_msgSend(self._themesCollectionView, "setSelectable:", YES);
-    objj_msgSend(self._themesCollectionView, "setFrameOrigin:", CGPointMake(0.0, 20.0));
-    objj_msgSend(self._themesCollectionView, "setAutoresizingMask:", CPViewWidthSizable);
-    var scrollView = objj_msgSend(objj_msgSend(CPScrollView, "alloc"), "initWithFrame:", CGRectMake(0.0, 0.0, LEFT_PANEL_WIDTH, CGRectGetHeight(bounds))),
-        contentView = objj_msgSend(scrollView, "contentView");
-    objj_msgSend(scrollView, "setAutohidesScrollers:", YES);
-    objj_msgSend(scrollView, "setDocumentView:", self._themesCollectionView);
-    objj_msgSend(contentView, "setBackgroundColor:", objj_msgSend(CPColor, "colorWithRed:green:blue:alpha:", 212.0 / 255.0, 221.0 / 255.0, 230.0 / 255.0, 1.0));
-    objj_msgSend(contentView, "addSubview:", label);
-    objj_msgSend(splitView, "addSubview:", scrollView);
-    self._themedObjectsCollectionView = objj_msgSend(objj_msgSend(CPCollectionView, "alloc"), "initWithFrame:", CGRectMake(0.0, 0.0, CGRectGetWidth(bounds) - LEFT_PANEL_WIDTH - 1.0, 10.0));
-    var collectionViewItem = objj_msgSend(objj_msgSend(CPCollectionViewItem, "alloc"), "init");
-    objj_msgSend(collectionViewItem, "setView:", objj_msgSend(objj_msgSend(BKShowcaseCell, "alloc"), "init"));
-    objj_msgSend(self._themedObjectsCollectionView, "setItemPrototype:", collectionViewItem);
-    objj_msgSend(self._themedObjectsCollectionView, "setVerticalMargin:", 20.0);
-    objj_msgSend(self._themedObjectsCollectionView, "setAutoresizingMask:", CPViewWidthSizable);
-    var scrollView = objj_msgSend(objj_msgSend(CPScrollView, "alloc"), "initWithFrame:", CGRectMake(LEFT_PANEL_WIDTH + 1.0, 0.0, CGRectGetWidth(bounds) - LEFT_PANEL_WIDTH - 1.0, CGRectGetHeight(bounds)));
-    objj_msgSend(scrollView, "setHasHorizontalScroller:", NO);
-    objj_msgSend(scrollView, "setAutohidesScrollers:", YES);
-    objj_msgSend(scrollView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
-    objj_msgSend(scrollView, "setDocumentView:", self._themedObjectsCollectionView);
-    objj_msgSend(splitView, "addSubview:", scrollView);
-    objj_msgSend(self._themesCollectionView, "setSelectionIndexes:", objj_msgSend(CPIndexSet, "indexSetWithIndex:", 0));
-    objj_msgSend(self.theWindow, "setMovable:", NO);
-    objj_msgSend(self.theWindow, "setFullPlatformWindow:", YES);
-    objj_msgSend(self.theWindow, "makeKeyAndOrderFront:", self);
+    self._themeDescriptorClasses = BKThemeDescriptor.isa.objj_msgSend0(BKThemeDescriptor, "allThemeDescriptorClasses");
+    self.theWindow = ((___r1 = (CPWindow == null ? null : CPWindow.isa.objj_msgSend0(CPWindow, "alloc"))), ___r1 == null ? null : ___r1.isa.objj_msgSend2(___r1, "initWithContentRect:styleMask:", CGRectMakeZero(), CPBorderlessBridgeWindowMask));
+    var toolbar = ((___r1 = CPToolbar.isa.objj_msgSend0(CPToolbar, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "initWithIdentifier:", "Toolbar"));
+    (toolbar == null ? null : toolbar.isa.objj_msgSend1(toolbar, "setDelegate:", self));
+    ((___r1 = self.theWindow), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setToolbar:", toolbar));
+    var contentView = ((___r1 = self.theWindow), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "contentView")),
+        bounds = (contentView == null ? null : contentView.isa.objj_msgSend0(contentView, "bounds")),
+        splitView = ((___r1 = CPSplitView.isa.objj_msgSend0(CPSplitView, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "initWithFrame:", bounds));
+    (splitView == null ? null : splitView.isa.objj_msgSend1(splitView, "setIsPaneSplitter:", YES));
+    (splitView == null ? null : splitView.isa.objj_msgSend1(splitView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable));
+    (contentView == null ? null : contentView.isa.objj_msgSend1(contentView, "addSubview:", splitView));
+    var label = CPTextField.isa.objj_msgSend1(CPTextField, "labelWithTitle:", "THEMES");
+    (label == null ? null : label.isa.objj_msgSend1(label, "setFont:", CPFont.isa.objj_msgSend1(CPFont, "boldSystemFontOfSize:", 11.0)));
+    (label == null ? null : label.isa.objj_msgSend1(label, "setTextColor:", CPColor.isa.objj_msgSend(CPColor, "colorWithCalibratedRed:green:blue:alpha:", 93.0 / 255.0, 93.0 / 255.0, 93.0 / 255.0, 1.0)));
+    (label == null ? null : label.isa.objj_msgSend1(label, "setTextShadowColor:", CPColor.isa.objj_msgSend(CPColor, "colorWithCalibratedRed:green:blue:alpha:", 225.0 / 255.0, 255.0 / 255.0, 255.0 / 255.0, 0.7)));
+    (label == null ? null : label.isa.objj_msgSend1(label, "setTextShadowOffset:", CGSizeMake(0.0, 1.0)));
+    (label == null ? null : label.isa.objj_msgSend0(label, "sizeToFit"));
+    (label == null ? null : label.isa.objj_msgSend1(label, "setFrameOrigin:", CGPointMake(5.0, 4.0)));
+    var themeDescriptorItem = ((___r1 = CPCollectionViewItem.isa.objj_msgSend0(CPCollectionViewItem, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "init"));
+    (themeDescriptorItem == null ? null : themeDescriptorItem.isa.objj_msgSend1(themeDescriptorItem, "setView:", ((___r1 = (BKThemeDescriptorCell == null ? null : BKThemeDescriptorCell.isa.objj_msgSend0(BKThemeDescriptorCell, "alloc"))), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "init"))));
+    self._themesCollectionView = ((___r1 = CPCollectionView.isa.objj_msgSend0(CPCollectionView, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "initWithFrame:", CGRectMake(0.0, 0.0, LEFT_PANEL_WIDTH, CGRectGetHeight(bounds))));
+    ((___r1 = self._themesCollectionView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setDelegate:", self));
+    ((___r1 = self._themesCollectionView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setItemPrototype:", themeDescriptorItem));
+    ((___r1 = self._themesCollectionView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setMinItemSize:", CGSizeMake(20.0, 36.0)));
+    ((___r1 = self._themesCollectionView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setMaxItemSize:", CGSizeMake(10000000.0, 36.0)));
+    ((___r1 = self._themesCollectionView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setMaxNumberOfColumns:", 1));
+    ((___r1 = self._themesCollectionView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setContent:", self._themeDescriptorClasses));
+    ((___r1 = self._themesCollectionView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setAutoresizingMask:", CPViewWidthSizable));
+    ((___r1 = self._themesCollectionView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setVerticalMargin:", 0.0));
+    ((___r1 = self._themesCollectionView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setSelectable:", YES));
+    ((___r1 = self._themesCollectionView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setFrameOrigin:", CGPointMake(0.0, 20.0)));
+    ((___r1 = self._themesCollectionView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setAutoresizingMask:", CPViewWidthSizable));
+    var scrollView = ((___r1 = CPScrollView.isa.objj_msgSend0(CPScrollView, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "initWithFrame:", CGRectMake(0.0, 0.0, LEFT_PANEL_WIDTH, CGRectGetHeight(bounds)))),
+        contentView = (scrollView == null ? null : scrollView.isa.objj_msgSend0(scrollView, "contentView"));
+    (scrollView == null ? null : scrollView.isa.objj_msgSend1(scrollView, "setAutohidesScrollers:", YES));
+    (scrollView == null ? null : scrollView.isa.objj_msgSend1(scrollView, "setDocumentView:", self._themesCollectionView));
+    (contentView == null ? null : contentView.isa.objj_msgSend1(contentView, "setBackgroundColor:", CPColor.isa.objj_msgSend(CPColor, "colorWithRed:green:blue:alpha:", 212.0 / 255.0, 221.0 / 255.0, 230.0 / 255.0, 1.0)));
+    (contentView == null ? null : contentView.isa.objj_msgSend1(contentView, "addSubview:", label));
+    (splitView == null ? null : splitView.isa.objj_msgSend1(splitView, "addSubview:", scrollView));
+    self._themedObjectsCollectionView = ((___r1 = CPCollectionView.isa.objj_msgSend0(CPCollectionView, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "initWithFrame:", CGRectMake(0.0, 0.0, CGRectGetWidth(bounds) - LEFT_PANEL_WIDTH - 1.0, 10.0)));
+    var collectionViewItem = ((___r1 = CPCollectionViewItem.isa.objj_msgSend0(CPCollectionViewItem, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "init"));
+    (collectionViewItem == null ? null : collectionViewItem.isa.objj_msgSend1(collectionViewItem, "setView:", ((___r1 = (BKShowcaseCell == null ? null : BKShowcaseCell.isa.objj_msgSend0(BKShowcaseCell, "alloc"))), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "init"))));
+    ((___r1 = self._themedObjectsCollectionView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setItemPrototype:", collectionViewItem));
+    ((___r1 = self._themedObjectsCollectionView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setVerticalMargin:", 20.0));
+    ((___r1 = self._themedObjectsCollectionView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setAutoresizingMask:", CPViewWidthSizable));
+    var scrollView = ((___r1 = CPScrollView.isa.objj_msgSend0(CPScrollView, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "initWithFrame:", CGRectMake(LEFT_PANEL_WIDTH + 1.0, 0.0, CGRectGetWidth(bounds) - LEFT_PANEL_WIDTH - 1.0, CGRectGetHeight(bounds))));
+    (scrollView == null ? null : scrollView.isa.objj_msgSend1(scrollView, "setHasHorizontalScroller:", NO));
+    (scrollView == null ? null : scrollView.isa.objj_msgSend1(scrollView, "setAutohidesScrollers:", YES));
+    (scrollView == null ? null : scrollView.isa.objj_msgSend1(scrollView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable));
+    (scrollView == null ? null : scrollView.isa.objj_msgSend1(scrollView, "setDocumentView:", self._themedObjectsCollectionView));
+    (splitView == null ? null : splitView.isa.objj_msgSend1(splitView, "addSubview:", scrollView));
+    ((___r1 = self._themesCollectionView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setSelectionIndexes:", CPIndexSet.isa.objj_msgSend1(CPIndexSet, "indexSetWithIndex:", 0)));
+    ((___r1 = self.theWindow), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setMovable:", NO));
+    ((___r1 = self.theWindow), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setFullPlatformWindow:", YES));
+    ((___r1 = self.theWindow), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "makeKeyAndOrderFront:", self));
+    ((___r1 = self._themesCollectionView), ___r1 == null ? null : ___r1.isa.objj_msgSend(___r1, "addObserver:forKeyPath:options:context:", self, "selectionIndexes", CPKeyValueObservingOptionNew | CPKeyValueObservingOptionInitial, nil));
+    var ___r1;
 }
-,["void","CPNotification"]), new objj_method(sel_getUid("collectionViewDidChangeSelection:"), function $BKShowcaseController__collectionViewDidChangeSelection_(self, _cmd, aCollectionView)
+,["void","CPNotification"]), new objj_method(sel_getUid("observeValueForKeyPath:ofObject:change:context:"), function $BKShowcaseController__observeValueForKeyPath_ofObject_change_context_(self, _cmd, keyPath, object, change, context)
 {
-    var themeDescriptorClass = self._themeDescriptorClasses[objj_msgSend(objj_msgSend(aCollectionView, "selectionIndexes"), "firstIndex")],
-        itemSize = objj_msgSend(themeDescriptorClass, "itemSize");
-    itemSize.width = MAX(100.0, itemSize.width + 20.0);
-    itemSize.height = MAX(100.0, itemSize.height + 30.0);
-    objj_msgSend(self._themedObjectsCollectionView, "setMinItemSize:", itemSize);
-    objj_msgSend(self._themedObjectsCollectionView, "setMaxItemSize:", itemSize);
-    objj_msgSend(self._themedObjectsCollectionView, "setContent:", objj_msgSend(themeDescriptorClass, "themedShowcaseObjectTemplates"));
-    objj_msgSend(BKShowcaseCell, "setBackgroundColor:", objj_msgSend(themeDescriptorClass, "showcaseBackgroundColor"));
+    if (object == self._themesCollectionView && keyPath == "selectionIndexes")
+    {
+        var themeDescriptorClass = self._themeDescriptorClasses[((___r1 = (object == null ? null : object.isa.objj_msgSend0(object, "selectionIndexes"))), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "firstIndex"))],
+            itemSize = (themeDescriptorClass == null ? null : themeDescriptorClass.isa.objj_msgSend0(themeDescriptorClass, "itemSize"));
+        itemSize.width = MAX(100.0, itemSize.width + 20.0);
+        itemSize.height = MAX(100.0, itemSize.height + 30.0);
+        ((___r1 = self._themedObjectsCollectionView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setMinItemSize:", itemSize));
+        ((___r1 = self._themedObjectsCollectionView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setMaxItemSize:", itemSize));
+        ((___r1 = self._themedObjectsCollectionView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setContent:", (themeDescriptorClass == null ? null : themeDescriptorClass.isa.objj_msgSend0(themeDescriptorClass, "themedShowcaseObjectTemplates"))));
+        (BKShowcaseCell == null ? null : BKShowcaseCell.isa.objj_msgSend1(BKShowcaseCell, "setBackgroundColor:", (themeDescriptorClass == null ? null : themeDescriptorClass.isa.objj_msgSend0(themeDescriptorClass, "showcaseBackgroundColor"))));
+    }
+    var ___r1;
 }
-,["void","CPCollectionView"]), new objj_method(sel_getUid("hasLearnMoreURL"), function $BKShowcaseController__hasLearnMoreURL(self, _cmd)
+,["void","CPString","id","CPDictionary","void"]), new objj_method(sel_getUid("hasLearnMoreURL"), function $BKShowcaseController__hasLearnMoreURL(self, _cmd)
 {
-    return objj_msgSend(objj_msgSend(CPBundle, "mainBundle"), "objectForInfoDictionaryKey:", "BKLearnMoreURL");
+    return ((___r1 = CPBundle.isa.objj_msgSend0(CPBundle, "mainBundle")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "objectForInfoDictionaryKey:", "BKLearnMoreURL"));
+    var ___r1;
 }
 ,["BOOL"]), new objj_method(sel_getUid("toolbarAllowedItemIdentifiers:"), function $BKShowcaseController__toolbarAllowedItemIdentifiers_(self, _cmd, aToolbar)
 {
@@ -84,108 +91,113 @@ class_addMethods(the_class, [new objj_method(sel_getUid("applicationDidFinishLau
 ,["CPArray","CPToolbar"]), new objj_method(sel_getUid("toolbarDefaultItemIdentifiers:"), function $BKShowcaseController__toolbarDefaultItemIdentifiers_(self, _cmd, aToolbar)
 {
     var itemIdentifiers = [CPToolbarFlexibleSpaceItemIdentifier, BKBackgroundColorToolbarItemIdentifier, BKStateToolbarItemIdentifier];
-    if (objj_msgSend(self, "hasLearnMoreURL"))
+    if (self.isa.objj_msgSend0(self, "hasLearnMoreURL"))
         itemIdentifiers = [BKLearnMoreToolbarItemIdentifier].concat(itemIdentifiers);
     return itemIdentifiers;
 }
 ,["CPArray","CPToolbar"]), new objj_method(sel_getUid("toolbar:itemForItemIdentifier:willBeInsertedIntoToolbar:"), function $BKShowcaseController__toolbar_itemForItemIdentifier_willBeInsertedIntoToolbar_(self, _cmd, aToolbar, anItemIdentifier, aFlag)
 {
-    var toolbarItem = objj_msgSend(objj_msgSend(CPToolbarItem, "alloc"), "initWithItemIdentifier:", anItemIdentifier);
-    objj_msgSend(toolbarItem, "setTarget:", self);
+    var toolbarItem = ((___r1 = CPToolbarItem.isa.objj_msgSend0(CPToolbarItem, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "initWithItemIdentifier:", anItemIdentifier));
+    (toolbarItem == null ? null : toolbarItem.isa.objj_msgSend1(toolbarItem, "setTarget:", self));
     if (anItemIdentifier === BKStateToolbarItemIdentifier)
     {
-        var popUpButton = objj_msgSend(CPPopUpButton, "buttonWithTitle:", "Enabled");
-        objj_msgSend(popUpButton, "addItemWithTitle:", "Disabled");
-        objj_msgSend(toolbarItem, "setView:", popUpButton);
-        objj_msgSend(toolbarItem, "setTarget:", nil);
-        objj_msgSend(toolbarItem, "setAction:", sel_getUid("changeState:"));
-        objj_msgSend(toolbarItem, "setLabel:", "State");
-        var width = CGRectGetWidth(objj_msgSend(popUpButton, "frame"));
-        objj_msgSend(toolbarItem, "setMinSize:", CGSizeMake(width + 20.0, 25.0));
-        objj_msgSend(toolbarItem, "setMaxSize:", CGSizeMake(width + 20.0, 25.0));
+        var popUpButton = CPPopUpButton.isa.objj_msgSend1(CPPopUpButton, "buttonWithTitle:", "Enabled");
+        (popUpButton == null ? null : popUpButton.isa.objj_msgSend1(popUpButton, "addItemWithTitle:", "Disabled"));
+        (toolbarItem == null ? null : toolbarItem.isa.objj_msgSend1(toolbarItem, "setView:", popUpButton));
+        (toolbarItem == null ? null : toolbarItem.isa.objj_msgSend1(toolbarItem, "setTarget:", nil));
+        (toolbarItem == null ? null : toolbarItem.isa.objj_msgSend1(toolbarItem, "setAction:", sel_getUid("changeState:")));
+        (toolbarItem == null ? null : toolbarItem.isa.objj_msgSend1(toolbarItem, "setLabel:", "State"));
+        var width = CGRectGetWidth((popUpButton == null ? null : popUpButton.isa.objj_msgSend0(popUpButton, "frame")));
+        (toolbarItem == null ? null : toolbarItem.isa.objj_msgSend1(toolbarItem, "setMinSize:", CGSizeMake(width + 20.0, 25.0)));
+        (toolbarItem == null ? null : toolbarItem.isa.objj_msgSend1(toolbarItem, "setMaxSize:", CGSizeMake(width + 20.0, 25.0)));
     }
     else if (anItemIdentifier === BKBackgroundColorToolbarItemIdentifier)
     {
-        var popUpButton = objj_msgSend(CPPopUpButton, "buttonWithTitle:", "Window Background");
-        objj_msgSend(popUpButton, "addItemWithTitle:", "Light Checkers");
-        objj_msgSend(popUpButton, "addItemWithTitle:", "Dark Checkers");
-        objj_msgSend(popUpButton, "addItemWithTitle:", "White");
-        objj_msgSend(popUpButton, "addItemWithTitle:", "Black");
-        objj_msgSend(popUpButton, "addItemWithTitle:", "More Choices...");
-        var itemArray = objj_msgSend(popUpButton, "itemArray");
-        objj_msgSend(itemArray[0], "setRepresentedObject:", objj_msgSend(BKThemeDescriptor, "windowBackgroundColor"));
-        objj_msgSend(itemArray[1], "setRepresentedObject:", objj_msgSend(BKThemeDescriptor, "lightCheckersColor"));
-        objj_msgSend(itemArray[2], "setRepresentedObject:", objj_msgSend(BKThemeDescriptor, "darkCheckersColor"));
-        objj_msgSend(itemArray[3], "setRepresentedObject:", objj_msgSend(CPColor, "whiteColor"));
-        objj_msgSend(itemArray[4], "setRepresentedObject:", objj_msgSend(CPColor, "blackColor"));
-        objj_msgSend(toolbarItem, "setView:", popUpButton);
-        objj_msgSend(toolbarItem, "setTarget:", nil);
-        objj_msgSend(toolbarItem, "setAction:", sel_getUid("changeColor:"));
-        objj_msgSend(toolbarItem, "setLabel:", "Background Color");
-        var width = CGRectGetWidth(objj_msgSend(popUpButton, "frame"));
-        objj_msgSend(toolbarItem, "setMinSize:", CGSizeMake(width, 25.0));
-        objj_msgSend(toolbarItem, "setMaxSize:", CGSizeMake(width, 25.0));
+        var popUpButton = CPPopUpButton.isa.objj_msgSend1(CPPopUpButton, "buttonWithTitle:", "Window Background");
+        (popUpButton == null ? null : popUpButton.isa.objj_msgSend1(popUpButton, "addItemWithTitle:", "Light Checkers"));
+        (popUpButton == null ? null : popUpButton.isa.objj_msgSend1(popUpButton, "addItemWithTitle:", "Dark Checkers"));
+        (popUpButton == null ? null : popUpButton.isa.objj_msgSend1(popUpButton, "addItemWithTitle:", "White"));
+        (popUpButton == null ? null : popUpButton.isa.objj_msgSend1(popUpButton, "addItemWithTitle:", "Black"));
+        (popUpButton == null ? null : popUpButton.isa.objj_msgSend1(popUpButton, "addItemWithTitle:", "More Choices..."));
+        var itemArray = (popUpButton == null ? null : popUpButton.isa.objj_msgSend0(popUpButton, "itemArray"));
+        ((___r1 = itemArray[0]), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setRepresentedObject:", BKThemeDescriptor.isa.objj_msgSend0(BKThemeDescriptor, "windowBackgroundColor")));
+        ((___r1 = itemArray[1]), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setRepresentedObject:", BKThemeDescriptor.isa.objj_msgSend0(BKThemeDescriptor, "lightCheckersColor")));
+        ((___r1 = itemArray[2]), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setRepresentedObject:", BKThemeDescriptor.isa.objj_msgSend0(BKThemeDescriptor, "darkCheckersColor")));
+        ((___r1 = itemArray[3]), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setRepresentedObject:", CPColor.isa.objj_msgSend0(CPColor, "whiteColor")));
+        ((___r1 = itemArray[4]), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setRepresentedObject:", CPColor.isa.objj_msgSend0(CPColor, "blackColor")));
+        (toolbarItem == null ? null : toolbarItem.isa.objj_msgSend1(toolbarItem, "setView:", popUpButton));
+        (toolbarItem == null ? null : toolbarItem.isa.objj_msgSend1(toolbarItem, "setTarget:", nil));
+        (toolbarItem == null ? null : toolbarItem.isa.objj_msgSend1(toolbarItem, "setAction:", sel_getUid("changeColor:")));
+        (toolbarItem == null ? null : toolbarItem.isa.objj_msgSend1(toolbarItem, "setLabel:", "Background Color"));
+        var width = CGRectGetWidth((popUpButton == null ? null : popUpButton.isa.objj_msgSend0(popUpButton, "frame")));
+        (toolbarItem == null ? null : toolbarItem.isa.objj_msgSend1(toolbarItem, "setMinSize:", CGSizeMake(width, 25.0)));
+        (toolbarItem == null ? null : toolbarItem.isa.objj_msgSend1(toolbarItem, "setMaxSize:", CGSizeMake(width, 25.0)));
     }
     else if (anItemIdentifier === BKLearnMoreToolbarItemIdentifier)
     {
-        var title = objj_msgSend(objj_msgSend(CPBundle, "mainBundle"), "objectForInfoDictionaryKey:", "BKLearnMoreButtonTitle");
+        var title = ((___r1 = CPBundle.isa.objj_msgSend0(CPBundle, "mainBundle")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "objectForInfoDictionaryKey:", "BKLearnMoreButtonTitle"));
         if (!title)
-            title = objj_msgSend(objj_msgSend(CPBundle, "mainBundle"), "objectForInfoDictionaryKey:", "CPBundleName") || "Home Page";
-        var button = objj_msgSend(CPButton, "buttonWithTitle:", title);
-        objj_msgSend(self.theWindow, "setDefaultButton:", button);
-        objj_msgSend(toolbarItem, "setView:", button);
-        objj_msgSend(toolbarItem, "setLabel:", "Learn More");
-        objj_msgSend(toolbarItem, "setTarget:", nil);
-        objj_msgSend(toolbarItem, "setAction:", sel_getUid("learnMore:"));
-        var width = CGRectGetWidth(objj_msgSend(button, "frame"));
-        objj_msgSend(toolbarItem, "setMinSize:", CGSizeMake(width, 25.0));
-        objj_msgSend(toolbarItem, "setMaxSize:", CGSizeMake(width, 25.0));
+            title = ((___r1 = CPBundle.isa.objj_msgSend0(CPBundle, "mainBundle")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "objectForInfoDictionaryKey:", "CPBundleName")) || "Home Page";
+        var button = CPButton.isa.objj_msgSend1(CPButton, "buttonWithTitle:", title);
+        ((___r1 = self.theWindow), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setDefaultButton:", button));
+        (toolbarItem == null ? null : toolbarItem.isa.objj_msgSend1(toolbarItem, "setView:", button));
+        (toolbarItem == null ? null : toolbarItem.isa.objj_msgSend1(toolbarItem, "setLabel:", "Learn More"));
+        (toolbarItem == null ? null : toolbarItem.isa.objj_msgSend1(toolbarItem, "setTarget:", nil));
+        (toolbarItem == null ? null : toolbarItem.isa.objj_msgSend1(toolbarItem, "setAction:", sel_getUid("learnMore:")));
+        var width = CGRectGetWidth((button == null ? null : button.isa.objj_msgSend0(button, "frame")));
+        (toolbarItem == null ? null : toolbarItem.isa.objj_msgSend1(toolbarItem, "setMinSize:", CGSizeMake(width, 25.0)));
+        (toolbarItem == null ? null : toolbarItem.isa.objj_msgSend1(toolbarItem, "setMaxSize:", CGSizeMake(width, 25.0)));
     }
     return toolbarItem;
+    var ___r1;
 }
 ,["CPToolbarItem","CPToolbar","CPString","BOOL"]), new objj_method(sel_getUid("learnMore:"), function $BKShowcaseController__learnMore_(self, _cmd, aSender)
 {
-    window.location.href = objj_msgSend(objj_msgSend(CPBundle, "mainBundle"), "objectForInfoDictionaryKey:", "BKLearnMoreURL");
+    window.location.href = ((___r1 = CPBundle.isa.objj_msgSend0(CPBundle, "mainBundle")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "objectForInfoDictionaryKey:", "BKLearnMoreURL"));
+    var ___r1;
 }
 ,["void","id"]), new objj_method(sel_getUid("selectedThemeDescriptor"), function $BKShowcaseController__selectedThemeDescriptor(self, _cmd)
 {
-    return self._themeDescriptorClasses[objj_msgSend(objj_msgSend(self._themesCollectionView, "selectionIndexes"), "firstIndex")];
+    return self._themeDescriptorClasses[((___r1 = ((___r2 = self._themesCollectionView), ___r2 == null ? null : ___r2.isa.objj_msgSend0(___r2, "selectionIndexes"))), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "firstIndex"))];
+    var ___r1, ___r2;
 }
 ,["BKThemeDescriptor"]), new objj_method(sel_getUid("changeState:"), function $BKShowcaseController__changeState_(self, _cmd, aSender)
 {
-    var themedShowcaseObjectTemplates = objj_msgSend(objj_msgSend(self, "selectedThemeDescriptor"), "themedShowcaseObjectTemplates"),
-        count = objj_msgSend(themedShowcaseObjectTemplates, "count");
+    var themedShowcaseObjectTemplates = ((___r1 = self.isa.objj_msgSend0(self, "selectedThemeDescriptor")), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "themedShowcaseObjectTemplates")),
+        count = (themedShowcaseObjectTemplates == null ? null : themedShowcaseObjectTemplates.isa.objj_msgSend0(themedShowcaseObjectTemplates, "count"));
     while (count--)
     {
-        var themedObject = objj_msgSend(themedShowcaseObjectTemplates[count], "valueForKey:", "themedObject");
-        if (objj_msgSend(themedObject, "respondsToSelector:", sel_getUid("setEnabled:")))
-            objj_msgSend(themedObject, "setEnabled:", objj_msgSend(aSender, "title") === "Enabled" ? YES : NO);
+        var themedObject = ((___r1 = themedShowcaseObjectTemplates[count]), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "valueForKey:", "themedObject"));
+        if ((themedObject == null ? null : themedObject.isa.objj_msgSend1(themedObject, "respondsToSelector:", sel_getUid("setEnabled:"))))
+            (themedObject == null ? null : themedObject.isa.objj_msgSend1(themedObject, "setEnabled:", (aSender == null ? null : aSender.isa.objj_msgSend0(aSender, "title")) === "Enabled" ? YES : NO));
     }
+    var ___r1;
 }
 ,["void","id"]), new objj_method(sel_getUid("changeColor:"), function $BKShowcaseController__changeColor_(self, _cmd, aSender)
 {
     var color = nil;
-    if (objj_msgSend(aSender, "isKindOfClass:", objj_msgSend(CPColorPanel, "class")))
-        color = objj_msgSend(aSender, "color");
+    if ((aSender == null ? null : aSender.isa.objj_msgSend1(aSender, "isKindOfClass:", CPColorPanel.isa.objj_msgSend0(CPColorPanel, "class"))))
+        color = (aSender == null ? null : aSender.isa.objj_msgSend0(aSender, "color"));
     else
     {
-        if (objj_msgSend(aSender, "titleOfSelectedItem") === "More Choices...")
+        if ((aSender == null ? null : aSender.isa.objj_msgSend0(aSender, "titleOfSelectedItem")) === "More Choices...")
         {
-            objj_msgSend(aSender, "addItemWithTitle:", "Other");
-            objj_msgSend(aSender, "selectItemWithTitle:", "Other");
-            objj_msgSend(CPApp, "orderFrontColorPanel:", self);
+            (aSender == null ? null : aSender.isa.objj_msgSend1(aSender, "addItemWithTitle:", "Other"));
+            (aSender == null ? null : aSender.isa.objj_msgSend1(aSender, "selectItemWithTitle:", "Other"));
+            (CPApp == null ? null : CPApp.isa.objj_msgSend1(CPApp, "orderFrontColorPanel:", self));
         }
         else
         {
-            color = objj_msgSend(objj_msgSend(aSender, "selectedItem"), "representedObject");
-            objj_msgSend(aSender, "removeItemWithTitle:", "Other");
+            color = ((___r1 = (aSender == null ? null : aSender.isa.objj_msgSend0(aSender, "selectedItem"))), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "representedObject"));
+            (aSender == null ? null : aSender.isa.objj_msgSend1(aSender, "removeItemWithTitle:", "Other"));
         }
     }
     if (color)
     {
-        objj_msgSend(objj_msgSend(self, "selectedThemeDescriptor"), "setShowcaseBackgroundColor:", color);
-        objj_msgSend(BKShowcaseCell, "setBackgroundColor:", color);
+        ((___r1 = self.isa.objj_msgSend0(self, "selectedThemeDescriptor")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setShowcaseBackgroundColor:", color));
+        (BKShowcaseCell == null ? null : BKShowcaseCell.isa.objj_msgSend1(BKShowcaseCell, "setBackgroundColor:", color));
     }
+    var ___r1;
 }
 ,["void","id"])]);
 }var SelectionColor = nil;
@@ -195,29 +207,32 @@ class_addMethods(the_class, [new objj_method(sel_getUid("setRepresentedObject:")
 {
     if (!self._label)
     {
-        self._label = objj_msgSend(CPTextField, "labelWithTitle:", "hello");
-        objj_msgSend(self._label, "setFont:", objj_msgSend(CPFont, "systemFontOfSize:", 11.0));
-        objj_msgSend(self._label, "setFrame:", CGRectMake(10.0, 0.0, CGRectGetWidth(objj_msgSend(self, "bounds")) - 20.0, CGRectGetHeight(objj_msgSend(self, "bounds"))));
-        objj_msgSend(self._label, "setVerticalAlignment:", CPCenterVerticalTextAlignment);
-        objj_msgSend(self._label, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
-        objj_msgSend(self, "addSubview:", self._label);
+        self._label = CPTextField.isa.objj_msgSend1(CPTextField, "labelWithTitle:", "hello");
+        ((___r1 = self._label), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setFont:", CPFont.isa.objj_msgSend1(CPFont, "systemFontOfSize:", 11.0)));
+        ((___r1 = self._label), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setFrame:", CGRectMake(10.0, 0.0, CGRectGetWidth(self.isa.objj_msgSend0(self, "bounds")) - 20.0, CGRectGetHeight(self.isa.objj_msgSend0(self, "bounds")))));
+        ((___r1 = self._label), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setVerticalAlignment:", CPCenterVerticalTextAlignment));
+        ((___r1 = self._label), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable));
+        self.isa.objj_msgSend1(self, "addSubview:", self._label);
     }
-    objj_msgSend(self._label, "setStringValue:", objj_msgSend(aThemeDescriptor, "themeName") + " (" + objj_msgSend(objj_msgSend(aThemeDescriptor, "themedShowcaseObjectTemplates"), "count") + ")");
+    ((___r1 = self._label), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setStringValue:", (aThemeDescriptor == null ? null : aThemeDescriptor.isa.objj_msgSend0(aThemeDescriptor, "themeName")) + " (" + ((___r2 = (aThemeDescriptor == null ? null : aThemeDescriptor.isa.objj_msgSend0(aThemeDescriptor, "themedShowcaseObjectTemplates"))), ___r2 == null ? null : ___r2.isa.objj_msgSend0(___r2, "count")) + ")"));
+    var ___r1, ___r2;
 }
 ,["void","id"]), new objj_method(sel_getUid("setSelected:"), function $BKThemeDescriptorCell__setSelected_(self, _cmd, isSelected)
 {
-    objj_msgSend(self, "setBackgroundColor:", isSelected ? objj_msgSend(objj_msgSend(self, "class"), "selectionColor") : nil);
-    objj_msgSend(self._label, "setTextShadowOffset:", isSelected ? CGSizeMake(0.0, 1.0) : CGSizeMakeZero());
-    objj_msgSend(self._label, "setTextShadowColor:", isSelected ? objj_msgSend(CPColor, "blackColor") : nil);
-    objj_msgSend(self._label, "setFont:", isSelected ? objj_msgSend(CPFont, "boldSystemFontOfSize:", 11.0) : objj_msgSend(CPFont, "systemFontOfSize:", 11.0));
-    objj_msgSend(self._label, "setTextColor:", isSelected ? objj_msgSend(CPColor, "whiteColor") : objj_msgSend(CPColor, "blackColor"));
+    self.isa.objj_msgSend1(self, "setBackgroundColor:", isSelected ? ((___r1 = self.isa.objj_msgSend0(self, "class")), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "selectionColor")) : nil);
+    ((___r1 = self._label), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setTextShadowOffset:", isSelected ? CGSizeMake(0.0, 1.0) : CGSizeMakeZero()));
+    ((___r1 = self._label), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setTextShadowColor:", isSelected ? CPColor.isa.objj_msgSend0(CPColor, "blackColor") : nil));
+    ((___r1 = self._label), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setFont:", isSelected ? CPFont.isa.objj_msgSend1(CPFont, "boldSystemFontOfSize:", 11.0) : CPFont.isa.objj_msgSend1(CPFont, "systemFontOfSize:", 11.0)));
+    ((___r1 = self._label), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setTextColor:", isSelected ? CPColor.isa.objj_msgSend0(CPColor, "whiteColor") : CPColor.isa.objj_msgSend0(CPColor, "blackColor")));
+    var ___r1;
 }
 ,["void","BOOL"])]);
 class_addMethods(meta_class, [new objj_method(sel_getUid("selectionColor"), function $BKThemeDescriptorCell__selectionColor(self, _cmd)
 {
     if (!SelectionColor)
-        SelectionColor = objj_msgSend(CPColor, "colorWithPatternImage:", objj_msgSend(objj_msgSend(CPImage, "alloc"), "initWithContentsOfFile:size:", objj_msgSend(objj_msgSend(CPBundle, "bundleForClass:", objj_msgSend(BKThemeDescriptorCell, "class")), "pathForResource:", "selection.png"), CGSizeMake(1.0, 36.0)));
+        SelectionColor = CPColor.isa.objj_msgSend1(CPColor, "colorWithPatternImage:", ((___r1 = CPImage.isa.objj_msgSend0(CPImage, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend2(___r1, "initWithContentsOfFile:size:", ((___r2 = CPBundle.isa.objj_msgSend1(CPBundle, "bundleForClass:", BKThemeDescriptorCell.isa.objj_msgSend0(BKThemeDescriptorCell, "class"))), ___r2 == null ? null : ___r2.isa.objj_msgSend1(___r2, "pathForResource:", "selection.png")), CGSizeMake(1.0, 36.0))));
     return SelectionColor;
+    var ___r1, ___r2;
 }
 ,["CPImage"])]);
 }var ShowcaseCellBackgroundColor = nil,
@@ -228,19 +243,22 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $BKSho
 {
     self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("BKShowcaseCell").super_class }, "init");
     if (self)
-        objj_msgSend(objj_msgSend(CPNotificationCenter, "defaultCenter"), "addObserver:selector:name:object:", self, sel_getUid("showcaseBackgroundDidChange:"), BKShowcaseCellBackgroundColorDidChangeNotification, nil);
+        ((___r1 = CPNotificationCenter.isa.objj_msgSend0(CPNotificationCenter, "defaultCenter")), ___r1 == null ? null : ___r1.isa.objj_msgSend(___r1, "addObserver:selector:name:object:", self, sel_getUid("showcaseBackgroundDidChange:"), BKShowcaseCellBackgroundColorDidChangeNotification, nil));
     return self;
+    var ___r1;
 }
 ,["id"]), new objj_method(sel_getUid("initWithCoder:"), function $BKShowcaseCell__initWithCoder_(self, _cmd, aCoder)
 {
     self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("BKShowcaseCell").super_class }, "initWithCoder:", aCoder);
     if (self)
-        objj_msgSend(objj_msgSend(CPNotificationCenter, "defaultCenter"), "addObserver:selector:name:object:", self, sel_getUid("showcaseBackgroundDidChange:"), BKShowcaseCellBackgroundColorDidChangeNotification, nil);
+        ((___r1 = CPNotificationCenter.isa.objj_msgSend0(CPNotificationCenter, "defaultCenter")), ___r1 == null ? null : ___r1.isa.objj_msgSend(___r1, "addObserver:selector:name:object:", self, sel_getUid("showcaseBackgroundDidChange:"), BKShowcaseCellBackgroundColorDidChangeNotification, nil));
     return self;
+    var ___r1;
 }
 ,["id","CPCoder"]), new objj_method(sel_getUid("showcaseBackgroundDidChange:"), function $BKShowcaseCell__showcaseBackgroundDidChange_(self, _cmd, aNotification)
 {
-    objj_msgSend(self._backgroundView, "setBackgroundColor:", objj_msgSend(BKShowcaseCell, "backgroundColor"));
+    ((___r1 = self._backgroundView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setBackgroundColor:", BKShowcaseCell.isa.objj_msgSend0(BKShowcaseCell, "backgroundColor")));
+    var ___r1;
 }
 ,["void","CPNotification"]), new objj_method(sel_getUid("setSelected:"), function $BKShowcaseCell__setSelected_(self, _cmd, isSelected)
 {
@@ -251,30 +269,31 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $BKSho
         return;
     if (!self._label)
     {
-        self._label = objj_msgSend(objj_msgSend(CPTextField, "alloc"), "initWithFrame:", CGRectMakeZero());
-        objj_msgSend(self._label, "setAlignment:", CPCenterTextAlignment);
-        objj_msgSend(self._label, "setAutoresizingMask:", CPViewMinYMargin | CPViewWidthSizable);
-        objj_msgSend(self._label, "setFont:", objj_msgSend(CPFont, "boldSystemFontOfSize:", 11.0));
-        objj_msgSend(self, "addSubview:", self._label);
+        self._label = ((___r1 = CPTextField.isa.objj_msgSend0(CPTextField, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "initWithFrame:", CGRectMakeZero()));
+        ((___r1 = self._label), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setAlignment:", CPCenterTextAlignment));
+        ((___r1 = self._label), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setAutoresizingMask:", CPViewMinYMargin | CPViewWidthSizable));
+        ((___r1 = self._label), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setFont:", CPFont.isa.objj_msgSend1(CPFont, "boldSystemFontOfSize:", 11.0)));
+        self.isa.objj_msgSend1(self, "addSubview:", self._label);
     }
-    objj_msgSend(self._label, "setStringValue:", objj_msgSend(anObject, "valueForKey:", "label"));
-    objj_msgSend(self._label, "sizeToFit");
-    objj_msgSend(self._label, "setFrame:", CGRectMake(0.0, CGRectGetHeight(objj_msgSend(self, "bounds")) - CGRectGetHeight(objj_msgSend(self._label, "frame")), CGRectGetWidth(objj_msgSend(self, "bounds")), CGRectGetHeight(objj_msgSend(self._label, "frame"))));
+    ((___r1 = self._label), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setStringValue:", (anObject == null ? null : anObject.isa.objj_msgSend1(anObject, "valueForKey:", "label"))));
+    ((___r1 = self._label), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "sizeToFit"));
+    ((___r1 = self._label), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setFrame:", CGRectMake(0.0, CGRectGetHeight(self.isa.objj_msgSend0(self, "bounds")) - CGRectGetHeight(((___r2 = self._label), ___r2 == null ? null : ___r2.isa.objj_msgSend0(___r2, "frame"))), CGRectGetWidth(self.isa.objj_msgSend0(self, "bounds")), CGRectGetHeight(((___r2 = self._label), ___r2 == null ? null : ___r2.isa.objj_msgSend0(___r2, "frame"))))));
     if (!self._backgroundView)
     {
-        self._backgroundView = objj_msgSend(objj_msgSend(CPView, "alloc"), "init");
-        objj_msgSend(self, "addSubview:", self._backgroundView);
+        self._backgroundView = ((___r1 = CPView.isa.objj_msgSend0(CPView, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "init"));
+        self.isa.objj_msgSend1(self, "addSubview:", self._backgroundView);
     }
-    objj_msgSend(self._backgroundView, "setFrame:", CGRectMake(0.0, 0.0, CGRectGetWidth(objj_msgSend(self, "bounds")), CGRectGetMinY(objj_msgSend(self._label, "frame"))));
-    objj_msgSend(self._backgroundView, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable);
+    ((___r1 = self._backgroundView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setFrame:", CGRectMake(0.0, 0.0, CGRectGetWidth(self.isa.objj_msgSend0(self, "bounds")), CGRectGetMinY(((___r2 = self._label), ___r2 == null ? null : ___r2.isa.objj_msgSend0(___r2, "frame"))))));
+    ((___r1 = self._backgroundView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setAutoresizingMask:", CPViewWidthSizable | CPViewHeightSizable));
     if (self._view)
-        objj_msgSend(self._view, "removeFromSuperview");
-    self._view = objj_msgSend(anObject, "valueForKey:", "themedObject");
-    objj_msgSend(self._view, "setTheme:", nil);
-    objj_msgSend(self._view, "setAutoresizingMask:", CPViewMinXMargin | CPViewMaxXMargin | CPViewMinYMargin | CPViewMaxYMargin);
-    objj_msgSend(self._view, "setFrameOrigin:", CGPointMake((CGRectGetWidth(objj_msgSend(self._backgroundView, "bounds")) - CGRectGetWidth(objj_msgSend(self._view, "frame"))) / 2.0, (CGRectGetHeight(objj_msgSend(self._backgroundView, "bounds")) - CGRectGetHeight(objj_msgSend(self._view, "frame"))) / 2.0));
-    objj_msgSend(self._backgroundView, "addSubview:", self._view);
-    objj_msgSend(self._backgroundView, "setBackgroundColor:", objj_msgSend(BKShowcaseCell, "backgroundColor"));
+        ((___r1 = self._view), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "removeFromSuperview"));
+    self._view = (anObject == null ? null : anObject.isa.objj_msgSend1(anObject, "valueForKey:", "themedObject"));
+    ((___r1 = self._view), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setTheme:", nil));
+    ((___r1 = self._view), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setAutoresizingMask:", CPViewMinXMargin | CPViewMaxXMargin | CPViewMinYMargin | CPViewMaxYMargin));
+    ((___r1 = self._view), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setFrameOrigin:", CGPointMake((CGRectGetWidth(((___r2 = self._backgroundView), ___r2 == null ? null : ___r2.isa.objj_msgSend0(___r2, "bounds"))) - CGRectGetWidth(((___r2 = self._view), ___r2 == null ? null : ___r2.isa.objj_msgSend0(___r2, "frame")))) / 2.0, (CGRectGetHeight(((___r2 = self._backgroundView), ___r2 == null ? null : ___r2.isa.objj_msgSend0(___r2, "bounds"))) - CGRectGetHeight(((___r2 = self._view), ___r2 == null ? null : ___r2.isa.objj_msgSend0(___r2, "frame")))) / 2.0)));
+    ((___r1 = self._backgroundView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "addSubview:", self._view));
+    ((___r1 = self._backgroundView), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "setBackgroundColor:", BKShowcaseCell.isa.objj_msgSend0(BKShowcaseCell, "backgroundColor")));
+    var ___r1, ___r2;
 }
 ,["void","id"])]);
 class_addMethods(meta_class, [new objj_method(sel_getUid("setBackgroundColor:"), function $BKShowcaseCell__setBackgroundColor_(self, _cmd, aColor)
@@ -282,14 +301,15 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("setBackgroundColor:"),
     if (ShowcaseCellBackgroundColor === aColor)
         return;
     ShowcaseCellBackgroundColor = aColor;
-    objj_msgSend(objj_msgSend(CPNotificationCenter, "defaultCenter"), "postNotificationName:object:", BKShowcaseCellBackgroundColorDidChangeNotification, nil);
+    ((___r1 = CPNotificationCenter.isa.objj_msgSend0(CPNotificationCenter, "defaultCenter")), ___r1 == null ? null : ___r1.isa.objj_msgSend2(___r1, "postNotificationName:object:", BKShowcaseCellBackgroundColorDidChangeNotification, nil));
+    var ___r1;
 }
 ,["void","CPColor"]), new objj_method(sel_getUid("backgroundColor"), function $BKShowcaseCell__backgroundColor(self, _cmd)
 {
     return ShowcaseCellBackgroundColor;
 }
 ,["CPColor"])]);
-}p;19;BKThemeDescriptor.jt;12157;@STATIC;1.0;I;21;Foundation/CPObject.jI;20;Foundation/CPArray.jI;16;AppKit/CPColor.jI;16;AppKit/CPImage.jI;15;AppKit/CPView.jI;29;AppKit/_CPCibCustomResource.jt;11990;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPArray.j", NO);objj_executeFile("AppKit/CPColor.j", NO);objj_executeFile("AppKit/CPImage.j", NO);objj_executeFile("AppKit/CPView.j", NO);objj_executeFile("AppKit/_CPCibCustomResource.j", NO);PatternIsHorizontal = CPColorPatternIsHorizontal;
+}p;19;BKThemeDescriptor.jt;14249;@STATIC;1.0;I;21;Foundation/CPObject.jI;20;Foundation/CPArray.jI;16;AppKit/CPColor.jI;16;AppKit/CPImage.jI;15;AppKit/CPView.jI;29;AppKit/_CPCibCustomResource.jt;14082;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPArray.j", NO);objj_executeFile("AppKit/CPColor.j", NO);objj_executeFile("AppKit/CPImage.j", NO);objj_executeFile("AppKit/CPView.j", NO);objj_executeFile("AppKit/_CPCibCustomResource.j", NO);PatternIsHorizontal = CPColorPatternIsHorizontal;
 PatternIsVertical = CPColorPatternIsVertical;
 var ItemSizes = {},
     ThemedObjects = {},
@@ -313,59 +333,61 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("allThemeDescriptorClas
         if (index >= 0 && index === theClassName.length - "ThemeDescriptor".length)
             themeDescriptorClasses.push(theClass);
     }
-    objj_msgSend(themeDescriptorClasses, "sortUsingSelector:", sel_getUid("compare:"));
+    (themeDescriptorClasses == null ? null : themeDescriptorClasses.isa.objj_msgSend1(themeDescriptorClasses, "sortUsingSelector:", sel_getUid("compare:")));
     return themeDescriptorClasses;
 }
 ,["CPArray"]), new objj_method(sel_getUid("lightCheckersColor"), function $BKThemeDescriptor__lightCheckersColor(self, _cmd)
 {
     if (!LightCheckersColor)
-        LightCheckersColor = objj_msgSend(CPColor, "colorWithPatternImage:", objj_msgSend(objj_msgSend(CPImage, "alloc"), "initWithContentsOfFile:size:", objj_msgSend(objj_msgSend(CPBundle, "bundleForClass:", objj_msgSend(BKThemeDescriptor, "class")), "pathForResource:", "light-checkers.png"), CGSizeMake(12.0, 12.0)));
+        LightCheckersColor = CPColor.isa.objj_msgSend1(CPColor, "colorWithPatternImage:", ((___r1 = CPImage.isa.objj_msgSend0(CPImage, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend2(___r1, "initWithContentsOfFile:size:", ((___r2 = CPBundle.isa.objj_msgSend1(CPBundle, "bundleForClass:", BKThemeDescriptor.isa.objj_msgSend0(BKThemeDescriptor, "class"))), ___r2 == null ? null : ___r2.isa.objj_msgSend1(___r2, "pathForResource:", "light-checkers.png")), CGSizeMake(12.0, 12.0))));
     return LightCheckersColor;
+    var ___r1, ___r2;
 }
 ,["CPColor"]), new objj_method(sel_getUid("darkCheckersColor"), function $BKThemeDescriptor__darkCheckersColor(self, _cmd)
 {
     if (!DarkCheckersColor)
-        DarkCheckersColor = objj_msgSend(CPColor, "colorWithPatternImage:", objj_msgSend(objj_msgSend(CPImage, "alloc"), "initWithContentsOfFile:size:", objj_msgSend(objj_msgSend(CPBundle, "bundleForClass:", objj_msgSend(BKThemeDescriptor, "class")), "pathForResource:", "dark-checkers.png"), CGSizeMake(12.0, 12.0)));
+        DarkCheckersColor = CPColor.isa.objj_msgSend1(CPColor, "colorWithPatternImage:", ((___r1 = CPImage.isa.objj_msgSend0(CPImage, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend2(___r1, "initWithContentsOfFile:size:", ((___r2 = CPBundle.isa.objj_msgSend1(CPBundle, "bundleForClass:", BKThemeDescriptor.isa.objj_msgSend0(BKThemeDescriptor, "class"))), ___r2 == null ? null : ___r2.isa.objj_msgSend1(___r2, "pathForResource:", "dark-checkers.png")), CGSizeMake(12.0, 12.0))));
     return DarkCheckersColor;
+    var ___r1, ___r2;
 }
 ,["CPColor"]), new objj_method(sel_getUid("windowBackgroundColor"), function $BKThemeDescriptor__windowBackgroundColor(self, _cmd)
 {
-    return objj_msgSend(CPColor, "colorWithCalibratedWhite:alpha:", 0.95, 1.0);
+    return CPColor.isa.objj_msgSend2(CPColor, "colorWithCalibratedWhite:alpha:", 0.95, 1.0);
 }
 ,["CPColor"]), new objj_method(sel_getUid("defaultShowcaseBackgroundColor"), function $BKThemeDescriptor__defaultShowcaseBackgroundColor(self, _cmd)
 {
-    return objj_msgSend(CPColor, "colorWithCalibratedWhite:alpha:", 0.95, 1.0);
+    return CPColor.isa.objj_msgSend2(CPColor, "colorWithCalibratedWhite:alpha:", 0.95, 1.0);
 }
 ,["CPColor"]), new objj_method(sel_getUid("showcaseBackgroundColor"), function $BKThemeDescriptor__showcaseBackgroundColor(self, _cmd)
 {
-    var className = objj_msgSend(self, "className");
+    var className = self.isa.objj_msgSend0(self, "className");
     if (!BackgroundColors[className])
-        BackgroundColors[className] = objj_msgSend(self, "defaultShowcaseBackgroundColor");
+        BackgroundColors[className] = self.isa.objj_msgSend0(self, "defaultShowcaseBackgroundColor");
     return BackgroundColors[className];
 }
 ,["CPColor"]), new objj_method(sel_getUid("setShowcaseBackgroundColor:"), function $BKThemeDescriptor__setShowcaseBackgroundColor_(self, _cmd, aColor)
 {
-    BackgroundColors[objj_msgSend(self, "className")] = aColor;
+    BackgroundColors[self.isa.objj_msgSend0(self, "className")] = aColor;
 }
 ,["void","CPColor"]), new objj_method(sel_getUid("itemSize"), function $BKThemeDescriptor__itemSize(self, _cmd)
 {
-    var className = objj_msgSend(self, "className");
+    var className = self.isa.objj_msgSend0(self, "className");
     if (!ItemSizes[className])
-        objj_msgSend(self, "calculateThemedObjectTemplates");
+        self.isa.objj_msgSend0(self, "calculateThemedObjectTemplates");
     return CGSizeMakeCopy(ItemSizes[className]);
 }
 ,["CGSize"]), new objj_method(sel_getUid("themedObjectTemplates"), function $BKThemeDescriptor__themedObjectTemplates(self, _cmd)
 {
-    var className = objj_msgSend(self, "className");
+    var className = self.isa.objj_msgSend0(self, "className");
     if (!ThemedObjects[className])
-        objj_msgSend(self, "calculateThemedObjectTemplates");
+        self.isa.objj_msgSend0(self, "calculateThemedObjectTemplates");
     return ThemedObjects[className];
 }
 ,["CPArray"]), new objj_method(sel_getUid("themedShowcaseObjectTemplates"), function $BKThemeDescriptor__themedShowcaseObjectTemplates(self, _cmd)
 {
-    var className = objj_msgSend(self, "className");
+    var className = self.isa.objj_msgSend0(self, "className");
     if (!ThemedShowcaseObjects[className])
-        objj_msgSend(self, "calculateThemedObjectTemplates");
+        self.isa.objj_msgSend0(self, "calculateThemedObjectTemplates");
     return ThemedShowcaseObjects[className];
 }
 ,["CPArray"]), new objj_method(sel_getUid("calculateThemedObjectTemplates"), function $BKThemeDescriptor__calculateThemedObjectTemplates(self, _cmd)
@@ -373,12 +395,12 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("allThemeDescriptorClas
     var templates = [],
         showcaseTemplates = [],
         itemSize = CGSizeMake(0.0, 0.0),
-        methods = class_copyMethodList(objj_msgSend(self, "class").isa),
+        methods = class_copyMethodList(self.isa.objj_msgSend0(self, "class").isa),
         index = 0,
-        count = objj_msgSend(methods, "count"),
+        count = (methods == null ? null : methods.isa.objj_msgSend0(methods, "count")),
         excludes = [];
-    if (objj_msgSend(self, "respondsToSelector:", sel_getUid("themeShowcaseExcludes")))
-        excludes = objj_msgSend(self, "themeShowcaseExcludes");
+    if (self.isa.objj_msgSend1(self, "respondsToSelector:", sel_getUid("themeShowcaseExcludes")))
+        excludes = self.isa.objj_msgSend0(self, "themeShowcaseExcludes");
     for (; index < excludes.length; ++index)
     {
         var name = excludes[index].toLowerCase();
@@ -397,17 +419,17 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("allThemeDescriptorClas
             object = impl(self, selector);
         if (!object)
             continue;
-        var template = objj_msgSend(objj_msgSend(BKThemedObjectTemplate, "alloc"), "init"),
-            excluded = objj_msgSend(excludes, "containsObject:", selector.toLowerCase());
-        objj_msgSend(template, "setValue:forKey:", object, "themedObject");
-        objj_msgSend(template, "setValue:forKey:", BKLabelFromIdentifier(selector), "label");
-        objj_msgSend(templates, "addObject:", template);
+        var template = ((___r1 = (BKThemedObjectTemplate == null ? null : BKThemedObjectTemplate.isa.objj_msgSend0(BKThemedObjectTemplate, "alloc"))), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "init")),
+            excluded = (excludes == null ? null : excludes.isa.objj_msgSend1(excludes, "containsObject:", selector.toLowerCase()));
+        (template == null ? null : template.isa.objj_msgSend2(template, "setValue:forKey:", object, "themedObject"));
+        (template == null ? null : template.isa.objj_msgSend2(template, "setValue:forKey:", BKLabelFromIdentifier(selector), "label"));
+        (templates == null ? null : templates.isa.objj_msgSend1(templates, "addObject:", template));
         if (!excluded)
         {
-            if (objj_msgSend(object, "isKindOfClass:", objj_msgSend(CPView, "class")))
+            if ((object == null ? null : object.isa.objj_msgSend1(object, "isKindOfClass:", CPView.isa.objj_msgSend0(CPView, "class"))))
             {
-                var size = objj_msgSend(object, "frame").size,
-                    labelWidth = objj_msgSend(objj_msgSend(template, "valueForKey:", "label"), "sizeWithFont:", objj_msgSend(CPFont, "boldSystemFontOfSize:", 0)).width + 20.0;
+                var size = (object == null ? null : object.isa.objj_msgSend0(object, "frame")).size,
+                    labelWidth = ((___r1 = (template == null ? null : template.isa.objj_msgSend1(template, "valueForKey:", "label"))), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "sizeWithFont:", CPFont.isa.objj_msgSend1(CPFont, "boldSystemFontOfSize:", 0))).width + 20.0;
                 if (size.width > itemSize.width)
                     itemSize.width = size.width;
                 if (labelWidth > itemSize.width)
@@ -415,17 +437,19 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("allThemeDescriptorClas
                 if (size.height > itemSize.height)
                     itemSize.height = size.height;
             }
-            objj_msgSend(showcaseTemplates, "addObject:", template);
+            (showcaseTemplates == null ? null : showcaseTemplates.isa.objj_msgSend1(showcaseTemplates, "addObject:", template));
         }
     }
-    var className = objj_msgSend(self, "className");
+    var className = self.isa.objj_msgSend0(self, "className");
     ItemSizes[className] = itemSize;
     ThemedObjects[className] = templates;
     ThemedShowcaseObjects[className] = showcaseTemplates;
+    var ___r1;
 }
 ,["void"]), new objj_method(sel_getUid("compare:"), function $BKThemeDescriptor__compare_(self, _cmd, aThemeDescriptor)
 {
-    return objj_msgSend(objj_msgSend(self, "themeName"), "compare:", objj_msgSend(aThemeDescriptor, "themeName"));
+    return ((___r1 = self.isa.objj_msgSend0(self, "themeName")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "compare:", (aThemeDescriptor == null ? null : aThemeDescriptor.isa.objj_msgSend0(aThemeDescriptor, "themeName"))));
+    var ___r1;
 }
 ,["int","BKThemeDescriptor"]), new objj_method(sel_getUid("registerThemeValues:forView:"), function $BKThemeDescriptor__registerThemeValues_forView_(self, _cmd, themeValues, aView)
 {
@@ -436,20 +460,20 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("allThemeDescriptorClas
             value = attributeValueState[1],
             state = attributeValueState[2];
         if (state)
-            objj_msgSend(aView, "setValue:forThemeAttribute:inState:", value, attribute, state);
+            (aView == null ? null : aView.isa.objj_msgSend3(aView, "setValue:forThemeAttribute:inState:", value, attribute, state));
         else
-            objj_msgSend(aView, "setValue:forThemeAttribute:", value, attribute);
+            (aView == null ? null : aView.isa.objj_msgSend2(aView, "setValue:forThemeAttribute:", value, attribute));
     }
 }
 ,["void","CPArray","CPView"]), new objj_method(sel_getUid("registerThemeValues:forView:inherit:"), function $BKThemeDescriptor__registerThemeValues_forView_inherit_(self, _cmd, themeValues, aView, inheritedValues)
 {
     if (inheritedValues)
     {
-        var themeName = objj_msgSend(self, "themeName"),
+        var themeName = self.isa.objj_msgSend0(self, "themeName"),
             index = themeName.indexOf("-");
         if (index < 0)
         {
-            objj_msgSend(self, "registerThemeValues:forView:", inheritedValues, aView);
+            self.isa.objj_msgSend2(self, "registerThemeValues:forView:", inheritedValues, aView);
         }
         else
         {
@@ -461,40 +485,41 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("allThemeDescriptorClas
                     value = attributeValueState[1],
                     state = attributeValueState[2],
                     pattern = nil;
-                if (typeof value === "object" && value.hasOwnProperty("isa") && objj_msgSend(value, "isKindOfClass:", CPColor) && (pattern = objj_msgSend(value, "patternImage")))
+                if (typeof value === "object" && value.hasOwnProperty("isa") && (value == null ? null : value.isa.objj_msgSend1(value, "isKindOfClass:", CPColor)) && (pattern = (value == null ? null : value.isa.objj_msgSend0(value, "patternImage"))))
                 {
-                    if (objj_msgSend(pattern, "isThreePartImage") || objj_msgSend(pattern, "isNinePartImage"))
+                    if ((pattern == null ? null : pattern.isa.objj_msgSend0(pattern, "isThreePartImage")) || (pattern == null ? null : pattern.isa.objj_msgSend0(pattern, "isNinePartImage")))
                     {
-                        var slices = objj_msgSend(pattern, "imageSlices"),
+                        var slices = (pattern == null ? null : pattern.isa.objj_msgSend0(pattern, "imageSlices")),
                             newSlices = [];
                         for (var sliceIndex = 0; sliceIndex < slices.length; ++sliceIndex)
                         {
                             var slice = slices[sliceIndex],
-                                filename = themePath + objj_msgSend(objj_msgSend(slice, "filename"), "lastPathComponent"),
-                                size = objj_msgSend(slice, "size");
+                                filename = themePath + ((___r1 = (slice == null ? null : slice.isa.objj_msgSend0(slice, "filename"))), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "lastPathComponent")),
+                                size = (slice == null ? null : slice.isa.objj_msgSend0(slice, "size"));
                             newSlices.push([filename, size.width, size.height]);
                         }
-                        if (objj_msgSend(pattern, "isThreePartImage"))
-                            value = PatternColor(newSlices, objj_msgSend(pattern, "isVertical"));
+                        if ((pattern == null ? null : pattern.isa.objj_msgSend0(pattern, "isThreePartImage")))
+                            value = PatternColor(newSlices, (pattern == null ? null : pattern.isa.objj_msgSend0(pattern, "isVertical")));
                         else
                             value = PatternColor(newSlices);
                     }
                     else
                     {
-                        var filename = themePath + objj_msgSend(objj_msgSend(pattern, "filename"), "lastPathComponent"),
-                            size = objj_msgSend(pattern, "size");
+                        var filename = themePath + ((___r1 = (pattern == null ? null : pattern.isa.objj_msgSend0(pattern, "filename"))), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "lastPathComponent")),
+                            size = (pattern == null ? null : pattern.isa.objj_msgSend0(pattern, "size"));
                         value = PatternColor(filename, size.width, size.height);
                     }
                 }
                 if (state)
-                    objj_msgSend(aView, "setValue:forThemeAttribute:inState:", value, attribute, state);
+                    (aView == null ? null : aView.isa.objj_msgSend3(aView, "setValue:forThemeAttribute:inState:", value, attribute, state));
                 else
-                    objj_msgSend(aView, "setValue:forThemeAttribute:", value, attribute);
+                    (aView == null ? null : aView.isa.objj_msgSend2(aView, "setValue:forThemeAttribute:", value, attribute));
             }
         }
     }
     if (themeValues)
-        objj_msgSend(self, "registerThemeValues:forView:", themeValues, aView);
+        self.isa.objj_msgSend2(self, "registerThemeValues:forView:", themeValues, aView);
+    var ___r1;
 }
 ,["void","CPArray","CPView","CPArray"])]);
 }BKLabelFromIdentifier = function(anIdentifier)
@@ -533,7 +558,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("allThemeDescriptorClas
 }
 PatternImage = function(name, width, height)
 {
-    return objj_msgSend(_CPCibCustomResource, "imageResourceWithName:size:", name, CGSizeMake(width, height));
+    return _CPCibCustomResource.isa.objj_msgSend2(_CPCibCustomResource, "imageResourceWithName:size:", name, CGSizeMake(width, height));
 }
 PatternColor = function()
 {
@@ -541,40 +566,40 @@ PatternColor = function()
     args.push(PatternImage);
     return CPColorWithImages.apply(this, args);
 }
-p;24;BKThemedObjectTemplate.jt;1194;@STATIC;1.0;I;15;AppKit/CPView.jt;1155;objj_executeFile("AppKit/CPView.j", NO);{var the_class = objj_allocateClassPair(CPView, "BKThemedObjectTemplate"),
+p;24;BKThemedObjectTemplate.jt;1346;@STATIC;1.0;I;15;AppKit/CPView.jt;1307;objj_executeFile("AppKit/CPView.j", NO);{var the_class = objj_allocateClassPair(CPView, "BKThemedObjectTemplate"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_label"), new objj_ivar("_themedObject")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $BKThemedObjectTemplate__initWithCoder_(self, _cmd, aCoder)
 {
     self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("BKThemedObjectTemplate").super_class }, "init");
     if (self)
     {
-        self._label = objj_msgSend(aCoder, "decodeObjectForKey:", "BKThemedObjectTemplateLabel");
-        self._themedObject = objj_msgSend(aCoder, "decodeObjectForKey:", "BKThemedObjectTemplateThemedObject");
+        self._label = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "BKThemedObjectTemplateLabel"));
+        self._themedObject = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "BKThemedObjectTemplateThemedObject"));
     }
     return self;
 }
 ,["id","CPCoder"]), new objj_method(sel_getUid("encodeWithCoder:"), function $BKThemedObjectTemplate__encodeWithCoder_(self, _cmd, aCoder)
 {
-    objj_msgSend(aCoder, "encodeObject:forKey:", self._label, "BKThemedObjectTemplateLabel");
-    objj_msgSend(aCoder, "encodeObject:forKey:", self._themedObject, "BKThemedObjectTemplateThemedObject");
+    (aCoder == null ? null : aCoder.isa.objj_msgSend2(aCoder, "encodeObject:forKey:", self._label, "BKThemedObjectTemplateLabel"));
+    (aCoder == null ? null : aCoder.isa.objj_msgSend2(aCoder, "encodeObject:forKey:", self._themedObject, "BKThemedObjectTemplateThemedObject"));
 }
 ,["void","CPCoder"])]);
-}p;17;BKThemeTemplate.jt;1142;@STATIC;1.0;I;21;Foundation/CPObject.jt;1097;objj_executeFile("Foundation/CPObject.j", NO);{var the_class = objj_allocateClassPair(CPObject, "BKThemeTemplate"),
+}p;17;BKThemeTemplate.jt;1294;@STATIC;1.0;I;21;Foundation/CPObject.jt;1249;objj_executeFile("Foundation/CPObject.j", NO);{var the_class = objj_allocateClassPair(CPObject, "BKThemeTemplate"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_name"), new objj_ivar("_description")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $BKThemeTemplate__initWithCoder_(self, _cmd, aCoder)
 {
     self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("BKThemeTemplate").super_class }, "init");
     if (self)
     {
-        self._name = objj_msgSend(aCoder, "decodeObjectForKey:", "BKThemeTemplateName");
-        self._description = objj_msgSend(aCoder, "decodeObjectForKey:", "BKThemeTemplateDescription");
+        self._name = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "BKThemeTemplateName"));
+        self._description = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "BKThemeTemplateDescription"));
     }
     return self;
 }
 ,["id","CPCoder"]), new objj_method(sel_getUid("encodeWithCoder:"), function $BKThemeTemplate__encodeWithCoder_(self, _cmd, aCoder)
 {
-    objj_msgSend(aCoder, "encodeObject:forKey:", self._name, "BKThemeTemplateName");
-    objj_msgSend(aCoder, "encodeObject:forKey:", self._description, "BKThemeTemplateDescription");
+    (aCoder == null ? null : aCoder.isa.objj_msgSend2(aCoder, "encodeObject:forKey:", self._name, "BKThemeTemplateName"));
+    (aCoder == null ? null : aCoder.isa.objj_msgSend2(aCoder, "encodeObject:forKey:", self._description, "BKThemeTemplateDescription"));
 }
 ,["void","CPCoder"])]);
 }p;10;BlendKit.jt;306;@STATIC;1.0;i;22;BKShowcaseController.ji;19;BKThemeDescriptor.ji;17;BKThemeTemplate.ji;24;BKThemedObjectTemplate.jt;186;objj_executeFile("BKShowcaseController.j", YES);objj_executeFile("BKThemeDescriptor.j", YES);objj_executeFile("BKThemeTemplate.j", YES);objj_executeFile("BKThemedObjectTemplate.j", YES);e;

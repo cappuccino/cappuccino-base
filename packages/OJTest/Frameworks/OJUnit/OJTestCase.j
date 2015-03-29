@@ -49,8 +49,8 @@
 }
 
 /*!
-   Informs the OJTestResult to run the tests
-   @param result The OJTestResult that will run the tests
+    Run the tests using the given OJTestResult handler.
+    @param result the OJTestResult to run the tests
  */
 - (void)run:(OJTestResult)result
 {
@@ -58,8 +58,7 @@
 }
 
 /*!
-   Runs the setup, test and teardown for the
-   @param a parameter
+   Runs the setup, test and teardown for the current test selector.
  */
 - (void)runBare
 {
@@ -75,8 +74,23 @@
 }
 
 /*!
-   If the selector is not null,
-   @param a parameter
+    Send the test class the setUp message.
+*/
+- (void)setUpClass
+{
+    [[self class] setUp];
+}
+
+/*!
+    Send the test class the tearDown message.
+*/
+- (void)tearDownClass
+{
+    [[self class] tearDown];
+}
+
+/*!
+    Run the test(s) for the current selector.
  */
 - (void)runTest
 {
@@ -96,6 +110,20 @@
    TearDown method that is called after each run.
  */
 - (void)tearDown
+{
+}
+
+/*!
+   SetUp method that is called once before launching the test
+ */
++ (void)setUp
+{
+}
+
+/*!
+   TearDown method that is called once after launching the test
+ */
++ (void)tearDown
 {
 }
 

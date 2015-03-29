@@ -1,10 +1,13 @@
 @import <Foundation/Foundation.j>
 
+var DEFAULT_REGEX = @".*";
+
 @implementation OJTestSuite : CPObject
 {
+    CPArray         _testClassesRan;
     CPArray         _tests;
     CPString        _name;
-    CPArray         _testClassesRan;
+    CPString        _selectorRegex;
 }
 
 - (id)init
@@ -13,6 +16,7 @@
     {
         _tests = [];
         _testClassesRan = [];
+        _selectorRegex = DEFAULT_REGEX;
     }
     return self;
 }
@@ -28,19 +32,29 @@
 
 - (id)initWithClass:(Class)aClass
 {
+    return [self initWithClass:aClass selectorRegex:DEFAULT_REGEX];
+}
+
+- (id)initWithClass:(Class)aClass selectorRegex:(CPString)selectorRegex
+{
     if (self = [self init])
     {
         var superClass = aClass,
             names = [];
+
+        _selectorRegex = selectorRegex;
+
         while (superClass)
         {
             var methods = class_copyMethodList(superClass);
+
             for (var i = 0; i < methods.length; i++)
             {
                 [self addTestMethod:methods[i].name names:names class:aClass]
             }
 
             var autotestObject;
+
             if ([aClass respondsToSelector:@selector(autotest)])
                 autotestObject = objj_msgSend(aClass, "autotest");
 
@@ -69,6 +83,7 @@
             var getAccessorName = ivars[i].accessors.get,
                 ivarName = ivars[i].name,
                 newMethodName = "testThat__" + ivars[i].accessors.get + "__WorksIn" + [autotestObject class];
+
             class_addMethod(aClass, newMethodName, function(){
                 var target = [aClass autotest],
                     expected = @"";
@@ -76,12 +91,14 @@
                 var actual = objj_msgSend(target, getAccessorName);
                 [OJAssert assert:expected equals:actual];
             });
+
             [self addTestMethod:newMethodName names:[] class:aClass];
 
             if (ivars[i].accessors.set)
             {
                 var setAccessorName = ivars[i].accessors.set,
                     newMethodName = "testThat__" + ivars[i].accessors.set + "__WorksIn" + [autotestObject class];
+
                 class_addMethod(aClass, newMethodName, function(){
                     var target = [aClass autotest],
                         expected = @"";
@@ -89,6 +106,7 @@
                     var actual = objj_msgSend(target, getAccessorName);
                     [OJAssert assert:expected equals:actual];
                 });
+
                 [self addTestMethod:newMethodName names:[] class:aClass];
             }
         }
@@ -113,8 +131,18 @@
 
 - (void)addTestMethod:(SEL)selector names:(CPArray)names class:(Class)aClass
 {
-    if ([names containsObject:selector] || ![self isTestMethod:selector])
+    var isTestMethod = [self isTestMethod:selector],
+        testNameAlreadyDeclared = [names containsObject:selector];
+
+    if (testNameAlreadyDeclared
+        || !isTestMethod
+        || ![self selectorMatchesTestPattern:selector])
+    {
+        if (isTestMethod && testNameAlreadyDeclared)
+            CPLog.warn("It looks like you have declared the test `"+ selector +"` in the file "+ [aClass className] +".j several times !")
+
         return;
+    }
 
     [names addObject:selector];
     [self addTest:[self createTestWithSelector:selector class:aClass]];
@@ -139,9 +167,14 @@
     return test;
 }
 
-- (void)isTestMethod:(SEL)selector
+- (BOOL)isTestMethod:(SEL)selector
 {
     return selector.substring(0,4) == "test" && selector.indexOf(":") == -1;
+}
+
+- (BOOL)selectorMatchesTestPattern:(SEL)selector
+{
+    return [selector.match(_selectorRegex) count];
 }
 
 - (SEL)getTestConstructor:(Class)aClass
@@ -153,10 +186,16 @@
 {
     for (var i = 0; i < _tests.length; i++)
     {
+        if (i == 0)
+            [_tests[i] setUpClass];
+
         if ([result shouldStop])
             break;
 
         [_tests[i] run:result];
+
+        if (i == (_tests.length - 1))
+            [_tests[i] tearDownClass];
     }
 }
 
@@ -173,8 +212,10 @@
 - (int)countTestCases
 {
     var count = 0;
+
     for (var i = 0; i < _tests.length; i++)
         [_tests[i] countTestCases];
+
     return count;
 }
 

@@ -1,6 +1,6 @@
-@import <OJUnit/OJTestCase.j>
-@import <OJUnit/OJAssert.j>
-@import <OJMoq/OJMoq.j>
+@import "../Frameworks/OJUnit/OJTestCase.j"
+@import "../Frameworks/OJUnit/OJAssert.j"
+@import "../Frameworks/OJMoq/OJMoq.j"
 
 @implementation OJTestCaseTest : OJTestCase
 
@@ -66,5 +66,3 @@
 }
 
 @end
-
-
