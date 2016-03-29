@@ -1,34 +1,35 @@
-@STATIC;1.0;p;15;Configuration.jt;9049;@STATIC;1.0;I;25;Foundation/CPDictionary.jI;21;Foundation/CPString.jI;21;Foundation/CPObject.jI;18;Foundation/CPSet.jt;8925;objj_executeFile("Foundation/CPDictionary.j", NO);objj_executeFile("Foundation/CPString.j", NO);objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPSet.j", NO);var FILE = require("file"),
+@STATIC;1.0;p;15;Configuration.jt;8956;@STATIC;1.0;I;25;Foundation/CPDictionary.jI;21;Foundation/CPString.jI;21;Foundation/CPObject.jI;18;Foundation/CPSet.jt;8832;objj_executeFile("Foundation/CPDictionary.j", NO);objj_executeFile("Foundation/CPString.j", NO);objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPSet.j", NO);var FILE = require("file"),
     SYSTEM = require("system");
 var DefaultDictionary = nil,
     DefaultConfiguration = nil,
     UserConfiguration = nil;
 {var the_class = objj_allocateClassPair(CPObject, "Configuration"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("path"), new objj_ivar("dictionary"), new objj_ivar("temporaryDictionary")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithPath:"), function $Configuration__initWithPath_(self, _cmd, aPath)
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("path", "CPString"), new objj_ivar("dictionary", "CPDictionary"), new objj_ivar("temporaryDictionary", "CPDictionary")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithPath:"), function(self, _cmd, aPath)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("Configuration").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("Configuration").super_class }, "init");
     if (self)
     {
         self.path = aPath;
-        self.temporaryDictionary = objj_msgSend(objj_msgSend(CPDictionary, "alloc"), "init");
+        self.temporaryDictionary = (___r1 = CPDictionary.isa.objj_msgSend0(CPDictionary, "alloc"), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "init"));
         if (self.path && FILE.isReadable(self.path))
             self.dictionary = CFPropertyList.readPropertyListFromFile(self.path);
         if (!self.dictionary)
-            self.dictionary = objj_msgSend(objj_msgSend(CPDictionary, "alloc"), "init");
+            self.dictionary = (___r1 = CPDictionary.isa.objj_msgSend0(CPDictionary, "alloc"), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "init"));
     }
     return self;
+    var ___r1;
 }
-,["id","CPString"]), new objj_method(sel_getUid("path"), function $Configuration__path(self, _cmd)
+,["id","CPString"]), new objj_method(sel_getUid("path"), function(self, _cmd)
 {
     return self.path;
 }
-,["CPString"]), new objj_method(sel_getUid("storedKeyEnumerator"), function $Configuration__storedKeyEnumerator(self, _cmd)
+,["CPString"]), new objj_method(sel_getUid("storedKeyEnumerator"), function(self, _cmd)
 {
     return ((___r1 = self.dictionary), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "keyEnumerator"));
     var ___r1;
 }
-,["CPEnumerator"]), new objj_method(sel_getUid("keyEnumerator"), function $Configuration__keyEnumerator(self, _cmd)
+,["CPEnumerator"]), new objj_method(sel_getUid("keyEnumerator"), function(self, _cmd)
 {
     var set = CPSet.isa.objj_msgSend1(CPSet, "setWithArray:", ((___r1 = self.dictionary), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "allKeys")));
     (set == null ? null : set.isa.objj_msgSend1(set, "addObjectsFromArray:", ((___r1 = self.temporaryDictionary), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "allKeys"))));
@@ -36,7 +37,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithPath:"), functi
     return (set == null ? null : set.isa.objj_msgSend0(set, "objectEnumerator"));
     var ___r1;
 }
-,["CPEnumerator"]), new objj_method(sel_getUid("valueForKey:"), function $Configuration__valueForKey_(self, _cmd, aKey)
+,["CPEnumerator"]), new objj_method(sel_getUid("valueForKey:"), function(self, _cmd, aKey)
 {
     var value = ((___r1 = self.dictionary), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "objectForKey:", aKey));
     if (!value)
@@ -46,22 +47,22 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithPath:"), functi
     return value;
     var ___r1;
 }
-,["CPString","CPString"]), new objj_method(sel_getUid("setValue:forKey:"), function $Configuration__setValue_forKey_(self, _cmd, aString, aKey)
+,["CPString","CPString"]), new objj_method(sel_getUid("setValue:forKey:"), function(self, _cmd, aString, aKey)
 {
     ((___r1 = self.dictionary), ___r1 == null ? null : ___r1.isa.objj_msgSend2(___r1, "setObject:forKey:", aString, aKey));
     var ___r1;
 }
-,["void","CPString","CPString"]), new objj_method(sel_getUid("removeValueForKey:"), function $Configuration__removeValueForKey_(self, _cmd, aKey)
+,["void","CPString","CPString"]), new objj_method(sel_getUid("removeValueForKey:"), function(self, _cmd, aKey)
 {
     ((___r1 = self.dictionary), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "removeObjectForKey:", aKey));
     var ___r1;
 }
-,["void","CPString"]), new objj_method(sel_getUid("setTemporaryValue:forKey:"), function $Configuration__setTemporaryValue_forKey_(self, _cmd, aString, aKey)
+,["void","CPString"]), new objj_method(sel_getUid("setTemporaryValue:forKey:"), function(self, _cmd, aString, aKey)
 {
     ((___r1 = self.temporaryDictionary), ___r1 == null ? null : ___r1.isa.objj_msgSend2(___r1, "setObject:forKey:", aString, aKey));
     var ___r1;
 }
-,["void","CPString","CPString"]), new objj_method(sel_getUid("save"), function $Configuration__save(self, _cmd)
+,["void","CPString","CPString"]), new objj_method(sel_getUid("save"), function(self, _cmd)
 {
     var aPath = self.isa.objj_msgSend0(self, "path");
     if (!aPath)
@@ -69,11 +70,11 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithPath:"), functi
     CFPropertyList.writePropertyListToFile(self.dictionary, aPath);
 }
 ,["void"])]);
-class_addMethods(meta_class, [new objj_method(sel_getUid("initialize"), function $Configuration__initialize(self, _cmd)
+class_addMethods(meta_class, [new objj_method(sel_getUid("initialize"), function(self, _cmd)
 {
     if (self !== Configuration.isa.objj_msgSend0(Configuration, "class"))
         return;
-    DefaultDictionary = objj_msgSend(objj_msgSend(CPDictionary, "alloc"), "init");
+    DefaultDictionary = (___r1 = CPDictionary.isa.objj_msgSend0(CPDictionary, "alloc"), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "init"));
     (DefaultDictionary == null ? null : DefaultDictionary.isa.objj_msgSend2(DefaultDictionary, "setObject:forKey:", "You", "user.name"));
     (DefaultDictionary == null ? null : DefaultDictionary.isa.objj_msgSend2(DefaultDictionary, "setObject:forKey:", "you@yourcompany.com", "user.email"));
     (DefaultDictionary == null ? null : DefaultDictionary.isa.objj_msgSend2(DefaultDictionary, "setObject:forKey:", "Your Company", "organization.name"));
@@ -84,15 +85,16 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("initialize"), function
         months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     (DefaultDictionary == null ? null : DefaultDictionary.isa.objj_msgSend2(DefaultDictionary, "setObject:forKey:", date.getFullYear(), "project.year"));
     (DefaultDictionary == null ? null : DefaultDictionary.isa.objj_msgSend2(DefaultDictionary, "setObject:forKey:", months[date.getMonth()] + ' ' + date.getDate() + ", " + date.getFullYear(), "project.date"));
+    var ___r1;
 }
-,["void"]), new objj_method(sel_getUid("defaultConfiguration"), function $Configuration__defaultConfiguration(self, _cmd)
+,["void"]), new objj_method(sel_getUid("defaultConfiguration"), function(self, _cmd)
 {
     if (!DefaultConfiguration)
         DefaultConfiguration = ((___r1 = self.isa.objj_msgSend0(self, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "initWithPath:", nil));
     return DefaultConfiguration;
     var ___r1;
 }
-,["id"]), new objj_method(sel_getUid("userConfiguration"), function $Configuration__userConfiguration(self, _cmd)
+,["id"]), new objj_method(sel_getUid("userConfiguration"), function(self, _cmd)
 {
     if (!UserConfiguration)
         UserConfiguration = ((___r1 = self.isa.objj_msgSend0(self, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "initWithPath:", FILE.join(SYSTEM.env["HOME"], ".cappconfig")));
@@ -169,7 +171,7 @@ default:
         (configuration == null ? null : configuration.isa.objj_msgSend0(configuration, "save"));
     }
 }
-p;10;Generate.jt;12153;@STATIC;1.0;i;15;Configuration.jt;12113;objj_executeFile("Configuration.j", YES);var OS = require("os"),
+p;10;Generate.jt;14220;@STATIC;1.0;i;15;Configuration.jt;14180;objj_executeFile("Configuration.j", YES);var OS = require("os"),
     SYSTEM = require("system"),
     FILE = require("file"),
     OBJJ = require("objective-j"),
@@ -180,6 +182,7 @@ parser.help("Generate a Cappuccino project or Frameworks directory");
 (((parser.option("-t", "--template", "template")).set()).def("Application")).help("Selects a project template to use (default: Application).");
 ((parser.option("-f", "--frameworks", "justFrameworks")).set(true)).help("Only generate or update Frameworks directory.");
 (((parser.option("-F", "--framework", "framework", "frameworks")).def([])).push()).help("Additional framework to copy/symlink (default: Objective-J, Foundation, AppKit)");
+(((parser.option("-T", "--theme", "theme", "themes")).def([])).push()).help("Additional Theme to copy/symlink into Resource (default: nothing)");
 ((parser.option("--no-frameworks", "noFrameworks")).set(true)).help("Don't copy any default frameworks (can be overridden with -F)");
 ((parser.option("--symlink", "symlink")).set(true)).help("Creates a symlink to each framework instead of copying.");
 ((parser.option("--build", "useCappBuild")).set(true)).help("Uses frameworks in the $CAPP_BUILD.");
@@ -241,11 +244,15 @@ gen = function()
         config = JSON.parse(FILE.read(configFile, {charset: "UTF-8"}));
     var destinationProject = destination,
         configuration = options.noconfig ? Configuration.isa.objj_msgSend0(Configuration, "defaultConfiguration") : Configuration.isa.objj_msgSend0(Configuration, "userConfiguration"),
-        frameworks = options.frameworks;
+        frameworks = options.frameworks,
+        themes = options.themes;
     if (!options.noFrameworks)
         frameworks.push("Objective-J", "Foundation", "AppKit");
     if (options.justFrameworks)
+    {
         createFrameworksInFile(frameworks, destinationProject, options.symlink, options.useCappBuild, options.force);
+        createThemesInFile(themes, destinationProject, options.symlink, options.force);
+    }
     else if (!FILE.exists(destinationProject))
     {
         FILE.copyTree(sourceTemplate, destinationProject);
@@ -280,6 +287,9 @@ gen = function()
         if (config.FrameworksPath)
             frameworkDestination = FILE.join(frameworkDestination, config.FrameworksPath);
         createFrameworksInFile(frameworks, frameworkDestination, options.symlink, options.useCappBuild);
+        var themeDestination = destinationProject;
+        if (themes.length)
+            createThemesInFile(themes, themeDestination, options.symlink);
     }
     else
     {
@@ -351,6 +361,53 @@ createFrameworksInFile = function(frameworks, aFile, symlink, build, force)
     }
 }
 installFramework = function(source, dest, force, symlink)
+{
+    if (dest.exists())
+    {
+        if (force)
+            dest.rmtree();
+        else
+        {
+            warn(logPath(dest) + " already exists. Use --force to overwrite.");
+            return;
+        }
+    }
+    if (source.exists())
+    {
+        stream.print((symlink ? "Symlinking " : "Copying ") + logPath(source) + " ==> " + logPath(dest));
+        if (symlink)
+            FILE.symlink(source, dest);
+        else
+            FILE.copyTree(source, dest);
+    }
+    else
+        warn("Cannot find: " + logPath(source));
+}
+createThemesInFile = function(themes, aFile, symlink, force)
+{
+    var destination = FILE.path(FILE.absolute(aFile));
+    if (!destination.isDirectory())
+        fail("Cannot create Themes. The directory does not exist: " + destination);
+    var destinationThemes = destination.join("Resources");
+    stream.print("Creating Themes in " + logPath(destinationThemes) + "...");
+    if (!SYSTEM.env["CAPP_BUILD"])
+        fail("$CAPP_BUILD must be defined to use the --theme or -T option.");
+    var themesBuild = FILE.join(SYSTEM.env["CAPP_BUILD"], "Release"),
+        sources = [];
+    themes.forEach(function(theme)
+    {
+        var themeFolder = theme + ".blend",
+            path = FILE.join(themesBuild, themeFolder);
+        if (!FILE.isDirectory(path))
+            fail("Cannot find theme " + themeFolder + " in " + themesBuild);
+        sources.push([FILE.path(path), themeFolder]);
+    });
+    sources.forEach(function(source)
+    {
+        installTheme(source[0], (FILE.path(destinationThemes)).join(source[1]), force, symlink);
+    });
+}
+installTheme = function(source, dest, force, symlink)
 {
     if (dest.exists())
     {
@@ -451,7 +508,7 @@ fail = function(message)
     stream.print(colorize(message, "red"));
     OS.exit(1);
 }
-p;6;main.jt;4194;@STATIC;1.0;I;23;Foundation/Foundation.ji;15;Configuration.ji;10;Generate.jt;4112;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("Configuration.j", YES);objj_executeFile("Generate.j", YES);main = function(args)
+p;6;main.jt;4303;@STATIC;1.0;I;23;Foundation/Foundation.ji;15;Configuration.ji;10;Generate.jt;4221;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("Configuration.j", YES);objj_executeFile("Generate.j", YES);main = function(args)
 {
     args.shift();
     if (args.length < 1)
@@ -488,6 +545,7 @@ printUsage = function()
     print("      -t, --template NAME    Specify the template name to use (see `capp gen --list-templates`)");
     print("      -f, --frameworks       Copy/symlink *only* the Frameworks directory to a new or existing project");
     print("      -F, --framework NAME   Additional framework to copy/symlink (default: Objective-J, Foundation, AppKit)");
+    print("      -T, --theme NAME       Additional Theme to copy/symlink into Resource (default: nothing)");
     print("      --force                Overwrite Frameworks directory if it already exists");
     print("      --symlink              Symlink the source Frameworks directory to the project, don't copy");
     print("      --build                Copy/symlink the Frameworks directory files from your $CAPP_BUILD directory");

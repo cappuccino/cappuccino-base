@@ -1,16 +1,16 @@
-@STATIC;1.0;p;15;_NSCornerView.jt;2188;@STATIC;1.0;I;26;AppKit/CPTableHeaderView.jI;22;AppKit/_CPCornerView.jI;19;AppKit/CPScroller.jI;20;AppKit/CPTableView.jt;2062;objj_executeFile("AppKit/CPTableHeaderView.j", NO);objj_executeFile("AppKit/_CPCornerView.j", NO);objj_executeFile("AppKit/CPScroller.j", NO);objj_executeFile("AppKit/CPTableView.j", NO);{
+@STATIC;1.0;p;15;_NSCornerView.jt;2087;@STATIC;1.0;I;26;AppKit/CPTableHeaderView.jI;22;AppKit/_CPCornerView.jI;19;AppKit/CPScroller.jI;20;AppKit/CPTableView.jt;1961;objj_executeFile("AppKit/CPTableHeaderView.j", NO);objj_executeFile("AppKit/_CPCornerView.j", NO);objj_executeFile("AppKit/CPScroller.j", NO);objj_executeFile("AppKit/CPTableView.j", NO);{
 var the_class = objj_getClass("_CPCornerView")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"_CPCornerView\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $_CPCornerView__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    return self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("_CPCornerView").super_class }, "NS_initWithCoder:", aCoder);
+    return self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("_CPCornerView").super_class }, "NS_initWithCoder:", aCoder);
 }
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(_CPCornerView, "_NSCornerView"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $_NSCornerView__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("_NSCornerView").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("_NSCornerView").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
     {
         var theme = (Nib2Cib == null ? null : Nib2Cib.isa.objj_msgSend0(Nib2Cib, "defaultTheme")),
@@ -23,15 +23,15 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $_NSCornerView__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPCornerView.isa.objj_msgSend0(_CPCornerView, "class");
 }
 ,["Class"])]);
-}p;15;Converter+Mac.jt;6790;@STATIC;1.0;i;11;Converter.ji;24;Nib2CibKeyedUnarchiver.ji;8;NSFont.jt;6714;objj_executeFile("Converter.j", YES);objj_executeFile("Nib2CibKeyedUnarchiver.j", YES);objj_executeFile("NSFont.j", YES);{
+}p;15;Converter+Mac.jt;6613;@STATIC;1.0;i;11;Converter.ji;24;Nib2CibKeyedUnarchiver.ji;8;NSFont.jt;6537;objj_executeFile("Converter.j", YES);objj_executeFile("Nib2CibKeyedUnarchiver.j", YES);objj_executeFile("NSFont.j", YES);{
 var the_class = objj_getClass("Converter")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"Converter\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("convertedDataFromMacData:"), function $Converter__convertedDataFromMacData_(self, _cmd, data)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("convertedDataFromMacData:"), function(self, _cmd, data)
 {
     var unarchiver = ((___r1 = Nib2CibKeyedUnarchiver.isa.objj_msgSend0(Nib2CibKeyedUnarchiver, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "initForReadingWithData:", data));
     (unarchiver == null ? null : unarchiver.isa.objj_msgSend1(unarchiver, "setDelegate:", self));
@@ -52,11 +52,11 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
     return convertedData;
     var ___r1;
 }
-,["void","CPData"]), new objj_method(sel_getUid("unarchiver:cannotDecodeObjectOfClassName:originalClasses:"), function $Converter__unarchiver_cannotDecodeObjectOfClassName_originalClasses_(self, _cmd, unarchiver, name, classNames)
+,["void","CPData"]), new objj_method(sel_getUid("unarchiver:cannotDecodeObjectOfClassName:originalClasses:"), function(self, _cmd, unarchiver, name, classNames)
 {
     CPException.isa.objj_msgSend3(CPException, "raise:format:", CPInvalidUnarchiveOperationException, "%@ objects are not supported by nib2cib.", name);
 }
-,["Class","CPKeyedUnarchiver","CPString","CPArray"]), new objj_method(sel_getUid("replaceFontForObject:"), function $Converter__replaceFontForObject_(self, _cmd, object)
+,["Class","CPKeyedUnarchiver","CPString","CPArray"]), new objj_method(sel_getUid("replaceFontForObject:"), function(self, _cmd, object)
 {
     if ((object == null ? null : object.isa.objj_msgSend1(object, "respondsToSelector:", sel_getUid("font"))) && (object == null ? null : object.isa.objj_msgSend1(object, "respondsToSelector:", sel_getUid("setFont:"))))
     {
@@ -79,7 +79,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
     }
     var ___r1;
 }
-,["void","id"]), new objj_method(sel_getUid("replaceFont:forObject:"), function $Converter__replaceFont_forObject_(self, _cmd, nibFont, object)
+,["void","id"]), new objj_method(sel_getUid("replaceFont:forObject:"), function(self, _cmd, nibFont, object)
 {
     var cibFont = nil;
     if ((object == null ? null : object.isa.objj_msgSend1(object, "respondsToSelector:", sel_getUid("cibFontForNibFont:"))))
@@ -118,7 +118,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
     var ___r1;
 }
 ,["void","CPFont","id"])]);
-}p;11;Converter.jt;6000;@STATIC;1.0;I;21;Foundation/CPObject.jI;20;Foundation/CPArray.jI;19;Foundation/CPData.jI;24;Foundation/CPException.jI;21;Foundation/CPString.jI;19;BlendKit/BlendKit.ji;14;NSFoundation.ji;10;NSAppKit.jt;5793;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPArray.j", NO);objj_executeFile("Foundation/CPData.j", NO);objj_executeFile("Foundation/CPException.j", NO);objj_executeFile("Foundation/CPString.j", NO);objj_executeFile("BlendKit/BlendKit.j", NO);objj_executeFile("NSFoundation.j", YES);objj_executeFile("NSAppKit.j", YES);var FILE = require("file"),
+}p;11;Converter.jt;6231;@STATIC;1.0;I;21;Foundation/CPObject.jI;20;Foundation/CPArray.jI;19;Foundation/CPData.jI;24;Foundation/CPException.jI;21;Foundation/CPString.jI;19;BlendKit/BlendKit.ji;14;NSFoundation.ji;10;NSAppKit.jt;6024;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPArray.j", NO);objj_executeFile("Foundation/CPData.j", NO);objj_executeFile("Foundation/CPException.j", NO);objj_executeFile("Foundation/CPString.j", NO);objj_executeFile("BlendKit/BlendKit.j", NO);objj_executeFile("NSFoundation.j", YES);objj_executeFile("NSAppKit.j", YES);var FILE = require("file"),
     OS = require("os"),
     SharedConverter = nil;
 (NibFormatUndetermined = 0, NibFormatMac = 1, NibFormatIPhone = 2);
@@ -126,22 +126,22 @@ ConverterModeLegacy = 0;
 ConverterModeNew = 1;
 ConverterConversionException = "ConverterConversionException";
 {var the_class = objj_allocateClassPair(CPObject, "Converter"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("inputPath"), new objj_ivar("outputPath")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("inputPath"), function $Converter__inputPath(self, _cmd)
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("inputPath", "CPString"), new objj_ivar("outputPath", "CPString")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("inputPath"), function(self, _cmd)
 {
     return self.inputPath;
 }
-,["CPString"]), new objj_method(sel_getUid("outputPath"), function $Converter__outputPath(self, _cmd)
+,["CPString"]), new objj_method(sel_getUid("outputPath"), function(self, _cmd)
 {
     return self.outputPath;
 }
-,["CPString"]), new objj_method(sel_getUid("setOutputPath:"), function $Converter__setOutputPath_(self, _cmd, newValue)
+,["CPString"]), new objj_method(sel_getUid("setOutputPath:"), function(self, _cmd, newValue)
 {
     self.outputPath = newValue;
 }
-,["void","CPString"]), new objj_method(sel_getUid("initWithInputPath:outputPath:"), function $Converter__initWithInputPath_outputPath_(self, _cmd, anInputPath, anOutputPath)
+,["void","CPString"]), new objj_method(sel_getUid("initWithInputPath:outputPath:"), function(self, _cmd, anInputPath, anOutputPath)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("Converter").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("Converter").super_class }, "init");
     if (self)
     {
         if (!SharedConverter)
@@ -151,7 +151,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("inputPath"), function $
     }
     return self;
 }
-,["id","CPString","CPString"]), new objj_method(sel_getUid("convert"), function $Converter__convert(self, _cmd)
+,["id","CPString","CPString"]), new objj_method(sel_getUid("convert"), function(self, _cmd)
 {
     var inferredFormat = NibFormatMac;
     if (FILE.extension(self.inputPath) !== ".nib" && FILE.isFile(self.inputPath) && (FILE.read(self.inputPath, {charset: "UTF-8"})).indexOf("<archive type=\"com.apple.InterfaceBuilder3.CocoaTouch.XIB\"") !== -1)
@@ -172,7 +172,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("inputPath"), function $
     return convertedData;
     var ___r1;
 }
-,["CPData"]), new objj_method(sel_getUid("CPCompliantNibDataAtFilePath:"), function $Converter__CPCompliantNibDataAtFilePath_(self, _cmd, aFilePath)
+,["CPData"]), new objj_method(sel_getUid("CPCompliantNibDataAtFilePath:"), function(self, _cmd, aFilePath)
 {
     var temporaryNibFilePath = "",
         temporaryPlistFilePath = "";
@@ -180,16 +180,32 @@ class_addMethods(the_class, [new objj_method(sel_getUid("inputPath"), function $
         if (((___r1 = self.outputPath), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "length")))
         {
             temporaryNibFilePath = FILE.join("/tmp", FILE.basename(aFilePath) + ".tmp.nib");
-            if ((OS.popen(["/usr/bin/ibtool", aFilePath, "--compile", temporaryNibFilePath])).wait() === 1)
-                CPException.isa.objj_msgSend2(CPException, "raise:reason:", ConverterConversionException, "Could not compile file: " + aFilePath);
+            try            {
+                var p = OS.popen(["/usr/bin/ibtool", aFilePath, "--compile", temporaryNibFilePath]);
+                if (p.wait() === 1)
+                    CPException.isa.objj_msgSend2(CPException, "raise:reason:", ConverterConversionException, "Could not compile file: " + aFilePath);
+            }
+            finally             {
+                p.stdin.close();
+                p.stdout.close();
+                p.stderr.close();
+            }
         }
         else
         {
             temporaryNibFilePath = aFilePath;
         }
         var temporaryPlistFilePath = FILE.join("/tmp", FILE.basename(aFilePath) + ".tmp.plist");
-        if ((OS.popen(["/usr/bin/plutil", "-convert", "xml1", temporaryNibFilePath, "-o", temporaryPlistFilePath])).wait() === 1)
-            CPException.isa.objj_msgSend2(CPException, "raise:reason:", ConverterConversionException, "Could not convert to xml plist for file: " + aFilePath);
+        try        {
+            var p = OS.popen(["/usr/bin/plutil", "-convert", "xml1", temporaryNibFilePath, "-o", temporaryPlistFilePath]);
+            if (p.wait() === 1)
+                CPException.isa.objj_msgSend2(CPException, "raise:reason:", ConverterConversionException, "Could not convert to xml plist for file: " + aFilePath);
+        }
+        finally         {
+            p.stdin.close();
+            p.stdout.close();
+            p.stderr.close();
+        }
         if (!FILE.isReadable(temporaryPlistFilePath))
             CPException.isa.objj_msgSend2(CPException, "raise:reason:", ConverterConversionException, "Unable to convert nib file.");
         var plistContents = FILE.read(temporaryPlistFilePath, {charset: "UTF-8"});
@@ -213,36 +229,20 @@ class_addMethods(the_class, [new objj_method(sel_getUid("inputPath"), function $
     var ___r1;
 }
 ,["CPData","CPString"])]);
-class_addMethods(meta_class, [new objj_method(sel_getUid("sharedConverter"), function $Converter__sharedConverter(self, _cmd)
+class_addMethods(meta_class, [new objj_method(sel_getUid("sharedConverter"), function(self, _cmd)
 {
     return SharedConverter;
 }
 ,["Converter"])]);
-}p;6;main.jt;1037;@STATIC;1.0;i;9;Nib2Cib.jt;1005;objj_executeFile("Nib2Cib.j", YES);var OS = require("os"),
+}p;6;main.jt;405;@STATIC;1.0;i;9;Nib2Cib.jt;374;objj_executeFile("Nib2Cib.j", YES);var OS = require("os"),
     stream = (require("narwhal/term")).stream;
 main = function(args)
 {
-    checkUlimit();
     var nib2cib = ((___r1 = Nib2Cib.isa.objj_msgSend0(Nib2Cib, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "initWithArgs:", args));
     (nib2cib == null ? null : nib2cib.isa.objj_msgSend0(nib2cib, "run"));
     var ___r1;
 }
-checkUlimit = function()
-{
-    var minUlimit = 1024,
-        p = OS.popen(["ulimit", "-n"]);
-    if (p.wait() === 0)
-    {
-        var limit = ((p.stdout.read()).split("\n"))[0];
-        if (Number(limit) < minUlimit)
-        {
-            stream.print("\0red(\0bold(WARNING:\0)\0) nib2cib may need to open more files than this terminal session currently allows (" + limit + "). Add the following line to your login configuration file (.bash_profile, .bashrc, etc.), start a new terminal session, then try again:\n");
-            stream.print("ulimit -n " + minUlimit);
-            OS.exit(1);
-        }
-    }
-}
-p;9;Nib2Cib.jt;34867;@STATIC;1.0;I;21;Foundation/CPObject.jI;20;Foundation/CPArray.jI;25;Foundation/CPDictionary.jI;21;Foundation/CPString.jI;22;AppKit/CPApplication.jI;19;BlendKit/BlendKit.ji;24;Nib2CibKeyedUnarchiver.ji;11;Converter.ji;15;Converter+Mac.jt;34624;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPArray.j", NO);objj_executeFile("Foundation/CPDictionary.j", NO);objj_executeFile("Foundation/CPString.j", NO);objj_executeFile("AppKit/CPApplication.j", NO);objj_executeFile("BlendKit/BlendKit.j", NO);objj_executeFile("Nib2CibKeyedUnarchiver.j", YES);objj_executeFile("Converter.j", YES);objj_executeFile("Converter+Mac.j", YES);Nib2CibColorizeOutput = YES;
+p;9;Nib2Cib.jt;33820;@STATIC;1.0;I;21;Foundation/CPObject.jI;20;Foundation/CPArray.jI;25;Foundation/CPDictionary.jI;21;Foundation/CPString.jI;22;AppKit/CPApplication.jI;19;BlendKit/BlendKit.ji;24;Nib2CibKeyedUnarchiver.ji;11;Converter.ji;15;Converter+Mac.jt;33577;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPArray.j", NO);objj_executeFile("Foundation/CPDictionary.j", NO);objj_executeFile("Foundation/CPString.j", NO);objj_executeFile("AppKit/CPApplication.j", NO);objj_executeFile("BlendKit/BlendKit.j", NO);objj_executeFile("Nib2CibKeyedUnarchiver.j", YES);objj_executeFile("Converter.j", YES);objj_executeFile("Converter+Mac.j", YES);Nib2CibColorizeOutput = YES;
 var FILE = require("file"),
     OS = require("os"),
     SYS = require("system"),
@@ -256,34 +256,34 @@ var FILE = require("file"),
     ArgsRe = /"[^\"]+"|'[^\']+'|\S+/g,
     SharedNib2Cib = nil;
 {var the_class = objj_allocateClassPair(CPObject, "Nib2Cib"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("commandLineArgs"), new objj_ivar("parser"), new objj_ivar("commandLineOptions"), new objj_ivar("nibInfo"), new objj_ivar("appDirectory"), new objj_ivar("frameworks"), new objj_ivar("appResourceDirectory"), new objj_ivar("infoPlist"), new objj_ivar("userNSClasses"), new objj_ivar("themes")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), function $Nib2Cib__appDirectory(self, _cmd)
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("commandLineArgs", "CPArray"), new objj_ivar("parser", "JSObject"), new objj_ivar("commandLineOptions", "JSObject"), new objj_ivar("nibInfo", "JSObject"), new objj_ivar("appDirectory", "CPString"), new objj_ivar("frameworks", "CPDictionary"), new objj_ivar("appResourceDirectory", "CPString"), new objj_ivar("infoPlist", "CPDictionary"), new objj_ivar("userNSClasses", "CPArray"), new objj_ivar("themes", "CPArray")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), function(self, _cmd)
 {
     return self.appDirectory;
 }
-,["CPString"]), new objj_method(sel_getUid("frameworks"), function $Nib2Cib__frameworks(self, _cmd)
+,["CPString"]), new objj_method(sel_getUid("frameworks"), function(self, _cmd)
 {
     return self.frameworks;
 }
-,["CPDictionary"]), new objj_method(sel_getUid("appResourceDirectory"), function $Nib2Cib__appResourceDirectory(self, _cmd)
+,["CPDictionary"]), new objj_method(sel_getUid("appResourceDirectory"), function(self, _cmd)
 {
     return self.appResourceDirectory;
 }
-,["CPString"]), new objj_method(sel_getUid("infoPlist"), function $Nib2Cib__infoPlist(self, _cmd)
+,["CPString"]), new objj_method(sel_getUid("infoPlist"), function(self, _cmd)
 {
     return self.infoPlist;
 }
-,["CPDictionary"]), new objj_method(sel_getUid("userNSClasses"), function $Nib2Cib__userNSClasses(self, _cmd)
+,["CPDictionary"]), new objj_method(sel_getUid("userNSClasses"), function(self, _cmd)
 {
     return self.userNSClasses;
 }
-,["CPArray"]), new objj_method(sel_getUid("themes"), function $Nib2Cib__themes(self, _cmd)
+,["CPArray"]), new objj_method(sel_getUid("themes"), function(self, _cmd)
 {
     return self.themes;
 }
-,["CPArray"]), new objj_method(sel_getUid("initWithArgs:"), function $Nib2Cib__initWithArgs_(self, _cmd, theArgs)
+,["CPArray"]), new objj_method(sel_getUid("initWithArgs:"), function(self, _cmd, theArgs)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("Nib2Cib").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("Nib2Cib").super_class }, "init");
     if (self)
     {
         if (!SharedNib2Cib)
@@ -294,13 +294,14 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
         self.appDirectory = "";
         self.frameworks = CPDictionary.isa.objj_msgSend0(CPDictionary, "dictionary");
         self.appResourceDirectory = "";
-        self.infoPlist = objj_msgSend(objj_msgSend(CPDictionary, "alloc"), "init");
+        self.infoPlist = (___r1 = CPDictionary.isa.objj_msgSend0(CPDictionary, "alloc"), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "init"));
         self.userNSClasses = [];
         self.themes = [];
     }
     return self;
+    var ___r1;
 }
-,["id","CPArray"]), new objj_method(sel_getUid("run"), function $Nib2Cib__run(self, _cmd)
+,["id","CPArray"]), new objj_method(sel_getUid("run"), function(self, _cmd)
 {
     try    {
         self.commandLineOptions = self.isa.objj_msgSend1(self, "parseOptionsFromArgs:", self.commandLineArgs);
@@ -320,14 +321,14 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
         self.isa.objj_msgSend1(self, "logError:", self.isa.objj_msgSend1(self, "exceptionReason:", anException));
         OS.exit(1);
     }}
-,["void"]), new objj_method(sel_getUid("checkPrerequisites"), function $Nib2Cib__checkPrerequisites(self, _cmd)
+,["void"]), new objj_method(sel_getUid("checkPrerequisites"), function(self, _cmd)
 {
     var fontinfo = (require("cappuccino/fontinfo")).fontinfo,
         info = fontinfo("LucidaGrande", 13);
     if (!info)
         self.isa.objj_msgSend1(self, "failWithMessage:", "fontinfo does not appear to be installed");
 }
-,["void"]), new objj_method(sel_getUid("enumerateFrameworks"), function $Nib2Cib__enumerateFrameworks(self, _cmd)
+,["void"]), new objj_method(sel_getUid("enumerateFrameworks"), function(self, _cmd)
 {
     var frameworksDirectory = FILE.join(self.appDirectory, "Frameworks"),
         debugFrameworksDirectory = FILE.join(frameworksDirectory, "Debug");
@@ -352,7 +353,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
         }
     });
 }
-,["void"]), new objj_method(sel_getUid("convertWithOptions:inputPath:"), function $Nib2Cib__convertWithOptions_inputPath_(self, _cmd, options, inputPath)
+,["void"]), new objj_method(sel_getUid("convertWithOptions:inputPath:"), function(self, _cmd, options, inputPath)
 {
     try    {
         inputPath = inputPath || self.isa.objj_msgSend1(self, "getInputPath:", options.args);
@@ -378,7 +379,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
                 CPFont.isa.objj_msgSend1(CPFont, "setSystemFontSize:", parseFloat(systemFontSize, 10));
         }
         else
-            self.infoPlist = objj_msgSend(objj_msgSend(CPDictionary, "alloc"), "init");
+            self.infoPlist = (___r1 = CPDictionary.isa.objj_msgSend0(CPDictionary, "alloc"), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "init"));
         var themeList = self.isa.objj_msgSend1(self, "getThemeList:", options);
         self.isa.objj_msgSend1(self, "loadThemesFromList:", themeList);
         self.isa.objj_msgSend2(self, "loadFrameworks:verbosity:", options.frameworks, options.verbosity);
@@ -413,7 +414,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
         return NO;
     }    var ___r1;
 }
-,["BOOL","JSObject","CPString"]), new objj_method(sel_getUid("watchWithOptions:"), function $Nib2Cib__watchWithOptions_(self, _cmd, options)
+,["BOOL","JSObject","CPString"]), new objj_method(sel_getUid("watchWithOptions:"), function(self, _cmd, options)
 {
     var verbosity = options.quiet ? -1 : options.verbosity,
         watchDir = options.args[0];
@@ -473,7 +474,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
         OS.sleep(1);
     }
 }
-,["void","JSObject"]), new objj_method(sel_getUid("parseOptionsFromArgs:"), function $Nib2Cib__parseOptionsFromArgs_(self, _cmd, theArgs)
+,["void","JSObject"]), new objj_method(sel_getUid("parseOptionsFromArgs:"), function(self, _cmd, theArgs)
 {
     self.parser.usage("[--watch DIRECTORY] [INPUT_FILE [OUTPUT_FILE]]");
     ((self.parser.option("--watch", "watch")).set(true)).help("Ask nib2cib to watch a directory for changes");
@@ -499,7 +500,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
     }
     return options;
 }
-,["JSObject","CPArray"]), new objj_method(sel_getUid("mergeOptionsWithStoredOptions:inputPath:"), function $Nib2Cib__mergeOptionsWithStoredOptions_inputPath_(self, _cmd, options, inputPath)
+,["JSObject","CPArray"]), new objj_method(sel_getUid("mergeOptionsWithStoredOptions:inputPath:"), function(self, _cmd, options, inputPath)
 {
     var userOptions = self.isa.objj_msgSend1(self, "readStoredOptionsAtPath:", FILE.join(SYS.env["HOME"], ".nib2cibconfig")),
         appOptions = self.isa.objj_msgSend1(self, "readStoredOptionsAtPath:", FILE.join(self.appDirectory, "nib2cib.conf")),
@@ -515,7 +516,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
     mergedOptions.args = options.args;
     return mergedOptions;
 }
-,["JSObject","JSObject","CPString"]), new objj_method(sel_getUid("readStoredOptionsAtPath:"), function $Nib2Cib__readStoredOptionsAtPath_(self, _cmd, path)
+,["JSObject","JSObject","CPString"]), new objj_method(sel_getUid("readStoredOptionsAtPath:"), function(self, _cmd, path)
 {
     path = FILE.canonical(path);
     if (!FILE.isReadable(path))
@@ -538,7 +539,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
     else
         return [];
 }
-,["CPArray","CPString"]), new objj_method(sel_getUid("printOptions:"), function $Nib2Cib__printOptions_(self, _cmd, options)
+,["CPArray","CPString"]), new objj_method(sel_getUid("printOptions:"), function(self, _cmd, options)
 {
     var option;
     for (option in options)
@@ -552,7 +553,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
         }
     }
 }
-,["void","id"]), new objj_method(sel_getUid("mergeOptions:with:"), function $Nib2Cib__mergeOptions_with_(self, _cmd, sourceOptions, targetOptions)
+,["void","id"]), new objj_method(sel_getUid("mergeOptions:with:"), function(self, _cmd, sourceOptions, targetOptions)
 {
     var option;
     for (option in sourceOptions)
@@ -571,7 +572,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
         }
     }
 }
-,["void","JSObject","JSObject"]), new objj_method(sel_getUid("setLogLevel:"), function $Nib2Cib__setLogLevel_(self, _cmd, level)
+,["void","JSObject","JSObject"]), new objj_method(sel_getUid("setLogLevel:"), function(self, _cmd, level)
 {
     CPLogUnregister(CPLogPrint);
     if (level === 0)
@@ -581,7 +582,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
     else if (level > 1)
         CPLogRegister(CPLogPrint, null, logFormatter);
 }
-,["void","int"]), new objj_method(sel_getUid("getInputPath:"), function $Nib2Cib__getInputPath_(self, _cmd, theArgs)
+,["void","int"]), new objj_method(sel_getUid("getInputPath:"), function(self, _cmd, theArgs)
 {
     var inputPath = theArgs[0] || DefaultFile,
         path = "";
@@ -600,7 +601,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
         self.isa.objj_msgSend1(self, "failWithMessage:", "Could not read the input file: " + FILE.canonical(inputPath));
     return FILE.canonical(inputPath);
 }
-,["CPString","CPArray"]), new objj_method(sel_getUid("findInputPath:extension:"), function $Nib2Cib__findInputPath_extension_(self, _cmd, inputPath, extension)
+,["CPString","CPArray"]), new objj_method(sel_getUid("findInputPath:extension:"), function(self, _cmd, inputPath, extension)
 {
     var path = inputPath;
     if (extension)
@@ -615,7 +616,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
     }
     return null;
 }
-,["void","CPString","CPString"]), new objj_method(sel_getUid("getAppAndResourceDirectoriesFromInputPath:options:"), function $Nib2Cib__getAppAndResourceDirectoriesFromInputPath_options_(self, _cmd, aPath, options)
+,["void","CPString","CPString"]), new objj_method(sel_getUid("getAppAndResourceDirectoriesFromInputPath:options:"), function(self, _cmd, aPath, options)
 {
     self.appDirectory = "";
     var parentDir = FILE.dirname(aPath),
@@ -636,7 +637,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
         }
     }
 }
-,["void","CPString","JSObject"]), new objj_method(sel_getUid("getOutputPathFromInputPath:args:"), function $Nib2Cib__getOutputPathFromInputPath_args_(self, _cmd, aPath, theArgs)
+,["void","CPString","JSObject"]), new objj_method(sel_getUid("getOutputPathFromInputPath:args:"), function(self, _cmd, aPath, theArgs)
 {
     var outputPath = null;
     if (theArgs.length > 1)
@@ -652,7 +653,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
         self.isa.objj_msgSend1(self, "failWithMessage:", "Cannot write the output file at: " + outputPath);
     return outputPath;
 }
-,["CPString","CPString","CPArray"]), new objj_method(sel_getUid("loadFrameworks:verbosity:"), function $Nib2Cib__loadFrameworks_verbosity_(self, _cmd, frameworksToLoad, verbosity)
+,["CPString","CPString","CPArray"]), new objj_method(sel_getUid("loadFrameworks:verbosity:"), function(self, _cmd, frameworksToLoad, verbosity)
 {
     if (!frameworksToLoad || frameworksToLoad.length === 0)
         return;
@@ -689,7 +690,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
         var ___r1;
     });
 }
-,["void","CPArray","int"]), new objj_method(sel_getUid("loadNSClassesFromBundle:"), function $Nib2Cib__loadNSClassesFromBundle_(self, _cmd, aBundle)
+,["void","CPArray","int"]), new objj_method(sel_getUid("loadNSClassesFromBundle:"), function(self, _cmd, aBundle)
 {
     var nsClasses = (aBundle == null ? null : aBundle.isa.objj_msgSend1(aBundle, "objectForInfoDictionaryKey:", "NSClasses")) || [],
         bundlePath = (aBundle == null ? null : aBundle.isa.objj_msgSend0(aBundle, "bundlePath"));
@@ -703,7 +704,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
         self.userNSClasses.push(nsClasses[i]);
     }
 }
-,["void","CPBundle"]), new objj_method(sel_getUid("getThemeList:"), function $Nib2Cib__getThemeList_(self, _cmd, options)
+,["void","CPBundle"]), new objj_method(sel_getUid("getThemeList:"), function(self, _cmd, options)
 {
     var defaultTheme = options.defaultTheme;
     if (!defaultTheme)
@@ -722,7 +723,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
     return allThemes;
     var ___r1;
 }
-,["CPArray","JSObject"]), new objj_method(sel_getUid("findInCappBuild:isDirectory:callback:"), function $Nib2Cib__findInCappBuild_isDirectory_callback_(self, _cmd, path, isDirectory, callback)
+,["CPArray","JSObject"]), new objj_method(sel_getUid("findInCappBuild:isDirectory:callback:"), function(self, _cmd, path, isDirectory, callback)
 {
     var cappBuild = SYS.env["CAPP_BUILD"];
     if (!cappBuild)
@@ -742,11 +743,11 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
     else
         return false;
 }
-,["id","CPString","BOOL","JSObject"]), new objj_method(sel_getUid("findInInstalledFrameworks:isDirectory:callback:"), function $Nib2Cib__findInInstalledFrameworks_isDirectory_callback_(self, _cmd, path, isDirectory, callback)
+,["id","CPString","BOOL","JSObject"]), new objj_method(sel_getUid("findInInstalledFrameworks:isDirectory:callback:"), function(self, _cmd, path, isDirectory, callback)
 {
     return self.isa.objj_msgSend(self, "findInFrameworks:path:isDirectory:callback:", FILE.canonical(FILE.join(SYS.prefix, "packages/cappuccino/Frameworks")), path, isDirectory, callback);
 }
-,["id","CPString","BOOL","JSObject"]), new objj_method(sel_getUid("findInFrameworks:path:isDirectory:callback:"), function $Nib2Cib__findInFrameworks_path_isDirectory_callback_(self, _cmd, frameworksPath, path, isDirectory, callback)
+,["id","CPString","BOOL","JSObject"]), new objj_method(sel_getUid("findInFrameworks:path:isDirectory:callback:"), function(self, _cmd, frameworksPath, path, isDirectory, callback)
 {
     var result = null,
         findPath = FILE.join(frameworksPath, "Debug", path);
@@ -760,7 +761,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
     }
     return result;
 }
-,["id","CPString","CPString","BOOL","JSObject"]), new objj_method(sel_getUid("getAppKitDefaultThemeName"), function $Nib2Cib__getAppKitDefaultThemeName(self, _cmd)
+,["id","CPString","CPString","BOOL","JSObject"]), new objj_method(sel_getUid("getAppKitDefaultThemeName"), function(self, _cmd)
 {
     var callback = function(path)
     {
@@ -771,7 +772,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
         themeName = self.isa.objj_msgSend3(self, "findInInstalledFrameworks:isDirectory:callback:", "AppKit/Info.plist", NO, callback);
     return themeName || DefaultTheme;
 }
-,["CPString"]), new objj_method(sel_getUid("themeNameFromPropertyList:"), function $Nib2Cib__themeNameFromPropertyList_(self, _cmd, path)
+,["CPString"]), new objj_method(sel_getUid("themeNameFromPropertyList:"), function(self, _cmd, path)
 {
     if (!FILE.isReadable(path))
         return nil;
@@ -781,12 +782,12 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
         themeName = plist.valueForKey("CPDefaultTheme");
     return themeName;
 }
-,["CPString","CPString"]), new objj_method(sel_getUid("loadThemesFromList:"), function $Nib2Cib__loadThemesFromList_(self, _cmd, themeList)
+,["CPString","CPString"]), new objj_method(sel_getUid("loadThemesFromList:"), function(self, _cmd, themeList)
 {
     for (var i = 0; i < themeList.length; ++i)
         self.themes.push(self.isa.objj_msgSend1(self, "loadThemeNamed:", themeList[i]));
 }
-,["void","CPArray"]), new objj_method(sel_getUid("loadThemeNamed:"), function $Nib2Cib__loadThemeNamed_(self, _cmd, themeName)
+,["void","CPArray"]), new objj_method(sel_getUid("loadThemeNamed:"), function(self, _cmd, themeName)
 {
     if (/^.+\.blend$/.test(themeName))
         themeName = themeName.substr(0, themeName.length - ".blend".length);
@@ -819,7 +820,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
         self.isa.objj_msgSend1(self, "failWithMessage:", "Cannot find the theme \"" + themeName + "\"");
     return self.isa.objj_msgSend2(self, "readThemeWithName:atPath:", themeName, themePath);
 }
-,["CPTheme","CPString"]), new objj_method(sel_getUid("readThemeWithName:atPath:"), function $Nib2Cib__readThemeWithName_atPath_(self, _cmd, name, path)
+,["CPTheme","CPString"]), new objj_method(sel_getUid("readThemeWithName:atPath:"), function(self, _cmd, name, path)
 {
     var themeBundle = new CFBundle(path);
     themeBundle.mostEligibleEnvironment = function()
@@ -842,7 +843,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
     CPLog.debug("Loaded theme: " + path);
     return theme;
 }
-,["CPTheme","CPString","CPString"]), new objj_method(sel_getUid("readConfigFile:inputPath:"), function $Nib2Cib__readConfigFile_inputPath_(self, _cmd, configFile, inputPath)
+,["CPTheme","CPString","CPString"]), new objj_method(sel_getUid("readConfigFile:inputPath:"), function(self, _cmd, configFile, inputPath)
 {
     var configPath = null,
         path;
@@ -871,7 +872,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
     }
     return {path: configPath, plist: plist};
 }
-,["JSObject","CPString","CPString"]), new objj_method(sel_getUid("getModifiedNibsInDirectory:"), function $Nib2Cib__getModifiedNibsInDirectory_(self, _cmd, path)
+,["JSObject","CPString","CPString"]), new objj_method(sel_getUid("getModifiedNibsInDirectory:"), function(self, _cmd, path)
 {
     var nibs = (new FileList(FILE.join(path, "*.[nx]ib"))).items(),
         count = nibs.length,
@@ -896,12 +897,12 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
     self.nibInfo = newNibInfo;
     return modifiedNibs;
 }
-,["CPArray","CPString"]), new objj_method(sel_getUid("printVersionAndExit"), function $Nib2Cib__printVersionAndExit(self, _cmd)
+,["CPArray","CPString"]), new objj_method(sel_getUid("printVersionAndExit"), function(self, _cmd)
 {
     self.isa.objj_msgSend0(self, "printVersion");
     OS.exit(0);
 }
-,["void"]), new objj_method(sel_getUid("printVersion"), function $Nib2Cib__printVersion(self, _cmd)
+,["void"]), new objj_method(sel_getUid("printVersion"), function(self, _cmd)
 {
     var path = FILE.dirname(FILE.dirname(FILE.canonical(SYS.args[0]))),
         version = null;
@@ -923,7 +924,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
     if (!version)
         stream.print("<No version info available>");
 }
-,["void"]), new objj_method(sel_getUid("exceptionReason:"), function $Nib2Cib__exceptionReason_(self, _cmd, exception)
+,["void"]), new objj_method(sel_getUid("exceptionReason:"), function(self, _cmd, exception)
 {
     if (typeof exception === "string")
         return exception;
@@ -932,22 +933,22 @@ class_addMethods(the_class, [new objj_method(sel_getUid("appDirectory"), functio
     else
         return "An unknown error occurred";
 }
-,["CPString","JSObject"]), new objj_method(sel_getUid("failWithMessage:"), function $Nib2Cib__failWithMessage_(self, _cmd, message)
+,["CPString","JSObject"]), new objj_method(sel_getUid("failWithMessage:"), function(self, _cmd, message)
 {
     CPException.isa.objj_msgSend2(CPException, "raise:reason:", ConverterConversionException, message);
 }
-,["void","CPString"]), new objj_method(sel_getUid("logError:"), function $Nib2Cib__logError_(self, _cmd, message)
+,["void","CPString"]), new objj_method(sel_getUid("logError:"), function(self, _cmd, message)
 {
     if (Nib2CibColorizeOutput)
         message = CPLogColorize(message, "fatal");
     stream.printError(message);
 }
 ,["void","CPString"])]);
-class_addMethods(meta_class, [new objj_method(sel_getUid("sharedNib2Cib"), function $Nib2Cib__sharedNib2Cib(self, _cmd)
+class_addMethods(meta_class, [new objj_method(sel_getUid("sharedNib2Cib"), function(self, _cmd)
 {
     return SharedNib2Cib;
 }
-,["Nib2Cib"]), new objj_method(sel_getUid("defaultTheme"), function $Nib2Cib__defaultTheme(self, _cmd)
+,["Nib2Cib"]), new objj_method(sel_getUid("defaultTheme"), function(self, _cmd)
 {
     return (SharedNib2Cib == null ? null : SharedNib2Cib.isa.objj_msgSend0(SharedNib2Cib, "themes"))[0];
 }
@@ -960,14 +961,14 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("sharedNib2Cib"), funct
         return CPLogColorize(aString, aLevel);
 }
 p;18;Nib2CibException.jt;56;@STATIC;1.0;t;39;Nib2CibException = "Nib2CibException";
-p;24;Nib2CibKeyedUnarchiver.jt;3825;@STATIC;1.0;I;30;Foundation/CPKeyedUnarchiver.ji;18;Nib2CibException.jt;3748;objj_executeFile("Foundation/CPKeyedUnarchiver.j", NO);objj_executeFile("Nib2CibException.j", YES);var FILE = require("file");
+p;24;Nib2CibKeyedUnarchiver.jt;3672;@STATIC;1.0;I;30;Foundation/CPKeyedUnarchiver.ji;18;Nib2CibException.jt;3595;objj_executeFile("Foundation/CPKeyedUnarchiver.j", NO);objj_executeFile("Nib2CibException.j", YES);var FILE = require("file");
 {var the_class = objj_allocateClassPair(CPKeyedUnarchiver, "Nib2CibKeyedUnarchiver"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("allObjects"), function $Nib2CibKeyedUnarchiver__allObjects(self, _cmd)
+class_addMethods(the_class, [new objj_method(sel_getUid("allObjects"), function(self, _cmd)
 {
     return self._objects;
 }
-,["CPArray"]), new objj_method(sel_getUid("resourceInfoForName:inFramework:"), function $Nib2CibKeyedUnarchiver__resourceInfoForName_inFramework_(self, _cmd, aName, framework)
+,["CPArray"]), new objj_method(sel_getUid("resourceInfoForName:inFramework:"), function(self, _cmd, aName, framework)
 {
     var nib2cib = (Nib2Cib == null ? null : Nib2Cib.isa.objj_msgSend0(Nib2Cib, "sharedNib2Cib")),
         frameworks = (nib2cib == null ? null : nib2cib.isa.objj_msgSend0(nib2cib, "frameworks"));
@@ -1001,7 +1002,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("allObjects"), function 
     }
     CPException.isa.objj_msgSend3(CPException, "raise:format:", Nib2CibException, "The image “%@” cannot be found.", aName);
 }
-,["JSObject","CPString","CPString"]), new objj_method(sel_getUid("_resourcePathForName:inDirectory:"), function $Nib2CibKeyedUnarchiver___resourcePathForName_inDirectory_(self, _cmd, aName, directory)
+,["JSObject","CPString","CPString"]), new objj_method(sel_getUid("_resourcePathForName:inDirectory:"), function(self, _cmd, aName, directory)
 {
     var pathGroups = [FILE.listPaths(directory)];
     while (pathGroups.length > 0)
@@ -1031,7 +1032,30 @@ class_addMethods(the_class, [new objj_method(sel_getUid("allObjects"), function 
         paths[count] = FILE.join(aPath, paths[count]);
     return paths;
 };
-p;10;NSAppKit.jt;4488;@STATIC;1.0;i;15;_NSCornerView.ji;19;NSArrayController.ji;7;NSBox.ji;10;NSButton.ji;11;NSBrowser.ji;8;NSCell.ji;16;NSClassSwapper.ji;12;NSClipView.ji;9;NSColor.ji;13;NSColorWell.ji;18;NSCollectionView.ji;22;NSCollectionViewItem.ji;12;NSComboBox.ji;11;NSControl.ji;16;NSCustomObject.ji;18;NSCustomResource.ji;14;NSCustomView.ji;14;NSDatePicker.ji;24;NSDictionaryController.ji;9;NSEvent.ji;8;NSFont.ji;16;NSIBObjectData.ji;9;NSImage.ji;13;NSImageView.ji;20;NSLayoutConstraint.ji;18;NSLevelIndicator.ji;10;NSMatrix.ji;8;NSMenu.ji;12;NSMenuItem.ji;7;NSNib.ji;16;NSNibConnector.ji;20;NSObjectController.ji;15;NSOutlineView.ji;15;NSPopUpButton.ji;19;NSPredicateEditor.ji;13;NSResponder.ji;14;NSRuleEditor.ji;14;NSScrollView.ji;12;NSScroller.ji;15;NSSearchField.ji;7;NSSet.ji;19;NSSecureTextField.ji;20;NSSegmentedControl.ji;10;NSSlider.ji;13;NSSplitView.ji;11;NSStepper.ji;15;NSTableColumn.ji;17;NSTableCellView.ji;19;NSTableHeaderView.ji;13;NSTableView.ji;11;NSTabView.ji;15;NSTabViewItem.ji;13;NSTextField.ji;14;NSTokenField.ji;11;NSToolbar.ji;28;NSToolbarFlexibleSpaceItem.ji;15;NSToolbarItem.ji;25;NSToolbarShowColorsItem.ji;24;NSToolbarSeparatorItem.ji;20;NSToolbarSpaceItem.ji;26;NSUserDefaultsController.ji;8;NSView.ji;18;NSViewController.ji;18;NSWindowTemplate.ji;9;WebView.ji;18;NSSortDescriptor.ji;11;NSPopover.ji;21;NSProgressIndicator.jt;3139;objj_executeFile("_NSCornerView.j", YES);objj_executeFile("NSArrayController.j", YES);objj_executeFile("NSBox.j", YES);objj_executeFile("NSButton.j", YES);objj_executeFile("NSBrowser.j", YES);objj_executeFile("NSCell.j", YES);objj_executeFile("NSClassSwapper.j", YES);objj_executeFile("NSClipView.j", YES);objj_executeFile("NSColor.j", YES);objj_executeFile("NSColorWell.j", YES);objj_executeFile("NSCollectionView.j", YES);objj_executeFile("NSCollectionViewItem.j", YES);objj_executeFile("NSComboBox.j", YES);objj_executeFile("NSControl.j", YES);objj_executeFile("NSCustomObject.j", YES);objj_executeFile("NSCustomResource.j", YES);objj_executeFile("NSCustomView.j", YES);objj_executeFile("NSDatePicker.j", YES);objj_executeFile("NSDictionaryController.j", YES);objj_executeFile("NSEvent.j", YES);objj_executeFile("NSFont.j", YES);objj_executeFile("NSIBObjectData.j", YES);objj_executeFile("NSImage.j", YES);objj_executeFile("NSImageView.j", YES);objj_executeFile("NSLayoutConstraint.j", YES);objj_executeFile("NSLevelIndicator.j", YES);objj_executeFile("NSMatrix.j", YES);objj_executeFile("NSMenu.j", YES);objj_executeFile("NSMenuItem.j", YES);objj_executeFile("NSNib.j", YES);objj_executeFile("NSNibConnector.j", YES);objj_executeFile("NSObjectController.j", YES);objj_executeFile("NSOutlineView.j", YES);objj_executeFile("NSPopUpButton.j", YES);objj_executeFile("NSPredicateEditor.j", YES);objj_executeFile("NSResponder.j", YES);objj_executeFile("NSRuleEditor.j", YES);objj_executeFile("NSScrollView.j", YES);objj_executeFile("NSScroller.j", YES);objj_executeFile("NSSearchField.j", YES);objj_executeFile("NSSet.j", YES);objj_executeFile("NSSecureTextField.j", YES);objj_executeFile("NSSegmentedControl.j", YES);objj_executeFile("NSSlider.j", YES);objj_executeFile("NSSplitView.j", YES);objj_executeFile("NSStepper.j", YES);objj_executeFile("NSTableColumn.j", YES);objj_executeFile("NSTableCellView.j", YES);objj_executeFile("NSTableHeaderView.j", YES);objj_executeFile("NSTableView.j", YES);objj_executeFile("NSTabView.j", YES);objj_executeFile("NSTabViewItem.j", YES);objj_executeFile("NSTextField.j", YES);objj_executeFile("NSTokenField.j", YES);objj_executeFile("NSToolbar.j", YES);objj_executeFile("NSToolbarFlexibleSpaceItem.j", YES);objj_executeFile("NSToolbarItem.j", YES);objj_executeFile("NSToolbarShowColorsItem.j", YES);objj_executeFile("NSToolbarSeparatorItem.j", YES);objj_executeFile("NSToolbarSpaceItem.j", YES);objj_executeFile("NSUserDefaultsController.j", YES);objj_executeFile("NSView.j", YES);objj_executeFile("NSViewController.j", YES);objj_executeFile("NSWindowTemplate.j", YES);objj_executeFile("WebView.j", YES);objj_executeFile("NSSortDescriptor.j", YES);objj_executeFile("NSPopover.j", YES);objj_executeFile("NSProgressIndicator.j", YES);CP_NSMapClassName = function(aClassName)
+p;14;NSAppearance.jt;1184;@STATIC;1.0;I;21;AppKit/CPAppearance.jt;1139;objj_executeFile("AppKit/CPAppearance.j", NO);{
+var the_class = objj_getClass("CPAppearance")
+if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPAppearance\"");
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
+{
+    if (self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("CPAppearance").super_class }, "init"))
+    {
+        self._name = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSAppearanceName")).replace(/^NS/, "CP");
+    }
+    return self;
+}
+,["id","CPCoder"])]);
+}{var the_class = objj_allocateClassPair(CPAppearance, "NSAppearance"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
+{
+    return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
+}
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
+{
+    return CPAppearance.isa.objj_msgSend0(CPAppearance, "class");
+}
+,["Class"])]);
+}p;10;NSAppKit.jt;4691;@STATIC;1.0;i;15;_NSCornerView.ji;19;NSArrayController.ji;7;NSBox.ji;10;NSButton.ji;11;NSBrowser.ji;8;NSCell.ji;16;NSClassSwapper.ji;12;NSClipView.ji;9;NSColor.ji;13;NSColorWell.ji;18;NSCollectionView.ji;22;NSCollectionViewItem.ji;12;NSComboBox.ji;11;NSControl.ji;16;NSCustomObject.ji;18;NSCustomResource.ji;14;NSCustomView.ji;14;NSDatePicker.ji;24;NSDictionaryController.ji;9;NSEvent.ji;8;NSFont.ji;16;NSIBObjectData.ji;9;NSImage.ji;13;NSImageView.ji;20;NSLayoutConstraint.ji;18;NSLevelIndicator.ji;21;NSLocalizableString.ji;10;NSMatrix.ji;8;NSMenu.ji;12;NSMenuItem.ji;7;NSNib.ji;16;NSNibConnector.ji;20;NSObjectController.ji;15;NSOutlineView.ji;15;NSPopUpButton.ji;19;NSPredicateEditor.ji;13;NSResponder.ji;14;NSRuleEditor.ji;14;NSScrollView.ji;12;NSScroller.ji;15;NSSearchField.ji;7;NSSet.ji;19;NSSecureTextField.ji;20;NSSegmentedControl.ji;10;NSSlider.ji;13;NSSplitView.ji;11;NSStepper.ji;15;NSTableColumn.ji;17;NSTableCellView.ji;19;NSTableHeaderView.ji;13;NSTableView.ji;11;NSTabView.ji;15;NSTabViewItem.ji;13;NSTextField.ji;14;NSTokenField.ji;11;NSToolbar.ji;28;NSToolbarFlexibleSpaceItem.ji;15;NSToolbarItem.ji;25;NSToolbarShowColorsItem.ji;24;NSToolbarSeparatorItem.ji;20;NSToolbarSpaceItem.ji;26;NSUserDefaultsController.ji;8;NSView.ji;18;NSViewController.ji;18;NSWindowTemplate.ji;9;WebView.ji;18;NSSortDescriptor.ji;11;NSPopover.ji;21;NSProgressIndicator.ji;14;NSAppearance.ji;20;NSVisualEffectView.jt;3272;objj_executeFile("_NSCornerView.j", YES);objj_executeFile("NSArrayController.j", YES);objj_executeFile("NSBox.j", YES);objj_executeFile("NSButton.j", YES);objj_executeFile("NSBrowser.j", YES);objj_executeFile("NSCell.j", YES);objj_executeFile("NSClassSwapper.j", YES);objj_executeFile("NSClipView.j", YES);objj_executeFile("NSColor.j", YES);objj_executeFile("NSColorWell.j", YES);objj_executeFile("NSCollectionView.j", YES);objj_executeFile("NSCollectionViewItem.j", YES);objj_executeFile("NSComboBox.j", YES);objj_executeFile("NSControl.j", YES);objj_executeFile("NSCustomObject.j", YES);objj_executeFile("NSCustomResource.j", YES);objj_executeFile("NSCustomView.j", YES);objj_executeFile("NSDatePicker.j", YES);objj_executeFile("NSDictionaryController.j", YES);objj_executeFile("NSEvent.j", YES);objj_executeFile("NSFont.j", YES);objj_executeFile("NSIBObjectData.j", YES);objj_executeFile("NSImage.j", YES);objj_executeFile("NSImageView.j", YES);objj_executeFile("NSLayoutConstraint.j", YES);objj_executeFile("NSLevelIndicator.j", YES);objj_executeFile("NSLocalizableString.j", YES);objj_executeFile("NSMatrix.j", YES);objj_executeFile("NSMenu.j", YES);objj_executeFile("NSMenuItem.j", YES);objj_executeFile("NSNib.j", YES);objj_executeFile("NSNibConnector.j", YES);objj_executeFile("NSObjectController.j", YES);objj_executeFile("NSOutlineView.j", YES);objj_executeFile("NSPopUpButton.j", YES);objj_executeFile("NSPredicateEditor.j", YES);objj_executeFile("NSResponder.j", YES);objj_executeFile("NSRuleEditor.j", YES);objj_executeFile("NSScrollView.j", YES);objj_executeFile("NSScroller.j", YES);objj_executeFile("NSSearchField.j", YES);objj_executeFile("NSSet.j", YES);objj_executeFile("NSSecureTextField.j", YES);objj_executeFile("NSSegmentedControl.j", YES);objj_executeFile("NSSlider.j", YES);objj_executeFile("NSSplitView.j", YES);objj_executeFile("NSStepper.j", YES);objj_executeFile("NSTableColumn.j", YES);objj_executeFile("NSTableCellView.j", YES);objj_executeFile("NSTableHeaderView.j", YES);objj_executeFile("NSTableView.j", YES);objj_executeFile("NSTabView.j", YES);objj_executeFile("NSTabViewItem.j", YES);objj_executeFile("NSTextField.j", YES);objj_executeFile("NSTokenField.j", YES);objj_executeFile("NSToolbar.j", YES);objj_executeFile("NSToolbarFlexibleSpaceItem.j", YES);objj_executeFile("NSToolbarItem.j", YES);objj_executeFile("NSToolbarShowColorsItem.j", YES);objj_executeFile("NSToolbarSeparatorItem.j", YES);objj_executeFile("NSToolbarSpaceItem.j", YES);objj_executeFile("NSUserDefaultsController.j", YES);objj_executeFile("NSView.j", YES);objj_executeFile("NSViewController.j", YES);objj_executeFile("NSWindowTemplate.j", YES);objj_executeFile("WebView.j", YES);objj_executeFile("NSSortDescriptor.j", YES);objj_executeFile("NSPopover.j", YES);objj_executeFile("NSProgressIndicator.j", YES);objj_executeFile("NSAppearance.j", YES);objj_executeFile("NSVisualEffectView.j", YES);CP_NSMapClassName = function(aClassName)
 {
     if (aClassName.indexOf("NS") === 0)
     {
@@ -1044,21 +1068,21 @@ p;10;NSAppKit.jt;4488;@STATIC;1.0;i;15;_NSCornerView.ji;19;NSArrayController.ji;
     }
     return aClassName;
 }
-p;9;NSArray.jt;609;@STATIC;1.0;I;21;Foundation/CPObject.jt;565;objj_executeFile("Foundation/CPObject.j", NO);{var the_class = objj_allocateClassPair(CPObject, "NSArray"),
+p;9;NSArray.jt;584;@STATIC;1.0;I;21;Foundation/CPObject.jt;540;objj_executeFile("Foundation/CPObject.j", NO);{var the_class = objj_allocateClassPair(CPObject, "NSArray"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSArray__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NS.objects"));
 }
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(NSArray, "NSMutableArray"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-}p;19;NSArrayController.jt;2309;@STATIC;1.0;I;26;AppKit/CPArrayController.jt;2259;objj_executeFile("AppKit/CPArrayController.j", NO);{
+}p;19;NSArrayController.jt;2195;@STATIC;1.0;I;26;AppKit/CPArrayController.jt;2145;objj_executeFile("AppKit/CPArrayController.j", NO);{
 var the_class = objj_getClass("CPArrayController")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPArrayController\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPArrayController__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPArrayController").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPArrayController").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
     {
         self._avoidsEmptySelection = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeBoolForKey:", "NSAvoidsEmptySelection"));
@@ -1074,18 +1098,18 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPArrayController, "NSArrayController"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSArrayController__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSArrayController__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPArrayController.isa.objj_msgSend0(CPArrayController, "class");
 }
 ,["Class"])]);
-}p;20;NSAttributedString.jt;830;@STATIC;1.0;I;21;Foundation/CPObject.jI;31;Foundation/CPAttributedString.jt;750;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPAttributedString.j", NO);{var the_class = objj_allocateClassPair(CPAttributedString, "NSAttributedString"),
+}p;20;NSAttributedString.jt;794;@STATIC;1.0;I;21;Foundation/CPObject.jI;31;Foundation/CPAttributedString.jt;714;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPAttributedString.j", NO);{var the_class = objj_allocateClassPair(CPAttributedString, "NSAttributedString"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSAttributedString__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return ((___r1 = CPAttributedString.isa.objj_msgSend0(CPAttributedString, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "initWithString:", ""));
     var ___r1;
@@ -1093,12 +1117,12 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(NSAttributedString, "NSMutableAttributedString"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-}p;7;NSBox.jt;3497;@STATIC;1.0;I;14;AppKit/CPBox.jt;3459;objj_executeFile("AppKit/CPBox.j", NO);{
+}p;7;NSBox.jt;3422;@STATIC;1.0;I;14;AppKit/CPBox.jt;3384;objj_executeFile("AppKit/CPBox.j", NO);{
 var the_class = objj_getClass("CPBox")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPBox\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPBox__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPBox").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPBox").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
     {
         self._boxType = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSBoxType"));
@@ -1116,7 +1140,8 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
             frame.size.width -= 8;
             frame.size.height -= 6;
         }
-        (self == null ? null : self.isa.objj_msgSend1(self, "setFrame:", frame));
+        self._frame = frame;
+        self._bounds.size = CGSizeMakeCopy(frame.size);
         if (self._boxType !== CPBoxPrimary && self._boxType !== CPBoxSecondary)
         {
             if (borderColor)
@@ -1138,21 +1163,21 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPBox, "NSBox"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSBox__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSBox__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPBox.isa.objj_msgSend0(CPBox, "class");
 }
 ,["Class"])]);
-}p;11;NSBrowser.jt;2870;@STATIC;1.0;I;21;Foundation/CPObject.jI;18;AppKit/CPBrowser.jI;20;AppKit/CPTextField.jI;16;AppKit/CPColor.jt;2756;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("AppKit/CPBrowser.j", NO);objj_executeFile("AppKit/CPTextField.j", NO);objj_executeFile("AppKit/CPColor.j", NO);{
+}p;11;NSBrowser.jt;2780;@STATIC;1.0;I;21;Foundation/CPObject.jI;18;AppKit/CPBrowser.jI;20;AppKit/CPTextField.jI;16;AppKit/CPColor.jt;2666;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("AppKit/CPBrowser.j", NO);objj_executeFile("AppKit/CPTextField.j", NO);objj_executeFile("AppKit/CPColor.j", NO);{
 var the_class = objj_getClass("CPBrowser")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPBrowser\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPBrowser__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    if (self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPBrowser").super_class }, "NS_initWithCoder:", aCoder))
+    if (self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPBrowser").super_class }, "NS_initWithCoder:", aCoder))
     {
         var flags = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSBrFlags"));
         self._columnWidths = [];
@@ -1171,7 +1196,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPBrowser, "NSBrowser"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSBrowser__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder));
     if (self)
@@ -1181,12 +1206,12 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSBrowser__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPBrowser.isa.objj_msgSend0(CPBrowser, "class");
 }
 ,["Class"])]);
-}p;10;NSButton.jt;19878;@STATIC;1.0;I;17;AppKit/CPButton.jI;19;AppKit/CPCheckBox.jI;22;AppKit/CPPopUpButton.jI;16;AppKit/CPRadio.ji;8;NSCell.ji;11;NSControl.jt;19736;objj_executeFile("AppKit/CPButton.j", NO);objj_executeFile("AppKit/CPCheckBox.j", NO);objj_executeFile("AppKit/CPPopUpButton.j", NO);objj_executeFile("AppKit/CPRadio.j", NO);objj_executeFile("NSCell.j", YES);objj_executeFile("NSControl.j", YES);var NSButtonIsBorderedMask = 0x00800000,
+}p;10;NSButton.jt;19610;@STATIC;1.0;I;17;AppKit/CPButton.jI;19;AppKit/CPCheckBox.jI;22;AppKit/CPPopUpButton.jI;16;AppKit/CPRadio.ji;8;NSCell.ji;11;NSControl.jt;19468;objj_executeFile("AppKit/CPButton.j", NO);objj_executeFile("AppKit/CPCheckBox.j", NO);objj_executeFile("AppKit/CPPopUpButton.j", NO);objj_executeFile("AppKit/CPRadio.j", NO);objj_executeFile("NSCell.j", YES);objj_executeFile("NSControl.j", YES);var NSButtonIsBorderedMask = 0x00800000,
     NSButtonAllowsMixedStateMask = 0x1000000,
     NSButtonImagePositionMask = 0xFF0000,
     NSButtonImagePositionShift = 16,
@@ -1207,13 +1232,13 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
 {
 var the_class = objj_getClass("CPButton")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPButton\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPButton__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    return objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPButton").super_class }, "NS_initWithCoder:", aCoder);
+    return objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPButton").super_class }, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function $CPButton__NS_initWithCell_(self, _cmd, cell)
+,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function(self, _cmd, cell)
 {
-    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPButton").super_class }, "NS_initWithCell:", cell);
+    objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPButton").super_class }, "NS_initWithCell:", cell);
     var alternateImage = (cell == null ? null : cell.isa.objj_msgSend0(cell, "alternateImage"));
     if ((alternateImage == null ? null : alternateImage.isa.objj_msgSend1(alternateImage, "isKindOfClass:", (NSButtonImageSource == null ? null : NSButtonImageSource.isa.objj_msgSend0(NSButtonImageSource, "class")))))
     {
@@ -1297,14 +1322,15 @@ default:
     self.isa.objj_msgSend1(self, "setImage:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "normalImage")));
     self.isa.objj_msgSend1(self, "setAlternateImage:", alternateImage);
     self.isa.objj_msgSend1(self, "setImagePosition:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "imagePosition")));
+    self.isa.objj_msgSend1(self, "setImageScaling:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "imageScaling")));
     self.isa.objj_msgSend1(self, "setEnabled:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "isEnabled")));
     self._highlightsBy = (cell == null ? null : cell.isa.objj_msgSend0(cell, "highlightsBy"));
     self._showsStateBy = (cell == null ? null : cell.isa.objj_msgSend0(cell, "showsStateBy"));
     var ___r1;
 }
-,["void","NSCell"]), new objj_method(sel_getUid("_nib2CibAdjustment"), function $CPButton___nib2CibAdjustment(self, _cmd)
+,["void","NSCell"]), new objj_method(sel_getUid("_nib2CibAdjustment"), function(self, _cmd)
 {
-    var frameAdjustment = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPButton").super_class }, "_nib2CibAdjustment"),
+    var frameAdjustment = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("CPButton").super_class }, "_nib2CibAdjustment"),
         positionOffsetSizeWidth = 0,
         positionOffsetOriginX = 0,
         positionOffsetOriginY = 0;
@@ -1439,7 +1465,7 @@ default:
 ,["CGRect"])]);
 }{var the_class = objj_allocateClassPair(CPButton, "NSButton"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSButton__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder));
     if (self)
@@ -1450,64 +1476,64 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSButton__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPButton.isa.objj_msgSend0(CPButton, "class");
 }
 ,["Class"])]);
 }{var the_class = objj_allocateClassPair(NSActionCell, "NSButtonCell"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_isBordered"), new objj_ivar("_bezelStyle"), new objj_ivar("_title"), new objj_ivar("_alternateTitle"), new objj_ivar("_normalImage"), new objj_ivar("_alternateImage"), new objj_ivar("_allowsMixedState"), new objj_ivar("_imagePosition"), new objj_ivar("_highlightsBy"), new objj_ivar("_showsStateBy"), new objj_ivar("_keyEquivalent"), new objj_ivar("_keyEquivalentModifierMask")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("isBordered"), function $NSButtonCell__isBordered(self, _cmd)
-{
-    return self._isBordered;
-}
-,["BOOL"]), new objj_method(sel_getUid("bezelStyle"), function $NSButtonCell__bezelStyle(self, _cmd)
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_bezelStyle", "int"), new objj_ivar("_title", "CPString"), new objj_ivar("_alternateTitle", "CPString"), new objj_ivar("_normalImage", "CPImage"), new objj_ivar("_alternateImage", "CPImage"), new objj_ivar("_allowsMixedState", "BOOL"), new objj_ivar("_imagePosition", "int"), new objj_ivar("_imageScaling", "int"), new objj_ivar("_highlightsBy", "int"), new objj_ivar("_showsStateBy", "int"), new objj_ivar("_keyEquivalent", "CPString"), new objj_ivar("_keyEquivalentModifierMask", "unsigned")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("bezelStyle"), function(self, _cmd)
 {
     return self._bezelStyle;
 }
-,["int"]), new objj_method(sel_getUid("title"), function $NSButtonCell__title(self, _cmd)
+,["int"]), new objj_method(sel_getUid("title"), function(self, _cmd)
 {
     return self._title;
 }
-,["CPString"]), new objj_method(sel_getUid("alternateTitle"), function $NSButtonCell__alternateTitle(self, _cmd)
+,["CPString"]), new objj_method(sel_getUid("alternateTitle"), function(self, _cmd)
 {
     return self._alternateTitle;
 }
-,["CPString"]), new objj_method(sel_getUid("normalImage"), function $NSButtonCell__normalImage(self, _cmd)
+,["CPString"]), new objj_method(sel_getUid("normalImage"), function(self, _cmd)
 {
     return self._normalImage;
 }
-,["CPImage"]), new objj_method(sel_getUid("alternateImage"), function $NSButtonCell__alternateImage(self, _cmd)
+,["CPImage"]), new objj_method(sel_getUid("alternateImage"), function(self, _cmd)
 {
     return self._alternateImage;
 }
-,["CPImage"]), new objj_method(sel_getUid("allowsMixedState"), function $NSButtonCell__allowsMixedState(self, _cmd)
+,["CPImage"]), new objj_method(sel_getUid("allowsMixedState"), function(self, _cmd)
 {
     return self._allowsMixedState;
 }
-,["BOOL"]), new objj_method(sel_getUid("imagePosition"), function $NSButtonCell__imagePosition(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("imagePosition"), function(self, _cmd)
 {
     return self._imagePosition;
 }
-,["BOOL"]), new objj_method(sel_getUid("highlightsBy"), function $NSButtonCell__highlightsBy(self, _cmd)
+,["int"]), new objj_method(sel_getUid("imageScaling"), function(self, _cmd)
+{
+    return self._imageScaling;
+}
+,["int"]), new objj_method(sel_getUid("highlightsBy"), function(self, _cmd)
 {
     return self._highlightsBy;
 }
-,["int"]), new objj_method(sel_getUid("showsStateBy"), function $NSButtonCell__showsStateBy(self, _cmd)
+,["int"]), new objj_method(sel_getUid("showsStateBy"), function(self, _cmd)
 {
     return self._showsStateBy;
 }
-,["int"]), new objj_method(sel_getUid("keyEquivalent"), function $NSButtonCell__keyEquivalent(self, _cmd)
+,["int"]), new objj_method(sel_getUid("keyEquivalent"), function(self, _cmd)
 {
     return self._keyEquivalent;
 }
-,["CPString"]), new objj_method(sel_getUid("keyEquivalentModifierMask"), function $NSButtonCell__keyEquivalentModifierMask(self, _cmd)
+,["CPString"]), new objj_method(sel_getUid("keyEquivalentModifierMask"), function(self, _cmd)
 {
     return self._keyEquivalentModifierMask;
 }
-,["unsigned"]), new objj_method(sel_getUid("initWithCoder:"), function $NSButtonCell__initWithCoder_(self, _cmd, aCoder)
+,["unsigned"]), new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("NSButtonCell").super_class }, "initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("NSButtonCell").super_class }, "initWithCoder:", aCoder);
     if (self)
     {
         var buttonFlags = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSButtonFlags")),
@@ -1516,6 +1542,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("isBordered"), function 
             position = (buttonFlags & NSButtonImagePositionMask) >> NSButtonImagePositionShift;
         self._isBordered = buttonFlags & NSButtonIsBorderedMask ? YES : NO;
         self._bezelStyle = buttonFlags2 & 0x7 | (buttonFlags2 & 0x20) >> 2;
+        self._imageScaling = ((buttonFlags2 >> 6 & 0x3) + 2) % 4;
         self._title = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSContents"));
         self._alternateTitle = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSAlternateContents"));
         self._objectValue = (self == null ? null : self.isa.objj_msgSend0(self, "state"));
@@ -1559,25 +1586,25 @@ class_addMethods(the_class, [new objj_method(sel_getUid("isBordered"), function 
 }
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPObject, "NSButtonImageSource"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_imageName")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("imageName"), function $NSButtonImageSource__imageName(self, _cmd)
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_imageName", "CPString")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("imageName"), function(self, _cmd)
 {
     return self._imageName;
 }
-,["CPString"]), new objj_method(sel_getUid("initWithCoder:"), function $NSButtonImageSource__initWithCoder_(self, _cmd, aCoder)
+,["CPString"]), new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("NSButtonImageSource").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("NSButtonImageSource").super_class }, "init");
     if (self)
         self._imageName = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSImageName"));
     return self;
 }
 ,["id","CPCoder"])]);
-}p;22;NSByteCountFormatter.jt;2299;@STATIC;1.0;I;33;Foundation/CPByteCountFormatter.jt;2242;objj_executeFile("Foundation/CPByteCountFormatter.j", NO);{
+}p;22;NSByteCountFormatter.jt;2176;@STATIC;1.0;I;33;Foundation/CPByteCountFormatter.jt;2119;objj_executeFile("Foundation/CPByteCountFormatter.j", NO);{
 var the_class = objj_getClass("CPByteCountFormatter")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPByteCountFormatter\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPByteCountFormatter__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPByteCountFormatter").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("CPByteCountFormatter").super_class }, "init");
     if (self)
     {
         self._countStyle = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSKBSize")) || 0;
@@ -1594,104 +1621,108 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPByteCountFormatter, "NSByteCountFormatter"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSByteCountFormatter__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSByteCountFormatter__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPByteCountFormatter.isa.objj_msgSend0(CPByteCountFormatter, "class");
 }
 ,["Class"])]);
-}p;8;NSCell.jt;6699;@STATIC;1.0;I;21;Foundation/CPObject.jI;18;AppKit/CPControl.ji;8;NSFont.jt;6619;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("AppKit/CPControl.j", NO);objj_executeFile("NSFont.j", YES);{var the_class = objj_allocateClassPair(CPObject, "NSCell"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_state"), new objj_ivar("_isHighlighted"), new objj_ivar("_isEnabled"), new objj_ivar("_isEditable"), new objj_ivar("_isBordered"), new objj_ivar("_isBezeled"), new objj_ivar("_isSelectable"), new objj_ivar("_isScrollable"), new objj_ivar("_isContinuous"), new objj_ivar("_scrolls"), new objj_ivar("_wraps"), new objj_ivar("_truncates"), new objj_ivar("_sendsActionOnEndEditing"), new objj_ivar("_alignment"), new objj_ivar("_controlSize"), new objj_ivar("_objectValue"), new objj_ivar("_font"), new objj_ivar("_lineBreakMode"), new objj_ivar("_formatter"), new objj_ivar("_tag"), new objj_ivar("_usesSingleLineMode")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("state"), function $NSCell__state(self, _cmd)
+}p;8;NSCell.jt;6659;@STATIC;1.0;I;21;Foundation/CPObject.jI;18;AppKit/CPControl.ji;8;NSFont.jt;6579;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("AppKit/CPControl.j", NO);objj_executeFile("NSFont.j", YES);{var the_class = objj_allocateClassPair(CPObject, "NSCell"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_state", "int"), new objj_ivar("_isHighlighted", "BOOL"), new objj_ivar("_isEnabled", "BOOL"), new objj_ivar("_isEditable", "BOOL"), new objj_ivar("_isBordered", "BOOL"), new objj_ivar("_isBezeled", "BOOL"), new objj_ivar("_isSelectable", "BOOL"), new objj_ivar("_isScrollable", "BOOL"), new objj_ivar("_isContinuous", "BOOL"), new objj_ivar("_scrolls", "BOOL"), new objj_ivar("_wraps", "BOOL"), new objj_ivar("_truncates", "BOOL"), new objj_ivar("_sendsActionOnEndEditing", "BOOL"), new objj_ivar("_alignment", "CPTextAlignment"), new objj_ivar("_baseWritingDirection", "CPWritingDirection"), new objj_ivar("_controlSize", "CPControlSize"), new objj_ivar("_objectValue", "id"), new objj_ivar("_font", "CPFont"), new objj_ivar("_lineBreakMode", "int"), new objj_ivar("_formatter", "CPFormatter"), new objj_ivar("_tag", "int"), new objj_ivar("_usesSingleLineMode", "BOOL")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("state"), function(self, _cmd)
 {
     return self._state;
 }
-,["int"]), new objj_method(sel_getUid("isHighlighted"), function $NSCell__isHighlighted(self, _cmd)
+,["int"]), new objj_method(sel_getUid("isHighlighted"), function(self, _cmd)
 {
     return self._isHighlighted;
 }
-,["BOOL"]), new objj_method(sel_getUid("isEnabled"), function $NSCell__isEnabled(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("isEnabled"), function(self, _cmd)
 {
     return self._isEnabled;
 }
-,["BOOL"]), new objj_method(sel_getUid("isEditable"), function $NSCell__isEditable(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("isEditable"), function(self, _cmd)
 {
     return self._isEditable;
 }
-,["BOOL"]), new objj_method(sel_getUid("isBordered"), function $NSCell__isBordered(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("isBordered"), function(self, _cmd)
 {
     return self._isBordered;
 }
-,["BOOL"]), new objj_method(sel_getUid("isBezeled"), function $NSCell__isBezeled(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("isBezeled"), function(self, _cmd)
 {
     return self._isBezeled;
 }
-,["BOOL"]), new objj_method(sel_getUid("isSelectable"), function $NSCell__isSelectable(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("isSelectable"), function(self, _cmd)
 {
     return self._isSelectable;
 }
-,["BOOL"]), new objj_method(sel_getUid("isScrollable"), function $NSCell__isScrollable(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("isScrollable"), function(self, _cmd)
 {
     return self._isScrollable;
 }
-,["BOOL"]), new objj_method(sel_getUid("isContinuous"), function $NSCell__isContinuous(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("isContinuous"), function(self, _cmd)
 {
     return self._isContinuous;
 }
-,["BOOL"]), new objj_method(sel_getUid("scrolls"), function $NSCell__scrolls(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("scrolls"), function(self, _cmd)
 {
     return self._scrolls;
 }
-,["BOOL"]), new objj_method(sel_getUid("wraps"), function $NSCell__wraps(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("wraps"), function(self, _cmd)
 {
     return self._wraps;
 }
-,["BOOL"]), new objj_method(sel_getUid("truncates"), function $NSCell__truncates(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("truncates"), function(self, _cmd)
 {
     return self._truncates;
 }
-,["BOOL"]), new objj_method(sel_getUid("sendsActionOnEndEditing"), function $NSCell__sendsActionOnEndEditing(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("sendsActionOnEndEditing"), function(self, _cmd)
 {
     return self._sendsActionOnEndEditing;
 }
-,["BOOL"]), new objj_method(sel_getUid("alignment"), function $NSCell__alignment(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("alignment"), function(self, _cmd)
 {
     return self._alignment;
 }
-,["CPTextAlignment"]), new objj_method(sel_getUid("controlSize"), function $NSCell__controlSize(self, _cmd)
+,["CPTextAlignment"]), new objj_method(sel_getUid("baseWritingDirection"), function(self, _cmd)
+{
+    return self._baseWritingDirection;
+}
+,["CPWritingDirection"]), new objj_method(sel_getUid("controlSize"), function(self, _cmd)
 {
     return self._controlSize;
 }
-,["CPControlSize"]), new objj_method(sel_getUid("objectValue"), function $NSCell__objectValue(self, _cmd)
+,["CPControlSize"]), new objj_method(sel_getUid("objectValue"), function(self, _cmd)
 {
     return self._objectValue;
 }
-,["id"]), new objj_method(sel_getUid("font"), function $NSCell__font(self, _cmd)
+,["id"]), new objj_method(sel_getUid("font"), function(self, _cmd)
 {
     return self._font;
 }
-,["CPFont"]), new objj_method(sel_getUid("lineBreakMode"), function $NSCell__lineBreakMode(self, _cmd)
+,["CPFont"]), new objj_method(sel_getUid("lineBreakMode"), function(self, _cmd)
 {
     return self._lineBreakMode;
 }
-,["int"]), new objj_method(sel_getUid("formatter"), function $NSCell__formatter(self, _cmd)
+,["int"]), new objj_method(sel_getUid("formatter"), function(self, _cmd)
 {
     return self._formatter;
 }
-,["CPFormatter"]), new objj_method(sel_getUid("tag"), function $NSCell__tag(self, _cmd)
+,["CPFormatter"]), new objj_method(sel_getUid("tag"), function(self, _cmd)
 {
     return self._tag;
 }
-,["int"]), new objj_method(sel_getUid("usesSingleLineMode"), function $NSCell__usesSingleLineMode(self, _cmd)
+,["int"]), new objj_method(sel_getUid("usesSingleLineMode"), function(self, _cmd)
 {
     return self._usesSingleLineMode;
 }
-,["BOOL"]), new objj_method(sel_getUid("initWithCoder:"), function $NSCell__initWithCoder_(self, _cmd, aCoder)
+,["BOOL"]), new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("NSCell").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("NSCell").super_class }, "init");
     if (self)
     {
         var flags = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSCellFlags")),
@@ -1709,6 +1740,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("state"), function $NSCe
         self._wraps = !(flags & 0x00100000) && !(flags & 0x00000040) ? YES : NO;
         self._truncates = flags & 0x00100000 && !(flags & 0x00000040) ? YES : NO;
         self._alignment = (flags2 & 0x1c000000) >> 26;
+        self._baseWritingDirection = ((flags2 & 0x6000) >> 13) - 1;
         self._lineBreakMode = (flags2 & 0x0E00) >> 9;
         self._controlSize = (flags2 & 0xE0000) >> 17;
         self._sendsActionOnEndEditing = flags2 & 0x00400000 ? YES : NO;
@@ -1720,11 +1752,11 @@ class_addMethods(the_class, [new objj_method(sel_getUid("state"), function $NSCe
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("replacementObjectForCoder:"), function $NSCell__replacementObjectForCoder_(self, _cmd, aCoder)
+,["id","CPCoder"]), new objj_method(sel_getUid("replacementObjectForCoder:"), function(self, _cmd, aCoder)
 {
     return nil;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("stringValue"), function $NSCell__stringValue(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("stringValue"), function(self, _cmd)
 {
     if (((___r1 = self._objectValue), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "isKindOfClass:", CPString.isa.objj_msgSend0(CPString, "class"))))
         return self._objectValue;
@@ -1736,13 +1768,13 @@ class_addMethods(the_class, [new objj_method(sel_getUid("state"), function $NSCe
 ,["CPString"])]);
 }{var the_class = objj_allocateClassPair(NSCell, "NSActionCell"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-}p;16;NSClassSwapper.jt;4254;@STATIC;1.0;I;21;Foundation/CPObject.jI;21;Foundation/CPString.jI;27;AppKit/_CPCibClassSwapper.jt;4151;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPString.j", NO);objj_executeFile("AppKit/_CPCibClassSwapper.j", NO);var NSClassSwapperClassNames = {},
+}p;16;NSClassSwapper.jt;4218;@STATIC;1.0;I;21;Foundation/CPObject.jI;21;Foundation/CPString.jI;27;AppKit/_CPCibClassSwapper.jt;4115;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPString.j", NO);objj_executeFile("AppKit/_CPCibClassSwapper.j", NO);var NSClassSwapperClassNames = {},
     NSClassSwapperOriginalClassNames = {};
 var _CPCibClassSwapperClassNameKey = "_CPCibClassSwapperClassNameKey",
     _CPCibClassSwapperOriginalClassNameKey = "_CPCibClassSwapperOriginalClassNameKey";
 {var the_class = objj_allocateClassPair(_CPCibClassSwapper, "NSClassSwapper"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(meta_class, [new objj_method(sel_getUid("swapperClassForClassName:originalClassName:"), function $NSClassSwapper__swapperClassForClassName_originalClassName_(self, _cmd, aClassName, anOriginalClassName)
+class_addMethods(meta_class, [new objj_method(sel_getUid("swapperClassForClassName:originalClassName:"), function(self, _cmd, aClassName, anOriginalClassName)
 {
     var swapperClassName = "$NSClassSwapper_" + aClassName + "_" + anOriginalClassName,
         swapperClass = objj_lookUpClass(swapperClassName);
@@ -1759,7 +1791,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("swapperClassForClassNa
             if (nsClass)
             {
                 self.isa = nsClass;
-                self = objj_msgSend(self, _cmd, aCoder);
+                self = nsClass.objj_msgSend1(self, _cmd, aCoder);
                 self.isa = swapperClass;
             }
             else
@@ -1781,14 +1813,14 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("swapperClassForClassNa
             if (nsClass)
             {
                 self.isa = nsClass;
-                objj_msgSend(self, _cmd, aCoder);
+                nsClass.objj_msgSend1(self, _cmd, aCoder);
                 self.isa = swapperClass;
             }
             else
                 objj_msgSendSuper({super_class: originalClass, receiver: self}, _cmd, aCoder);
             if (nsClass)
             {
-                var classForArchiver = objj_msgSend(nsClass, "classForKeyedArchiver");
+                var classForArchiver = (nsClass == null ? null : nsClass.isa.objj_msgSend0(nsClass, "classForKeyedArchiver"));
                 if (classForArchiver)
                     aClassName = (classForArchiver == null ? null : classForArchiver.isa.objj_msgSend0(classForArchiver, "className"));
             }
@@ -1799,7 +1831,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("swapperClassForClassNa
     return swapperClass;
     var ___r1, ___r2;
 }
-,["id","CPString","CPString"]), new objj_method(sel_getUid("allocWithCoder:"), function $NSClassSwapper__allocWithCoder_(self, _cmd, aCoder)
+,["id","CPString","CPString"]), new objj_method(sel_getUid("allocWithCoder:"), function(self, _cmd, aCoder)
 {
     var className = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSClassName")),
         originalClassName = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSOriginalClassName"));
@@ -1807,13 +1839,13 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("swapperClassForClassNa
     var ___r1;
 }
 ,["id","CPCoder"])]);
-}p;12;NSClipView.jt;1871;@STATIC;1.0;I;19;AppKit/CPClipView.jt;1828;objj_executeFile("AppKit/CPClipView.j", NO);var NSClipViewDrawBackgroundFlag = 0x04;
+}p;12;NSClipView.jt;1752;@STATIC;1.0;I;19;AppKit/CPClipView.jt;1709;objj_executeFile("AppKit/CPClipView.j", NO);var NSClipViewDrawBackgroundFlag = 0x04;
 {
 var the_class = objj_getClass("CPClipView")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPClipView\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPClipView__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    if (self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPClipView").super_class }, "NS_initWithCoder:", aCoder))
+    if (self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPClipView").super_class }, "NS_initWithCoder:", aCoder))
     {
         self._documentView = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSDocView"));
         var flags = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NScvFlags"));
@@ -1822,26 +1854,26 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("NS_isFlipped"), function $CPClipView__NS_isFlipped(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("NS_isFlipped"), function(self, _cmd)
 {
     return YES;
 }
 ,["BOOL"])]);
 }{var the_class = objj_allocateClassPair(CPClipView, "NSClipView"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSClipView__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSClipView__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPClipView.isa.objj_msgSend0(CPClipView, "class");
 }
 ,["Class"])]);
-}p;18;NSCollectionView.jt;2279;@STATIC;1.0;I;25;AppKit/CPCollectionView.jt;2230;objj_executeFile("AppKit/CPCollectionView.j", NO);{
+}p;18;NSCollectionView.jt;2168;@STATIC;1.0;I;25;AppKit/CPCollectionView.jt;2119;objj_executeFile("AppKit/CPCollectionView.j", NO);{
 var the_class = objj_getClass("CPCollectionView")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPCollectionView\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPCollectionView__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
     self._items = [];
     self._content = [];
@@ -1853,7 +1885,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
     self._tileWidth = -1.0;
     self._selectionIndexes = CPIndexSet.isa.objj_msgSend0(CPIndexSet, "indexSet");
     self._allowsEmptySelection = YES;
-    if (self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPCollectionView").super_class }, "NS_initWithCoder:", aCoder))
+    if (self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPCollectionView").super_class }, "NS_initWithCoder:", aCoder))
     {
         self._backgroundColors = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSBackgroundColors"));
         self._maxNumberOfRows = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSMaxNumberOfGridRows"));
@@ -1866,35 +1898,35 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPCollectionView, "NSCollectionView"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSCollectionView__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSCollectionView__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPCollectionView.isa.objj_msgSend0(CPCollectionView, "class");
 }
 ,["Class"])]);
-}p;22;NSCollectionViewItem.jt;1222;@STATIC;1.0;I;29;AppKit/CPCollectionViewItem.jt;1169;objj_executeFile("AppKit/CPCollectionViewItem.j", NO);{
+}p;22;NSCollectionViewItem.jt;1099;@STATIC;1.0;I;29;AppKit/CPCollectionViewItem.jt;1046;objj_executeFile("AppKit/CPCollectionViewItem.j", NO);{
 var the_class = objj_getClass("CPCollectionViewItem")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPCollectionViewItem\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPCollectionViewItem__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    return objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPCollectionViewItem").super_class }, "NS_initWithCoder:", aCoder);
+    return objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPCollectionViewItem").super_class }, "NS_initWithCoder:", aCoder);
 }
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPCollectionViewItem, "NSCollectionViewItem"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSCollectionViewItem__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSCollectionViewItem__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPCollectionViewItem.isa.objj_msgSend0(CPCollectionViewItem, "class");
 }
 ,["Class"])]);
-}p;9;NSColor.jt;4038;@STATIC;1.0;I;19;Foundation/CPData.jI;16;AppKit/CPColor.jt;3974;objj_executeFile("Foundation/CPData.j", NO);objj_executeFile("AppKit/CPColor.j", NO);var NSUnknownColorSpaceModel = -1,
+}p;9;NSColor.jt;3953;@STATIC;1.0;I;19;Foundation/CPData.jI;16;AppKit/CPColor.jt;3889;objj_executeFile("Foundation/CPData.j", NO);objj_executeFile("AppKit/CPColor.j", NO);var NSUnknownColorSpaceModel = -1,
     NSGrayColorSpaceModel = 0,
     NSRGBColorSpaceModel = 1,
     NSCMYKColorSpaceModel = 2,
@@ -1905,7 +1937,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
 {
 var the_class = objj_getClass("CPColor")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPColor\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPColor__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
     var colorSpace = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSColorSpace")),
         result;
@@ -1965,21 +1997,21 @@ default:
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPColor, "NSColor"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSColor__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSColor__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPColor.isa.objj_msgSend0(CPColor, "class");
 }
 ,["Class"])]);
-}p;13;NSColorWell.jt;2460;@STATIC;1.0;I;20;AppKit/CPColorWell.ji;8;NSCell.ji;11;NSControl.jt;2388;objj_executeFile("AppKit/CPColorWell.j", NO);objj_executeFile("NSCell.j", YES);objj_executeFile("NSControl.j", YES);{
+}p;13;NSColorWell.jt;2364;@STATIC;1.0;I;20;AppKit/CPColorWell.ji;8;NSCell.ji;11;NSControl.jt;2292;objj_executeFile("AppKit/CPColorWell.j", NO);objj_executeFile("NSCell.j", YES);objj_executeFile("NSControl.j", YES);{
 var the_class = objj_getClass("CPColorWell")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPColorWell\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPColorWell__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPColorWell").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPColorWell").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
     {
         (self == null ? null : self.isa.objj_msgSend1(self, "setEnabled:", (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeBoolForKey:", "NSEnabled"))));
@@ -1998,7 +2030,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPColorWell, "NSColorWell"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSColorWell__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder));
     if (self)
@@ -2008,21 +2040,21 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSColorWell__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPColorWell.isa.objj_msgSend0(CPColorWell, "class");
 }
 ,["Class"])]);
-}p;12;NSComboBox.jt;5137;@STATIC;1.0;I;20;AppKit/CPTextField.jI;19;AppKit/CPComboBox.ji;13;NSTextField.jt;5051;objj_executeFile("AppKit/CPTextField.j", NO);objj_executeFile("AppKit/CPComboBox.j", NO);objj_executeFile("NSTextField.j", YES);{
+}p;12;NSComboBox.jt;4846;@STATIC;1.0;I;20;AppKit/CPTextField.jI;19;AppKit/CPComboBox.ji;13;NSTextField.jt;4760;objj_executeFile("AppKit/CPTextField.j", NO);objj_executeFile("AppKit/CPComboBox.j", NO);objj_executeFile("NSTextField.j", YES);{
 var the_class = objj_getClass("CPComboBox")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPComboBox\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPComboBox__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    return objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPComboBox").super_class }, "NS_initWithCoder:", aCoder);
+    return objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPComboBox").super_class }, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function $CPComboBox__NS_initWithCell_(self, _cmd, cell)
+,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function(self, _cmd, cell)
 {
-    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPComboBox").super_class }, "NS_initWithCell:", cell);
+    objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPComboBox").super_class }, "NS_initWithCell:", cell);
     self._items = (cell == null ? null : cell.isa.objj_msgSend0(cell, "itemList"));
     self._usesDataSource = (cell == null ? null : cell.isa.objj_msgSend0(cell, "usesDataSource"));
     self._completes = (cell == null ? null : cell.isa.objj_msgSend0(cell, "completes"));
@@ -2034,7 +2066,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["void","NSCell"])]);
 }{var the_class = objj_allocateClassPair(CPComboBox, "NSComboBox"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSComboBox__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder));
     if (self)
@@ -2045,40 +2077,40 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSComboBox__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPComboBox.isa.objj_msgSend0(CPComboBox, "class");
 }
 ,["Class"])]);
 }{var the_class = objj_allocateClassPair(NSTextFieldCell, "NSComboBoxCell"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_visibleItemCount"), new objj_ivar("_hasVerticalScroller"), new objj_ivar("_usesDataSource"), new objj_ivar("_completes"), new objj_ivar("_itemList"), new objj_ivar("_borderedButton")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("visibleItemCount"), function $NSComboBoxCell__visibleItemCount(self, _cmd)
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_visibleItemCount", "int"), new objj_ivar("_hasVerticalScroller", "BOOL"), new objj_ivar("_usesDataSource", "BOOL"), new objj_ivar("_completes", "BOOL"), new objj_ivar("_itemList", "CPArray"), new objj_ivar("_borderedButton", "BOOL")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("visibleItemCount"), function(self, _cmd)
 {
     return self._visibleItemCount;
 }
-,["int"]), new objj_method(sel_getUid("hasVerticalScroller"), function $NSComboBoxCell__hasVerticalScroller(self, _cmd)
+,["int"]), new objj_method(sel_getUid("hasVerticalScroller"), function(self, _cmd)
 {
     return self._hasVerticalScroller;
 }
-,["BOOL"]), new objj_method(sel_getUid("usesDataSource"), function $NSComboBoxCell__usesDataSource(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("usesDataSource"), function(self, _cmd)
 {
     return self._usesDataSource;
 }
-,["BOOL"]), new objj_method(sel_getUid("completes"), function $NSComboBoxCell__completes(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("completes"), function(self, _cmd)
 {
     return self._completes;
 }
-,["BOOL"]), new objj_method(sel_getUid("itemList"), function $NSComboBoxCell__itemList(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("itemList"), function(self, _cmd)
 {
     return self._itemList;
 }
-,["CPArray"]), new objj_method(sel_getUid("borderedButton"), function $NSComboBoxCell__borderedButton(self, _cmd)
+,["CPArray"]), new objj_method(sel_getUid("borderedButton"), function(self, _cmd)
 {
     return self._borderedButton;
 }
-,["BOOL"]), new objj_method(sel_getUid("initWithCoder:"), function $NSComboBoxCell__initWithCoder_(self, _cmd, aCoder)
+,["BOOL"]), new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("NSComboBoxCell").super_class }, "initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("NSComboBoxCell").super_class }, "initWithCoder:", aCoder);
     if (self)
     {
         self._visibleItemCount = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSVisibleItemCount"));
@@ -2094,12 +2126,12 @@ class_addMethods(the_class, [new objj_method(sel_getUid("visibleItemCount"), fun
     return self;
 }
 ,["id","CPCoder"])]);
-}p;11;NSControl.jt;4590;@STATIC;1.0;I;18;AppKit/CPControl.ji;8;NSCell.ji;8;NSView.jt;4524;objj_executeFile("AppKit/CPControl.j", NO);objj_executeFile("NSCell.j", YES);objj_executeFile("NSView.j", YES);{
+}p;11;NSControl.jt;4549;@STATIC;1.0;I;18;AppKit/CPControl.ji;8;NSCell.ji;8;NSView.jt;4483;objj_executeFile("AppKit/CPControl.j", NO);objj_executeFile("NSCell.j", YES);objj_executeFile("NSView.j", YES);{
 var the_class = objj_getClass("CPControl")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPControl\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPControl__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPControl").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPControl").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
     {
         (self == null ? null : self.isa.objj_msgSend1(self, "setEnabled:", (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeBoolForKey:", "NSEnabled"))));
@@ -2111,23 +2143,24 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function $CPControl__NS_initWithCell_(self, _cmd, cell)
+,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function(self, _cmd, cell)
 {
     self.isa.objj_msgSend1(self, "setSendsActionOnEndEditing:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "sendsActionOnEndEditing")));
     self.isa.objj_msgSend1(self, "setObjectValue:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "objectValue")));
     self.isa.objj_msgSend1(self, "setFont:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "font")));
     self.isa.objj_msgSend1(self, "setAlignment:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "alignment")));
+    self.isa.objj_msgSend1(self, "setBaseWritingDirection:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "baseWritingDirection")));
     self.isa.objj_msgSend1(self, "setContinuous:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "isContinuous")));
     self.isa.objj_msgSend1(self, "setLineBreakMode:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "lineBreakMode")));
     self.isa.objj_msgSend1(self, "setFormatter:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "formatter")));
     self.isa.objj_msgSend1(self, "setControlSize:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "controlSize")));
 }
-,["void","NSCell"]), new objj_method(sel_getUid("_nib2CibAdjustment"), function $CPControl___nib2CibAdjustment(self, _cmd)
+,["void","NSCell"]), new objj_method(sel_getUid("_nib2CibAdjustment"), function(self, _cmd)
 {
     var theme = (Nib2Cib == null ? null : Nib2Cib.isa.objj_msgSend0(Nib2Cib, "defaultTheme"));
     return (theme == null ? null : theme.isa.objj_msgSend3(theme, "valueForAttributeWithName:inState:forClass:", "nib2cib-adjustment-frame", self.isa.objj_msgSend0(self, "themeState"), self.isa.objj_msgSend0(self, "class"))) || self.isa.objj_msgSend1(self, "currentValueForThemeAttribute:", "nib2cib-adjustment-frame");
 }
-,["CGRect"]), new objj_method(sel_getUid("_adjustNib2CibSize"), function $CPControl___adjustNib2CibSize(self, _cmd)
+,["CGRect"]), new objj_method(sel_getUid("_adjustNib2CibSize"), function(self, _cmd)
 {
     var frame = self.isa.objj_msgSend0(self, "frame"),
         frameAdjustment = self.isa.objj_msgSend0(self, "_nib2CibAdjustment");
@@ -2140,7 +2173,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["void"])]);
 }{var the_class = objj_allocateClassPair(CPControl, "NSControl"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSControl__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder));
     if (self)
@@ -2150,17 +2183,17 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSControl__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPControl.isa.objj_msgSend0(CPControl, "class");
 }
 ,["Class"])]);
-}p;16;NSCustomObject.jt;1339;@STATIC;1.0;I;27;AppKit/_CPCibCustomObject.jt;1288;objj_executeFile("AppKit/_CPCibCustomObject.j", NO);{
+}p;16;NSCustomObject.jt;1230;@STATIC;1.0;I;27;AppKit/_CPCibCustomObject.jt;1179;objj_executeFile("AppKit/_CPCibCustomObject.j", NO);{
 var the_class = objj_getClass("_CPCibCustomObject")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"_CPCibCustomObject\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $_CPCibCustomObject__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("_CPCibCustomObject").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("_CPCibCustomObject").super_class }, "init");
     if (self)
         self._className = CP_NSMapClassName((aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSClassName")));
     return self;
@@ -2168,24 +2201,24 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(_CPCibCustomObject, "NSCustomObject"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSCustomObject__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSCustomObject__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPCibCustomObject.isa.objj_msgSend0(_CPCibCustomObject, "class");
 }
 ,["Class"])]);
-}p;18;NSCustomResource.jt;4373;@STATIC;1.0;I;29;AppKit/_CPCibCustomResource.ji;18;Nib2CibException.jt;4297;objj_executeFile("AppKit/_CPCibCustomResource.j", NO);objj_executeFile("Nib2CibException.j", YES);var FILE = require("file"),
+}p;18;NSCustomResource.jt;4347;@STATIC;1.0;I;29;AppKit/_CPCibCustomResource.ji;18;Nib2CibException.jt;4271;objj_executeFile("AppKit/_CPCibCustomResource.j", NO);objj_executeFile("Nib2CibException.j", YES);var FILE = require("file"),
     imageSize = (require("cappuccino/imagesize")).imagesize,
     supportedTemplateImages = {"NSAddTemplate": "CPAddTemplate", "NSRemoveTemplate": "CPRemoveTemplate", "NSToolbarShowColors": "CPImageNameColorPanel"};
 {
 var the_class = objj_getClass("_CPCibCustomResource")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"_CPCibCustomResource\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $_CPCibCustomResource__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("_CPCibCustomResource").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("_CPCibCustomResource").super_class }, "init");
     if (self)
     {
         self._className = CP_NSMapClassName((aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSClassName")));
@@ -2233,61 +2266,62 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
             (bundle == null ? null : bundle.isa.objj_msgSend1(bundle, "loadWithDelegate:", nil));
             bundleIdentifier = (bundle == null ? null : bundle.isa.objj_msgSend0(bundle, "bundleIdentifier")) || "";
         }
-        self._properties = objj_msgSend(objj_msgSend(CPDictionary, "alloc"), "initWithObjectsAndKeys:", size, "size", bundleIdentifier, "bundleIdentifier", framework, "framework");
+        self._properties = (___r1 = CPDictionary.isa.objj_msgSend0(CPDictionary, "alloc"), ___r1 == null ? null : ___r1.isa.objj_msgSend2(___r1, "initWithObjects:forKeys:", [size, bundleIdentifier, framework], ["size", "bundleIdentifier", "framework"]));
         CPLog.debug("    Resource: %s\n   Framework: %s%s\n        Path: %s\n        Size: %d x %d", self._resourceName, framework ? framework : "<none>", bundleIdentifier ? " (" + bundleIdentifier + ")" : framework ? " (<no bundle identifier>)" : "", resourceInfo ? FILE.canonical(resourceInfo.path) : "", size.width, size.height);
     }
     return self;
+    var ___r1;
 }
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(_CPCibCustomResource, "NSCustomResource"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSCustomResource__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSCustomResource__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPCibCustomResource.isa.objj_msgSend0(_CPCibCustomResource, "class");
 }
 ,["Class"])]);
-}p;14;NSCustomView.jt;1461;@STATIC;1.0;I;25;AppKit/_CPCibCustomView.ji;8;NSView.jt;1400;objj_executeFile("AppKit/_CPCibCustomView.j", NO);objj_executeFile("NSView.j", YES);var _CPCibCustomViewClassNameKey = "_CPCibCustomViewClassNameKey";
+}p;14;NSCustomView.jt;1376;@STATIC;1.0;I;25;AppKit/_CPCibCustomView.ji;8;NSView.jt;1315;objj_executeFile("AppKit/_CPCibCustomView.j", NO);objj_executeFile("NSView.j", YES);var _CPCibCustomViewClassNameKey = "_CPCibCustomViewClassNameKey";
 {var the_class = objj_allocateClassPair(CPView, "NSCustomView"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_className")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSCustomView__initWithCoder_(self, _cmd, aCoder)
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_className", "CPString")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("NSCustomView").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("NSCustomView").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
         self._className = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSClassName"));
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("encodeWithCoder:"), function $NSCustomView__encodeWithCoder_(self, _cmd, aCoder)
+,["id","CPCoder"]), new objj_method(sel_getUid("encodeWithCoder:"), function(self, _cmd, aCoder)
 {
-    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("NSCustomView").super_class }, "encodeWithCoder:", aCoder);
+    objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("NSCustomView").super_class }, "encodeWithCoder:", aCoder);
     (aCoder == null ? null : aCoder.isa.objj_msgSend2(aCoder, "encodeObject:forKey:", CP_NSMapClassName(self._className), _CPCibCustomViewClassNameKey));
 }
-,["void","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSCustomView__classForKeyedArchiver(self, _cmd)
+,["void","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPCibCustomView.isa.objj_msgSend0(_CPCibCustomView, "class");
 }
 ,["Class"])]);
-}p;8;NSDate.jt;754;@STATIC;1.0;I;19;Foundation/CPDate.jt;712;objj_executeFile("Foundation/CPDate.j", NO);{var the_class = objj_allocateClassPair(CPDate, "NSDate"),
+}p;8;NSDate.jt;699;@STATIC;1.0;I;19;Foundation/CPDate.jt;657;objj_executeFile("Foundation/CPDate.j", NO);{var the_class = objj_allocateClassPair(CPDate, "NSDate"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSDate__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     var interval = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeDoubleForKey:", "NS.time")) || 0;
     return CPDate.isa.objj_msgSend1(CPDate, "dateWithTimeIntervalSinceReferenceDate:", interval);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSDate__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPDate.isa.objj_msgSend0(CPDate, "class");
 }
 ,["Class"])]);
-}p;17;NSDateFormatter.jt;2535;@STATIC;1.0;I;28;Foundation/CPDateFormatter.jt;2483;objj_executeFile("Foundation/CPDateFormatter.j", NO);{
+}p;17;NSDateFormatter.jt;2427;@STATIC;1.0;I;28;Foundation/CPDateFormatter.jt;2375;objj_executeFile("Foundation/CPDateFormatter.j", NO);{
 var the_class = objj_getClass("CPDateFormatter")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPDateFormatter\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPDateFormatter__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPDateFormatter").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("CPDateFormatter").super_class }, "init");
     if (self)
     {
         var attributes = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NS.attributes"));
@@ -2310,23 +2344,23 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPDateFormatter, "NSDateFormatter"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSDateFormatter__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSDateFormatter__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPDateFormatter.isa.objj_msgSend0(CPDateFormatter, "class");
 }
 ,["Class"])]);
-}p;14;NSDatePicker.jt;13963;@STATIC;1.0;I;21;AppKit/CPDatePicker.jI;19;Foundation/CPDate.ji;8;NSCell.jt;13881;objj_executeFile("AppKit/CPDatePicker.j", NO);objj_executeFile("Foundation/CPDate.j", NO);objj_executeFile("NSCell.j", YES);var NSDatePickerDefaultSize = 22,
+}p;14;NSDatePicker.jt;12913;@STATIC;1.0;I;21;AppKit/CPDatePicker.jI;19;Foundation/CPDate.ji;8;NSCell.jt;12831;objj_executeFile("AppKit/CPDatePicker.j", NO);objj_executeFile("Foundation/CPDate.j", NO);objj_executeFile("NSCell.j", YES);var NSDatePickerDefaultSize = 22,
     NSDatePickerCalendarDefaultSize = 148;
 {
 var the_class = objj_getClass("CPDatePicker")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPDatePicker\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPDatePicker__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPDatePicker").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPDatePicker").super_class }, "NS_initWithCoder:", aCoder);
     var cell = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSCell"));
     self._minDate = (cell == null ? null : cell.isa.objj_msgSend0(cell, "minDate"));
     self._maxDate = (cell == null ? null : cell.isa.objj_msgSend0(cell, "maxDate"));
@@ -2413,105 +2447,97 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPDatePicker, "NSDatePicker"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSDatePicker__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("NSDatePicker").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("NSDatePicker").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
     {
         (self == null ? null : self.isa.objj_msgSend0(self, "_adjustNib2CibSize"));
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSDatePicker__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPDatePicker.isa.objj_msgSend0(CPDatePicker, "class");
 }
 ,["Class"])]);
 }{var the_class = objj_allocateClassPair(NSCell, "NSDatePickerCell"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_drawsBackground"), new objj_ivar("_minDate"), new objj_ivar("_maxDate"), new objj_ivar("_formatter"), new objj_ivar("_datePickerMode"), new objj_ivar("_datePickerElements"), new objj_ivar("_datePickerType"), new objj_ivar("_timeInterval"), new objj_ivar("_textColor"), new objj_ivar("_backgroundColor")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("drawsBackground"), function $NSDatePickerCell__drawsBackground(self, _cmd)
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_drawsBackground", "BOOL"), new objj_ivar("_minDate", "CPDate"), new objj_ivar("_maxDate", "CPDate"), new objj_ivar("_datePickerMode", "CPInteger"), new objj_ivar("_datePickerElements", "CPInteger"), new objj_ivar("_datePickerType", "CPInteger"), new objj_ivar("_timeInterval", "double"), new objj_ivar("_textColor", "CPColor"), new objj_ivar("_backgroundColor", "CPColor")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("drawsBackground"), function(self, _cmd)
 {
     return self._drawsBackground;
 }
-,["BOOL"]), new objj_method(sel_getUid("_setDrawsBackground:"), function $NSDatePickerCell___setDrawsBackground_(self, _cmd, newValue)
+,["BOOL"]), new objj_method(sel_getUid("_setDrawsBackground:"), function(self, _cmd, newValue)
 {
     self._drawsBackground = newValue;
 }
-,["void","BOOL"]), new objj_method(sel_getUid("minDate"), function $NSDatePickerCell__minDate(self, _cmd)
+,["void","BOOL"]), new objj_method(sel_getUid("minDate"), function(self, _cmd)
 {
     return self._minDate;
 }
-,["CPDate"]), new objj_method(sel_getUid("_setMinDate:"), function $NSDatePickerCell___setMinDate_(self, _cmd, newValue)
+,["CPDate"]), new objj_method(sel_getUid("_setMinDate:"), function(self, _cmd, newValue)
 {
     self._minDate = newValue;
 }
-,["void","CPDate"]), new objj_method(sel_getUid("maxDate"), function $NSDatePickerCell__maxDate(self, _cmd)
+,["void","CPDate"]), new objj_method(sel_getUid("maxDate"), function(self, _cmd)
 {
     return self._maxDate;
 }
-,["CPDate"]), new objj_method(sel_getUid("_setMaxDate:"), function $NSDatePickerCell___setMaxDate_(self, _cmd, newValue)
+,["CPDate"]), new objj_method(sel_getUid("_setMaxDate:"), function(self, _cmd, newValue)
 {
     self._maxDate = newValue;
 }
-,["void","CPDate"]), new objj_method(sel_getUid("formatter"), function $NSDatePickerCell__formatter(self, _cmd)
-{
-    return self._formatter;
-}
-,["CPDateFormatter"]), new objj_method(sel_getUid("_setFormatter:"), function $NSDatePickerCell___setFormatter_(self, _cmd, newValue)
-{
-    self._formatter = newValue;
-}
-,["void","CPDateFormatter"]), new objj_method(sel_getUid("datePickerMode"), function $NSDatePickerCell__datePickerMode(self, _cmd)
+,["void","CPDate"]), new objj_method(sel_getUid("datePickerMode"), function(self, _cmd)
 {
     return self._datePickerMode;
 }
-,["CPInteger"]), new objj_method(sel_getUid("_setDatePickerMode:"), function $NSDatePickerCell___setDatePickerMode_(self, _cmd, newValue)
+,["CPInteger"]), new objj_method(sel_getUid("_setDatePickerMode:"), function(self, _cmd, newValue)
 {
     self._datePickerMode = newValue;
 }
-,["void","CPInteger"]), new objj_method(sel_getUid("datePickerElements"), function $NSDatePickerCell__datePickerElements(self, _cmd)
+,["void","CPInteger"]), new objj_method(sel_getUid("datePickerElements"), function(self, _cmd)
 {
     return self._datePickerElements;
 }
-,["CPInteger"]), new objj_method(sel_getUid("_setDatePickerElements:"), function $NSDatePickerCell___setDatePickerElements_(self, _cmd, newValue)
+,["CPInteger"]), new objj_method(sel_getUid("_setDatePickerElements:"), function(self, _cmd, newValue)
 {
     self._datePickerElements = newValue;
 }
-,["void","CPInteger"]), new objj_method(sel_getUid("datePickerType"), function $NSDatePickerCell__datePickerType(self, _cmd)
+,["void","CPInteger"]), new objj_method(sel_getUid("datePickerType"), function(self, _cmd)
 {
     return self._datePickerType;
 }
-,["CPInteger"]), new objj_method(sel_getUid("_setDatePickerType:"), function $NSDatePickerCell___setDatePickerType_(self, _cmd, newValue)
+,["CPInteger"]), new objj_method(sel_getUid("_setDatePickerType:"), function(self, _cmd, newValue)
 {
     self._datePickerType = newValue;
 }
-,["void","CPInteger"]), new objj_method(sel_getUid("timeInterval"), function $NSDatePickerCell__timeInterval(self, _cmd)
+,["void","CPInteger"]), new objj_method(sel_getUid("timeInterval"), function(self, _cmd)
 {
     return self._timeInterval;
 }
-,["double"]), new objj_method(sel_getUid("_setTimeInterval:"), function $NSDatePickerCell___setTimeInterval_(self, _cmd, newValue)
+,["double"]), new objj_method(sel_getUid("_setTimeInterval:"), function(self, _cmd, newValue)
 {
     self._timeInterval = newValue;
 }
-,["void","double"]), new objj_method(sel_getUid("textColor"), function $NSDatePickerCell__textColor(self, _cmd)
+,["void","double"]), new objj_method(sel_getUid("textColor"), function(self, _cmd)
 {
     return self._textColor;
 }
-,["CPColor"]), new objj_method(sel_getUid("_setTextColor:"), function $NSDatePickerCell___setTextColor_(self, _cmd, newValue)
+,["CPColor"]), new objj_method(sel_getUid("_setTextColor:"), function(self, _cmd, newValue)
 {
     self._textColor = newValue;
 }
-,["void","CPColor"]), new objj_method(sel_getUid("backgroundColor"), function $NSDatePickerCell__backgroundColor(self, _cmd)
+,["void","CPColor"]), new objj_method(sel_getUid("backgroundColor"), function(self, _cmd)
 {
     return self._backgroundColor;
 }
-,["CPColor"]), new objj_method(sel_getUid("_setBackgroundColor:"), function $NSDatePickerCell___setBackgroundColor_(self, _cmd, newValue)
+,["CPColor"]), new objj_method(sel_getUid("_setBackgroundColor:"), function(self, _cmd, newValue)
 {
     self._backgroundColor = newValue;
 }
-,["void","CPColor"]), new objj_method(sel_getUid("initWithCoder:"), function $NSDatePickerCell__initWithCoder_(self, _cmd, aCoder)
+,["void","CPColor"]), new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("NSDatePickerCell").super_class }, "initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("NSDatePickerCell").super_class }, "initWithCoder:", aCoder);
     if (self)
     {
         var flags = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSCellFlags")),
@@ -2539,14 +2565,14 @@ class_addMethods(the_class, [new objj_method(sel_getUid("drawsBackground"), func
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPDate, "NSCalendarDate"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("classForKeyedArchiver"), function $NSCalendarDate__classForKeyedArchiver(self, _cmd)
+class_addMethods(the_class, [new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPDate.isa.objj_msgSend0(CPDate, "class");
 }
 ,["Class"])]);
-}p;14;NSDictionary.jt;1396;@STATIC;1.0;I;21;Foundation/CPObject.jI;25;Foundation/CPDictionary.jt;1321;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPDictionary.j", NO);{var the_class = objj_allocateClassPair(CPObject, "NSDictionary"),
+}p;14;NSDictionary.jt;1366;@STATIC;1.0;I;21;Foundation/CPObject.jI;25;Foundation/CPDictionary.jt;1291;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPDictionary.j", NO);{var the_class = objj_allocateClassPair(CPObject, "NSDictionary"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSDictionary__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     if ((aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "containsValueForKey:", "NS.objects")))
         return CPDictionary.isa.objj_msgSend2(CPDictionary, "dictionaryWithObjects:forKeys:", (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NS.objects")), (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NS.keys")));
@@ -2556,12 +2582,12 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(NSDictionary, "NSMutableDictionary"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-}p;24;NSDictionaryController.jt;1549;@STATIC;1.0;I;31;AppKit/CPDictionaryController.jt;1494;objj_executeFile("AppKit/CPDictionaryController.j", NO);{
+}p;24;NSDictionaryController.jt;1420;@STATIC;1.0;I;31;AppKit/CPDictionaryController.jt;1365;objj_executeFile("AppKit/CPDictionaryController.j", NO);{
 var the_class = objj_getClass("CPDictionaryController")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPDictionaryController\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPDictionaryController__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPDictionaryController").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPDictionaryController").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
     {
         self._includedKeys = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSIncludedKeys"));
@@ -2572,11 +2598,11 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPDictionaryController, "NSDictionaryController"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSDictionaryController__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSDictionaryController__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPDictionaryController.isa.objj_msgSend0(CPDictionaryController, "class");
 }
@@ -2611,33 +2637,33 @@ CP_NSMapKeyMask = function(anNSKeyMask)
         keyMask |= CPFunctionKeyMask;
     return keyMask;
 }
-p;14;NSExpression.jt;9804;@STATIC;1.0;I;25;Foundation/CPExpression.jI;33;Foundation/_CPKeyPathExpression.jI;29;Foundation/_CPSetExpression.jI;30;Foundation/_CPSelfExpression.jI;39;Foundation/_CPConstantValueExpression.jI;34;Foundation/_CPFunctionExpression.jI;34;Foundation/_CPVariableExpression.jI;35;Foundation/_CPAggregateExpression.jt;9486;objj_executeFile("Foundation/CPExpression.j", NO);objj_executeFile("Foundation/_CPKeyPathExpression.j", NO);objj_executeFile("Foundation/_CPSetExpression.j", NO);objj_executeFile("Foundation/_CPSelfExpression.j", NO);objj_executeFile("Foundation/_CPConstantValueExpression.j", NO);objj_executeFile("Foundation/_CPFunctionExpression.j", NO);objj_executeFile("Foundation/_CPVariableExpression.j", NO);objj_executeFile("Foundation/_CPAggregateExpression.j", NO);{var the_class = objj_allocateClassPair(_CPKeyPathExpression, "NSKeyPathExpression"),
+p;14;NSExpression.jt;8873;@STATIC;1.0;I;25;Foundation/CPExpression.jI;33;Foundation/_CPKeyPathExpression.jI;29;Foundation/_CPSetExpression.jI;30;Foundation/_CPSelfExpression.jI;39;Foundation/_CPConstantValueExpression.jI;34;Foundation/_CPFunctionExpression.jI;34;Foundation/_CPVariableExpression.jI;35;Foundation/_CPAggregateExpression.jt;8555;objj_executeFile("Foundation/CPExpression.j", NO);objj_executeFile("Foundation/_CPKeyPathExpression.j", NO);objj_executeFile("Foundation/_CPSetExpression.j", NO);objj_executeFile("Foundation/_CPSelfExpression.j", NO);objj_executeFile("Foundation/_CPConstantValueExpression.j", NO);objj_executeFile("Foundation/_CPFunctionExpression.j", NO);objj_executeFile("Foundation/_CPVariableExpression.j", NO);objj_executeFile("Foundation/_CPAggregateExpression.j", NO);{var the_class = objj_allocateClassPair(_CPKeyPathExpression, "NSKeyPathExpression"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSKeyPathExpression__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSKeyPathExpression__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPKeyPathExpression.isa.objj_msgSend0(_CPKeyPathExpression, "class");
 }
 ,["Class"])]);
 }{var the_class = objj_allocateClassPair(_CPConstantValueExpression, "_CPKeyPathSpecifierExpression"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $_CPKeyPathSpecifierExpression__NS_initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
     var keyPath = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSKeyPath"));
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("_CPKeyPathSpecifierExpression").super_class }, "initWithValue:", keyPath);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("_CPKeyPathSpecifierExpression").super_class }, "initWithValue:", keyPath);
     return self;
 }
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(_CPKeyPathSpecifierExpression, "NSKeyPathSpecifierExpression"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSKeyPathSpecifierExpression__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSKeyPathSpecifierExpression__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPConstantValueExpression.isa.objj_msgSend0(_CPConstantValueExpression, "class");
 }
@@ -2645,7 +2671,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
 }{
 var the_class = objj_getClass("_CPConstantValueExpression")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"_CPConstantValueExpression\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $_CPConstantValueExpression__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
     var value = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSConstantValue"));
     return self.isa.objj_msgSend1(self, "initWithValue:", value);
@@ -2653,11 +2679,11 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(_CPConstantValueExpression, "NSConstantValueExpression"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSConstantValueExpression__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSConstantValueExpression__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPConstantValueExpression.isa.objj_msgSend0(_CPConstantValueExpression, "class");
 }
@@ -2665,7 +2691,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
 }{
 var the_class = objj_getClass("_CPFunctionExpression")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"_CPFunctionExpression\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $_CPFunctionExpression__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
     var type = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSExpressionType")),
         operand = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSOperand")),
@@ -2676,11 +2702,11 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(_CPFunctionExpression, "NSFunctionExpression"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSFunctionExpression__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSFunctionExpression__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPFunctionExpression.isa.objj_msgSend0(_CPFunctionExpression, "class");
 }
@@ -2688,7 +2714,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
 }{
 var the_class = objj_getClass("_CPSetExpression")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"_CPSetExpression\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $_CPSetExpression__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
     var type = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSExpressionType")),
         left = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSLeftExpression")),
@@ -2698,22 +2724,22 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(_CPSetExpression, "NSSetExpression"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSSetExpression__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSSetExpression__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPSetExpression.isa.objj_msgSend0(_CPSetExpression, "class");
 }
 ,["Class"])]);
 }{var the_class = objj_allocateClassPair(_CPSelfExpression, "NSSelfExpression"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSSelfExpression__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
-    return objj_msgSendSuper({ receiver:self, super_class:objj_getClass("NSSelfExpression").super_class }, "init");
+    return objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("NSSelfExpression").super_class }, "init");
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSSelfExpression__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPSelfExpression.isa.objj_msgSend0(_CPSelfExpression, "class");
 }
@@ -2721,7 +2747,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
 }{
 var the_class = objj_getClass("_CPVariableExpression")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"_CPVariableExpression\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $_CPVariableExpression__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
     var variable = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSVariable"));
     return self.isa.objj_msgSend1(self, "initWithVariable:", variable);
@@ -2729,11 +2755,11 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(_CPVariableExpression, "NSVariableExpression"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSVariableExpression__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSVariableExpression__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPVariableExpression.isa.objj_msgSend0(_CPVariableExpression, "class");
 }
@@ -2741,7 +2767,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
 }{
 var the_class = objj_getClass("_CPAggregateExpression")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"_CPAggregateExpression\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $_CPAggregateExpression__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
     var collection = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSCollection"));
     return self.isa.objj_msgSend1(self, "initWithAggregate:", collection);
@@ -2749,23 +2775,24 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(_CPAggregateExpression, "NSAggregateExpression"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSAggregateExpression__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSAggregateExpression__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPAggregateExpression.isa.objj_msgSend0(_CPAggregateExpression, "class");
 }
 ,["Class"])]);
-}p;8;NSFont.jt;3798;@STATIC;1.0;I;15;AppKit/CPFont.jt;3759;objj_executeFile("AppKit/CPFont.j", NO);IBDefaultFontFace = "Lucida Grande";
+}p;8;NSFont.jt;3767;@STATIC;1.0;I;15;AppKit/CPFont.jt;3728;objj_executeFile("AppKit/CPFont.j", NO);IBDefaultFontFace = ".AppleSystemUIFont";
+IBDefaultFontFaceLegacy = "Lucida Grande";
 IBDefaultFontSize = 13.0;
 var OS = require("os"),
     fontinfo = (require("cappuccino/fontinfo")).fontinfo;
 {
 var the_class = objj_getClass("CPFont")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPFont\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPFont__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
     var name = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSName")),
         size = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeDoubleForKey:", "NSSize")),
@@ -2782,9 +2809,9 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
     CPLog.debug("NSFont: %s", (NSFont == null ? null : NSFont.isa.objj_msgSend1(NSFont, "descriptorForFont:", font)));
     return font;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("cibFontForNibFont"), function $CPFont__cibFontForNibFont(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("cibFontForNibFont"), function(self, _cmd)
 {
-    if (self._name === IBDefaultFontFace)
+    if (self._name === IBDefaultFontFaceLegacy || self._name == IBDefaultFontFace)
     {
         if (self._size === IBDefaultFontSize && !self._isBold && !self._isItalic)
             return nil;
@@ -2797,22 +2824,22 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id"])]);
 }{var the_class = objj_allocateClassPair(CPFont, "NSFont"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSFont__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSFont__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPFont.isa.objj_msgSend0(CPFont, "class");
 }
 ,["Class"])]);
-class_addMethods(meta_class, [new objj_method(sel_getUid("initialize"), function $NSFont__initialize(self, _cmd)
+class_addMethods(meta_class, [new objj_method(sel_getUid("initialize"), function(self, _cmd)
 {
     if (self !== NSFont.isa.objj_msgSend0(NSFont, "class"))
         return;
-    CPLog.debug("NSFont: default IB font: %s %f", IBDefaultFontFace, IBDefaultFontSize);
+    CPLog.debug("NSFont: default IB font: %s (legacy %s) %f", IBDefaultFontFace, IBDefaultFontFaceLegacy, IBDefaultFontSize);
 }
-,["void"]), new objj_method(sel_getUid("descriptorForFont:"), function $NSFont__descriptorForFont_(self, _cmd, aFont)
+,["void"]), new objj_method(sel_getUid("descriptorForFont:"), function(self, _cmd, aFont)
 {
     var styleAttributes = [];
     if ((aFont == null ? null : aFont.isa.objj_msgSend0(aFont, "isBold")))
@@ -2831,12 +2858,36 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("initialize"), function
     return CPString.isa.objj_msgSend(CPString, "stringWithFormat:", "%s%s %d%s", (aFont == null ? null : aFont.isa.objj_msgSend0(aFont, "familyName")), styleAttributes ? " " + styleAttributes : "", (aFont == null ? null : aFont.isa.objj_msgSend0(aFont, "size")), systemAttributes ? " (" + systemAttributes + ")" : "");
 }
 ,["CPString","CPFont"])]);
-}p;13;NSFormatter.jt;219;@STATIC;1.0;I;21;Foundation/CPObject.jt;175;objj_executeFile("Foundation/CPObject.j", NO);{var the_class = objj_allocateClassPair(CPObject, "NSFormatter"),
+}p;13;NSFormatter.jt;1236;@STATIC;1.0;I;24;Foundation/CPFormatter.jt;1188;objj_executeFile("Foundation/CPFormatter.j", NO);{
+var the_class = objj_getClass("CPFormatter")
+if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPFormatter\"");
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
+{
+    return self.isa.objj_msgSend0(self, "init");
+}
+,["id","CPCoder"])]);
+}{var the_class = objj_allocateClassPair(CPFormatter, "NSFormatter"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-}p;14;NSFoundation.jt;770;@STATIC;1.0;i;9;NSArray.ji;20;NSAttributedString.ji;22;NSByteCountFormatter.ji;8;NSDate.ji;17;NSDateFormatter.ji;14;NSDictionary.ji;14;NSExpression.ji;13;NSFormatter.ji;17;NSMutableString.ji;8;NSNull.ji;19;NSNumberFormatter.ji;7;NSSet.ji;9;NSValue.jt;515;objj_executeFile("NSArray.j", YES);objj_executeFile("NSAttributedString.j", YES);objj_executeFile("NSByteCountFormatter.j", YES);objj_executeFile("NSDate.j", YES);objj_executeFile("NSDateFormatter.j", YES);objj_executeFile("NSDictionary.j", YES);objj_executeFile("NSExpression.j", YES);objj_executeFile("NSFormatter.j", YES);objj_executeFile("NSMutableString.j", YES);objj_executeFile("NSNull.j", YES);objj_executeFile("NSNumberFormatter.j", YES);objj_executeFile("NSSet.j", YES);objj_executeFile("NSValue.j", YES);p;16;NSIBObjectData.jt;4718;@STATIC;1.0;I;25;AppKit/_CPCibObjectData.ji;8;NSCell.jt;4657;objj_executeFile("AppKit/_CPCibObjectData.j", NO);objj_executeFile("NSCell.j", YES);{
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
+{
+    return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
+}
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
+{
+    return CPFormatter.isa.objj_msgSend0(CPFormatter, "class");
+}
+,["Class"])]);
+}{var the_class = objj_allocateClassPair(NSFormatter, "IBCustomFormatter"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("stringForObjectValue:"), function(self, _cmd, anObject)
+{
+    return nil;
+}
+,["CPString","id"])]);
+}p;14;NSFoundation.jt;770;@STATIC;1.0;i;9;NSArray.ji;20;NSAttributedString.ji;22;NSByteCountFormatter.ji;8;NSDate.ji;17;NSDateFormatter.ji;14;NSDictionary.ji;14;NSExpression.ji;13;NSFormatter.ji;17;NSMutableString.ji;8;NSNull.ji;19;NSNumberFormatter.ji;7;NSSet.ji;9;NSValue.jt;515;objj_executeFile("NSArray.j", YES);objj_executeFile("NSAttributedString.j", YES);objj_executeFile("NSByteCountFormatter.j", YES);objj_executeFile("NSDate.j", YES);objj_executeFile("NSDateFormatter.j", YES);objj_executeFile("NSDictionary.j", YES);objj_executeFile("NSExpression.j", YES);objj_executeFile("NSFormatter.j", YES);objj_executeFile("NSMutableString.j", YES);objj_executeFile("NSNull.j", YES);objj_executeFile("NSNumberFormatter.j", YES);objj_executeFile("NSSet.j", YES);objj_executeFile("NSValue.j", YES);p;16;NSIBObjectData.jt;4564;@STATIC;1.0;I;25;AppKit/_CPCibObjectData.ji;8;NSCell.jt;4503;objj_executeFile("AppKit/_CPCibObjectData.j", NO);objj_executeFile("NSCell.j", YES);{
 var the_class = objj_getClass("_CPCibObjectData")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"_CPCibObjectData\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $_CPCibObjectData__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend0(self, "init"));
     if (self)
@@ -2855,7 +2906,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("removeCellsFromObjectGraph"), function $_CPCibObjectData__removeCellsFromObjectGraph(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("removeCellsFromObjectGraph"), function(self, _cmd)
 {
     var count = self._objectsKeys.length,
         parentForCellUIDs = {},
@@ -2907,19 +2958,19 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["void"])]);
 }{var the_class = objj_allocateClassPair(_CPCibObjectData, "NSIBObjectData"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSIBObjectData__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSIBObjectData__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPCibObjectData.isa.objj_msgSend0(_CPCibObjectData, "class");
 }
 ,["Class"])]);
-}p;9;NSImage.jt;1287;@STATIC;1.0;I;16;AppKit/CPImage.jt;1247;objj_executeFile("AppKit/CPImage.j", NO);{
+}p;9;NSImage.jt;1202;@STATIC;1.0;I;16;AppKit/CPImage.jt;1162;objj_executeFile("AppKit/CPImage.j", NO);{
 var the_class = objj_getClass("CPImage")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPImage\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPImage__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend0(self, "init"));
     if (self)
@@ -2932,25 +2983,25 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPImage, "NSImage"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSImage__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSImage__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPImage.isa.objj_msgSend0(CPImage, "class");
 }
 ,["Class"])]);
-}p;13;NSImageView.jt;4880;@STATIC;1.0;I;20;AppKit/CPImageView.ji;8;NSCell.jt;4824;objj_executeFile("AppKit/CPImageView.j", NO);objj_executeFile("NSCell.j", YES);{
+}p;13;NSImageView.jt;4629;@STATIC;1.0;I;20;AppKit/CPImageView.ji;8;NSCell.jt;4573;objj_executeFile("AppKit/CPImageView.j", NO);objj_executeFile("NSCell.j", YES);{
 var the_class = objj_getClass("CPImageView")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPImageView\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPImageView__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    return objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPImageView").super_class }, "NS_initWithCoder:", aCoder);
+    return objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPImageView").super_class }, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function $CPImageView__NS_initWithCell_(self, _cmd, cell)
+,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function(self, _cmd, cell)
 {
-    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPImageView").super_class }, "NS_initWithCell:", cell);
+    objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPImageView").super_class }, "NS_initWithCell:", cell);
     self.isa.objj_msgSend1(self, "setImageScaling:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "imageScaling")));
     self.isa.objj_msgSend1(self, "setImageAlignment:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "imageAlignment")));
     self._isEditable = (cell == null ? null : cell.isa.objj_msgSend0(cell, "isEditable"));
@@ -2958,7 +3009,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["void","NSCell"])]);
 }{var the_class = objj_allocateClassPair(CPImageView, "NSImageView"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSImageView__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder));
     if (self)
@@ -2969,7 +3020,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSImageView__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPImageView.isa.objj_msgSend0(CPImageView, "class");
 }
@@ -2999,34 +3050,34 @@ NSImageFrameGrayBezel = 2;
 NSImageFrameGroove = 3;
 NSImageFrameButton = 4;
 {var the_class = objj_allocateClassPair(NSCell, "NSImageCell"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_animates"), new objj_ivar("_imageAlignment"), new objj_ivar("_imageScaling"), new objj_ivar("_frameStyle")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("_animates"), function $NSImageCell___animates(self, _cmd)
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_animates", "BOOL"), new objj_ivar("_imageAlignment", "NSImageAlignment"), new objj_ivar("_imageScaling", "NSImageScaling"), new objj_ivar("_frameStyle", "NSImageFrameStyle")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("_animates"), function(self, _cmd)
 {
     return self._animates;
 }
-,["BOOL"]), new objj_method(sel_getUid("_setAnimates:"), function $NSImageCell___setAnimates_(self, _cmd, newValue)
+,["BOOL"]), new objj_method(sel_getUid("_setAnimates:"), function(self, _cmd, newValue)
 {
     self._animates = newValue;
 }
-,["void","BOOL"]), new objj_method(sel_getUid("imageAlignment"), function $NSImageCell__imageAlignment(self, _cmd)
+,["void","BOOL"]), new objj_method(sel_getUid("imageAlignment"), function(self, _cmd)
 {
     return self._imageAlignment;
 }
-,["NSImageAlignment"]), new objj_method(sel_getUid("imageScaling"), function $NSImageCell__imageScaling(self, _cmd)
+,["NSImageAlignment"]), new objj_method(sel_getUid("imageScaling"), function(self, _cmd)
 {
     return self._imageScaling;
 }
-,["NSImageScaling"]), new objj_method(sel_getUid("_frameStyle"), function $NSImageCell___frameStyle(self, _cmd)
+,["NSImageScaling"]), new objj_method(sel_getUid("_frameStyle"), function(self, _cmd)
 {
     return self._frameStyle;
 }
-,["NSImageFrameStyle"]), new objj_method(sel_getUid("_setFrameStyle:"), function $NSImageCell___setFrameStyle_(self, _cmd, newValue)
+,["NSImageFrameStyle"]), new objj_method(sel_getUid("_setFrameStyle:"), function(self, _cmd, newValue)
 {
     self._frameStyle = newValue;
 }
-,["void","NSImageFrameStyle"]), new objj_method(sel_getUid("initWithCoder:"), function $NSImageCell__initWithCoder_(self, _cmd, aCoder)
+,["void","NSImageFrameStyle"]), new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("NSImageCell").super_class }, "initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("NSImageCell").super_class }, "initWithCoder:", aCoder);
     if (self)
     {
         self._animates = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeBoolForKey:", "NSAnimates"));
@@ -3037,31 +3088,31 @@ class_addMethods(the_class, [new objj_method(sel_getUid("_animates"), function $
     return self;
 }
 ,["id","CPCoder"])]);
-}p;20;NSLayoutConstraint.jt;1120;@STATIC;1.0;I;21;Foundation/CPObject.jI;24;Foundation/CPException.jt;1046;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPException.j", NO);{var the_class = objj_allocateClassPair(CPObject, "NSLayoutConstraint"),
+}p;20;NSLayoutConstraint.jt;1040;@STATIC;1.0;I;21;Foundation/CPObject.jI;24;Foundation/CPException.jt;967;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPException.j", NO);{var the_class = objj_allocateClassPair(CPObject, "NSLayoutConstraint"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSLayoutConstraint__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     CPException.isa.objj_msgSend3(CPException, "raise:format:", "nib2cibException", "Autolayout is not yet supported. Turn \"Use Auto Layout\" off in the File Inspector of %@.", ((___r1 = ((___r2 = (Converter == null ? null : Converter.isa.objj_msgSend0(Converter, "sharedConverter"))), ___r2 == null ? null : ___r2.isa.objj_msgSend0(___r2, "inputPath"))), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "lastPathComponent")));
     var ___r1, ___r2;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSLayoutConstraint__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPObject.isa.objj_msgSend0(CPObject, "class");
 }
 ,["Class"])]);
-}p;18;NSLevelIndicator.jt;6509;@STATIC;1.0;I;25;AppKit/CPLevelIndicator.ji;8;NSCell.jt;6448;objj_executeFile("AppKit/CPLevelIndicator.j", NO);objj_executeFile("NSCell.j", YES);{
+}p;18;NSLevelIndicator.jt;6115;@STATIC;1.0;I;25;AppKit/CPLevelIndicator.ji;8;NSCell.jt;6054;objj_executeFile("AppKit/CPLevelIndicator.j", NO);objj_executeFile("NSCell.j", YES);{
 var the_class = objj_getClass("CPLevelIndicator")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPLevelIndicator\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPLevelIndicator__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
     var cell = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSCell"));
     self._minValue = (cell == null ? null : cell.isa.objj_msgSend0(cell, "minValue"));
     self._maxValue = (cell == null ? null : cell.isa.objj_msgSend0(cell, "maxValue"));
-    return objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPLevelIndicator").super_class }, "NS_initWithCoder:", aCoder);
+    return objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPLevelIndicator").super_class }, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function $CPLevelIndicator__NS_initWithCell_(self, _cmd, cell)
+,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function(self, _cmd, cell)
 {
-    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPLevelIndicator").super_class }, "NS_initWithCell:", cell);
+    objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPLevelIndicator").super_class }, "NS_initWithCell:", cell);
     self._minValue = (cell == null ? null : cell.isa.objj_msgSend0(cell, "minValue"));
     self._maxValue = (cell == null ? null : cell.isa.objj_msgSend0(cell, "maxValue"));
     self._levelIndicatorStyle = (cell == null ? null : cell.isa.objj_msgSend0(cell, "levelIndicatorStyle"));
@@ -3077,7 +3128,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["void","NSCell"])]);
 }{var the_class = objj_allocateClassPair(CPLevelIndicator, "NSLevelIndicator"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSLevelIndicator__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder));
     if (self)
@@ -3088,48 +3139,48 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSLevelIndicator__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPLevelIndicator.isa.objj_msgSend0(CPLevelIndicator, "class");
 }
 ,["Class"])]);
 }{var the_class = objj_allocateClassPair(NSCell, "NSLevelIndicatorCell"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_levelIndicatorStyle"), new objj_ivar("_minValue"), new objj_ivar("_maxValue"), new objj_ivar("_warningValue"), new objj_ivar("_criticalValue"), new objj_ivar("_tickMarkPosition"), new objj_ivar("_numberOfTickMarks"), new objj_ivar("_numberOfMajorTickMarks")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("levelIndicatorStyle"), function $NSLevelIndicatorCell__levelIndicatorStyle(self, _cmd)
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_levelIndicatorStyle", "CPLevelIndicator"), new objj_ivar("_minValue", "double"), new objj_ivar("_maxValue", "double"), new objj_ivar("_warningValue", "double"), new objj_ivar("_criticalValue", "double"), new objj_ivar("_tickMarkPosition", "CPTickMarkPosition"), new objj_ivar("_numberOfTickMarks", "int"), new objj_ivar("_numberOfMajorTickMarks", "int")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("levelIndicatorStyle"), function(self, _cmd)
 {
     return self._levelIndicatorStyle;
 }
-,["CPLevelIndicator"]), new objj_method(sel_getUid("minValue"), function $NSLevelIndicatorCell__minValue(self, _cmd)
+,["CPLevelIndicator"]), new objj_method(sel_getUid("minValue"), function(self, _cmd)
 {
     return self._minValue;
 }
-,["double"]), new objj_method(sel_getUid("maxValue"), function $NSLevelIndicatorCell__maxValue(self, _cmd)
+,["double"]), new objj_method(sel_getUid("maxValue"), function(self, _cmd)
 {
     return self._maxValue;
 }
-,["double"]), new objj_method(sel_getUid("warningValue"), function $NSLevelIndicatorCell__warningValue(self, _cmd)
+,["double"]), new objj_method(sel_getUid("warningValue"), function(self, _cmd)
 {
     return self._warningValue;
 }
-,["double"]), new objj_method(sel_getUid("criticalValue"), function $NSLevelIndicatorCell__criticalValue(self, _cmd)
+,["double"]), new objj_method(sel_getUid("criticalValue"), function(self, _cmd)
 {
     return self._criticalValue;
 }
-,["double"]), new objj_method(sel_getUid("tickMarkPosition"), function $NSLevelIndicatorCell__tickMarkPosition(self, _cmd)
+,["double"]), new objj_method(sel_getUid("tickMarkPosition"), function(self, _cmd)
 {
     return self._tickMarkPosition;
 }
-,["CPTickMarkPosition"]), new objj_method(sel_getUid("numberOfTickMarks"), function $NSLevelIndicatorCell__numberOfTickMarks(self, _cmd)
+,["CPTickMarkPosition"]), new objj_method(sel_getUid("numberOfTickMarks"), function(self, _cmd)
 {
     return self._numberOfTickMarks;
 }
-,["int"]), new objj_method(sel_getUid("numberOfMajorTickMarks"), function $NSLevelIndicatorCell__numberOfMajorTickMarks(self, _cmd)
+,["int"]), new objj_method(sel_getUid("numberOfMajorTickMarks"), function(self, _cmd)
 {
     return self._numberOfMajorTickMarks;
 }
-,["int"]), new objj_method(sel_getUid("initWithCoder:"), function $NSLevelIndicatorCell__initWithCoder_(self, _cmd, aCoder)
+,["int"]), new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("NSLevelIndicatorCell").super_class }, "initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("NSLevelIndicatorCell").super_class }, "initWithCoder:", aCoder);
     if (self)
     {
         self._objectValue = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeDoubleForKey:", "NSValue"));
@@ -3145,17 +3196,43 @@ class_addMethods(the_class, [new objj_method(sel_getUid("levelIndicatorStyle"), 
     return self;
 }
 ,["id","CPCoder"])]);
-}p;10;NSMatrix.jt;6860;@STATIC;1.0;I;21;Foundation/CPObject.jI;16;AppKit/CPRadio.jI;15;AppKit/CPView.ji;8;NSView.jt;6762;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("AppKit/CPRadio.j", NO);objj_executeFile("AppKit/CPView.j", NO);objj_executeFile("NSView.j", YES);var NSMatrixRadioModeMask = 0x40000000,
-    NSMatrixDrawsBackgroundMask = 0x01000000;
-{var the_class = objj_allocateClassPair(CPView, "NSMatrix"),
+}p;21;NSLocalizableString.jt;1414;@STATIC;1.0;I;29;AppKit/_CPLocalizableString.jt;1361;objj_executeFile("AppKit/_CPLocalizableString.j", NO);{
+var the_class = objj_getClass("_CPLocalizableString")
+if(!the_class) throw new SyntaxError("*** Could not find definition for class \"_CPLocalizableString\"");
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
+{
+    self = (self == null ? null : self.isa.objj_msgSend0(self, "init"));
+    if (self)
+    {
+        self._dev = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSDev"));
+        self._key = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSKey"));
+        self._value = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NS.string"));
+    }
+    return self;
+}
+,["id","CPCoder"])]);
+}{var the_class = objj_allocateClassPair(_CPLocalizableString, "NSLocalizableString"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSMatrix__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCoder:"), function $NSMatrix__NS_initWithCoder_(self, _cmd, aCoder)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("NSMatrix").super_class }, "NS_initWithCoder:", aCoder);
+    return _CPLocalizableString.isa.objj_msgSend0(_CPLocalizableString, "class");
+}
+,["Class"])]);
+}p;10;NSMatrix.jt;6738;@STATIC;1.0;I;21;Foundation/CPObject.jI;16;AppKit/CPRadio.jI;15;AppKit/CPView.ji;8;NSView.jt;6640;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("AppKit/CPRadio.j", NO);objj_executeFile("AppKit/CPView.j", NO);objj_executeFile("NSView.j", YES);var NSMatrixRadioModeMask = 0x40000000,
+    NSMatrixDrawsBackgroundMask = 0x01000000;
+{var the_class = objj_allocateClassPair(CPView, "NSMatrix"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
+{
+    return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
+}
+,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
+{
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("NSMatrix").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
     {
         var numberOfRows = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSNumRows")),
@@ -3202,7 +3279,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
 }{
 var the_class = objj_getClass("CPRadio")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPRadio\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:radioGroup:cell:"), function $CPRadio__initWithFrame_radioGroup_cell_(self, _cmd, aFrame, aRadioGroup, aCell)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("initWithFrame:radioGroup:cell:"), function(self, _cmd, aFrame, aRadioGroup, aCell)
 {
     self = (self == null ? null : self.isa.objj_msgSend2(self, "initWithFrame:radioGroup:", aFrame, aRadioGroup));
     if (self)
@@ -3225,7 +3302,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
     }
     return self;
 }
-,["id","CGRect","CPRadioGroup","NSButtonCell"]), new objj_method(sel_getUid("_adjustWidthSize"), function $CPRadio___adjustWidthSize(self, _cmd)
+,["id","CGRect","CPRadioGroup","NSButtonCell"]), new objj_method(sel_getUid("_adjustWidthSize"), function(self, _cmd)
 {
     var frameSize = self.isa.objj_msgSend0(self, "frameSize"),
         frameAdjustment = self.isa.objj_msgSend0(self, "_nib2CibAdjustment");
@@ -3236,13 +3313,13 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
     }
 }
 ,["void"])]);
-}p;8;NSMenu.jt;2315;@STATIC;1.0;I;15;AppKit/CPMenu.jt;2276;objj_executeFile("AppKit/CPMenu.j", NO);NS_CPMenuNameMap = {_NSMainMenu: "_CPMainMenu", _NSAppleMenu: "_CPApplicationMenu", _NSServicesMenu: "_CPServicesMenu", _NSWindowsMenu: "_CPWindowsMenu", _NSFontMenu: "_CPFontMenu", _NSRecentDocumentsMenu: "_CPRecentDocumentsMenu", _NSOpenDocumentsMenu: "_CPOpenDocumentsMenu"};
+}p;8;NSMenu.jt;2234;@STATIC;1.0;I;15;AppKit/CPMenu.jt;2195;objj_executeFile("AppKit/CPMenu.j", NO);NS_CPMenuNameMap = {_NSMainMenu: "_CPMainMenu", _NSAppleMenu: "_CPApplicationMenu", _NSServicesMenu: "_CPServicesMenu", _NSWindowsMenu: "_CPWindowsMenu", _NSFontMenu: "_CPFontMenu", _NSRecentDocumentsMenu: "_CPRecentDocumentsMenu", _NSOpenDocumentsMenu: "_CPOpenDocumentsMenu"};
 {
 var the_class = objj_getClass("CPMenu")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPMenu\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPMenu__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPMenu").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("CPMenu").super_class }, "init");
     if (self)
     {
         self._title = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSTitle"));
@@ -3259,21 +3336,21 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPMenu, "NSMenu"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSMenu__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSMenu__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPMenu.isa.objj_msgSend0(CPMenu, "class");
 }
 ,["Class"])]);
-}p;12;NSMenuItem.jt;3732;@STATIC;1.0;I;19;AppKit/CPMenuItem.ji;10;NSButton.ji;9;NSEvent.ji;8;NSMenu.jt;3649;objj_executeFile("AppKit/CPMenuItem.j", NO);objj_executeFile("NSButton.j", YES);objj_executeFile("NSEvent.j", YES);objj_executeFile("NSMenu.j", YES);{
+}p;12;NSMenuItem.jt;3605;@STATIC;1.0;I;19;AppKit/CPMenuItem.ji;10;NSButton.ji;9;NSEvent.ji;8;NSMenu.jt;3522;objj_executeFile("AppKit/CPMenuItem.j", NO);objj_executeFile("NSButton.j", YES);objj_executeFile("NSEvent.j", YES);objj_executeFile("NSMenu.j", YES);{
 var the_class = objj_getClass("CPMenuItem")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPMenuItem\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPMenuItem__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPMenuItem").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("CPMenuItem").super_class }, "init");
     if (self)
     {
         self._isSeparator = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeBoolForKey:", "NSIsSeparator"));
@@ -3294,7 +3371,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("swapCellsForParents:"), function $CPMenuItem__swapCellsForParents_(self, _cmd, parentsForCellUIDs)
+,["id","CPCoder"]), new objj_method(sel_getUid("swapCellsForParents:"), function(self, _cmd, parentsForCellUIDs)
 {
     var target = self.isa.objj_msgSend0(self, "target");
     if (!target)
@@ -3307,33 +3384,33 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["void","JSObject"])]);
 }{var the_class = objj_allocateClassPair(CPMenuItem, "NSMenuItem"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSMenuItem__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSMenuItem__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPMenuItem.isa.objj_msgSend0(CPMenuItem, "class");
 }
 ,["Class"])]);
 }{var the_class = objj_allocateClassPair(NSButtonCell, "NSMenuItemCell"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-}p;17;NSMutableString.jt;493;@STATIC;1.0;I;21;Foundation/CPObject.jt;449;objj_executeFile("Foundation/CPObject.j", NO);{var the_class = objj_allocateClassPair(CPObject, "NSMutableString"),
+}p;17;NSMutableString.jt;460;@STATIC;1.0;I;21;Foundation/CPObject.jt;416;objj_executeFile("Foundation/CPObject.j", NO);{var the_class = objj_allocateClassPair(CPObject, "NSMutableString"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSMutableString__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NS.string"));
 }
 ,["id","CPCoder"])]);
-}p;7;NSNib.jt;1667;@STATIC;1.0;I;14;AppKit/CPCib.jt;1629;objj_executeFile("AppKit/CPCib.j", NO);var FILE = require("file"),
+}p;7;NSNib.jt;1589;@STATIC;1.0;I;14;AppKit/CPCib.jt;1551;objj_executeFile("AppKit/CPCib.j", NO);var FILE = require("file"),
     OS = require("os"),
     UUID = require("uuid");
 {
 var the_class = objj_getClass("CPCib")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPCib\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPCib__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPCib").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("CPCib").super_class }, "init");
     var nibPath = "/tmp/" + UUID.uuid() + ".nib",
         data = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSNibFileData"));
     FILE.write(nibPath, data.bytes(), {charset: "UTF-16"});
@@ -3345,22 +3422,22 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPCib, "NSNib"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSNib__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSNib__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPCib.isa.objj_msgSend0(CPCib, "class");
 }
 ,["Class"])]);
-}p;16;NSNibConnector.jt;11260;@STATIC;1.0;I;30;AppKit/CPCibBindingConnector.jI;23;AppKit/CPCibConnector.jI;30;AppKit/CPCibControlConnector.jI;29;AppKit/CPCibOutletConnector.jI;40;AppKit/CPCibRuntimeAttributesConnector.jI;27;AppKit/CPCibHelpConnector.jI;26;AppKit/CPKeyValueBinding.jt;11000;objj_executeFile("AppKit/CPCibBindingConnector.j", NO);objj_executeFile("AppKit/CPCibConnector.j", NO);objj_executeFile("AppKit/CPCibControlConnector.j", NO);objj_executeFile("AppKit/CPCibOutletConnector.j", NO);objj_executeFile("AppKit/CPCibRuntimeAttributesConnector.j", NO);objj_executeFile("AppKit/CPCibHelpConnector.j", NO);objj_executeFile("AppKit/CPKeyValueBinding.j", NO);NIB_CONNECTION_EQUIVALENCY_TABLE = {};
+}p;16;NSNibConnector.jt;10639;@STATIC;1.0;I;30;AppKit/CPCibBindingConnector.jI;23;AppKit/CPCibConnector.jI;30;AppKit/CPCibControlConnector.jI;29;AppKit/CPCibOutletConnector.jI;40;AppKit/CPCibRuntimeAttributesConnector.jI;27;AppKit/CPCibHelpConnector.jI;26;AppKit/CPKeyValueBinding.jt;10379;objj_executeFile("AppKit/CPCibBindingConnector.j", NO);objj_executeFile("AppKit/CPCibConnector.j", NO);objj_executeFile("AppKit/CPCibControlConnector.j", NO);objj_executeFile("AppKit/CPCibOutletConnector.j", NO);objj_executeFile("AppKit/CPCibRuntimeAttributesConnector.j", NO);objj_executeFile("AppKit/CPCibHelpConnector.j", NO);objj_executeFile("AppKit/CPKeyValueBinding.j", NO);NIB_CONNECTION_EQUIVALENCY_TABLE = {};
 {
 var the_class = objj_getClass("CPCibConnector")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPCibConnector\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPCibConnector__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPCibConnector").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("CPCibConnector").super_class }, "init");
     if (self)
     {
         self._source = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSSource"));
@@ -3387,33 +3464,33 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPCibConnector, "NSNibConnector"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSNibConnector__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSNibConnector__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPCibConnector.isa.objj_msgSend0(CPCibConnector, "class");
 }
 ,["Class"])]);
 }{var the_class = objj_allocateClassPair(CPCibControlConnector, "NSNibControlConnector"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSNibControlConnector__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSNibControlConnector__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPCibControlConnector.isa.objj_msgSend0(CPCibControlConnector, "class");
 }
 ,["Class"])]);
 }{var the_class = objj_allocateClassPair(CPCibOutletConnector, "NSNibOutletConnector"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSNibOutletConnector__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSNibOutletConnector__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPCibOutletConnector.isa.objj_msgSend0(CPCibOutletConnector, "class");
 }
@@ -3422,14 +3499,14 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
 {
 var the_class = objj_getClass("CPCibBindingConnector")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPCibBindingConnector\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPCibBindingConnector__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPCibBindingConnector").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPCibBindingConnector").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
     {
         self._binding = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSBinding"));
         self._keyPath = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSKeyPath"));
-        self._options = objj_msgSend(objj_msgSend(CPDictionary, "alloc"), "init");
+        self._options = (___r1 = CPDictionary.isa.objj_msgSend0(CPDictionary, "alloc"), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "init"));
         var NSOptions = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSOptions")),
             keyEnumerator = (NSOptions == null ? null : NSOptions.isa.objj_msgSend0(NSOptions, "keyEnumerator")),
             key;
@@ -3449,11 +3526,11 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPCibBindingConnector, "NSNibBindingConnector"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSNibBindingConnector__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSNibBindingConnector__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPCibBindingConnector.isa.objj_msgSend0(CPCibBindingConnector, "class");
 }
@@ -3461,9 +3538,9 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
 }{
 var the_class = objj_getClass("CPCibRuntimeAttributesConnector")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPCibRuntimeAttributesConnector\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPCibRuntimeAttributesConnector__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPCibRuntimeAttributesConnector").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPCibRuntimeAttributesConnector").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
     {
         self._source = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSObject"));
@@ -3484,11 +3561,11 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPCibRuntimeAttributesConnector, "NSIBUserDefinedRuntimeAttributesConnector"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSIBUserDefinedRuntimeAttributesConnector__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSIBUserDefinedRuntimeAttributesConnector__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPCibRuntimeAttributesConnector.isa.objj_msgSend0(CPCibRuntimeAttributesConnector, "class");
 }
@@ -3496,9 +3573,9 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
 }{
 var the_class = objj_getClass("CPCibHelpConnector")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPCibHelpConnector\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPCibHelpConnector__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPCibHelpConnector").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPCibHelpConnector").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
     {
         self._destination = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSDestination"));
@@ -3510,30 +3587,30 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPCibHelpConnector, "NSIBHelpConnector"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSIBHelpConnector__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSIBHelpConnector__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPCibHelpConnector.isa.objj_msgSend0(CPCibHelpConnector, "class");
 }
 ,["Class"])]);
-}p;8;NSNull.jt;591;@STATIC;1.0;I;19;Foundation/CPNull.jt;549;objj_executeFile("Foundation/CPNull.j", NO);{var the_class = objj_allocateClassPair(CPNull, "NSNull"),
+}p;8;NSNull.jt;536;@STATIC;1.0;I;19;Foundation/CPNull.jt;494;objj_executeFile("Foundation/CPNull.j", NO);{var the_class = objj_allocateClassPair(CPNull, "NSNull"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSNull__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return CPNull.isa.objj_msgSend0(CPNull, "null");
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSNull__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPNull.isa.objj_msgSend0(CPNull, "class");
 }
 ,["Class"])]);
-}p;19;NSNumberFormatter.jt;2091;@STATIC;1.0;I;30;Foundation/CPNumberFormatter.jt;2037;objj_executeFile("Foundation/CPNumberFormatter.j", NO);{
+}p;19;NSNumberFormatter.jt;1976;@STATIC;1.0;I;30;Foundation/CPNumberFormatter.jt;1922;objj_executeFile("Foundation/CPNumberFormatter.j", NO);{
 var the_class = objj_getClass("CPNumberFormatter")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPNumberFormatter\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPNumberFormatter__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend0(self, "init"));
     if (self)
@@ -3550,21 +3627,21 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPNumberFormatter, "NSNumberFormatter"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSNumberFormatter__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSNumberFormatter__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPNumberFormatter.isa.objj_msgSend0(CPNumberFormatter, "class");
 }
 ,["Class"])]);
-}p;20;NSObjectController.jt;1963;@STATIC;1.0;I;27;AppKit/CPObjectController.jt;1912;objj_executeFile("AppKit/CPObjectController.j", NO);{
+}p;20;NSObjectController.jt;3496;@STATIC;1.0;I;27;AppKit/CPObjectController.jt;3445;objj_executeFile("AppKit/CPObjectController.j", NO);{
 var the_class = objj_getClass("CPObjectController")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPObjectController\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPObjectController__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPObjectController").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("CPObjectController").super_class }, "init");
     if (self)
     {
         self._declaredKeys = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSDeclaredKeys"));
@@ -3575,27 +3652,55 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
             self._objectClass = CPMutableDictionary.isa.objj_msgSend0(CPMutableDictionary, "class");
         self._isEditable = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeBoolForKey:", "NSEditable"));
         self._automaticallyPreparesContent = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeBoolForKey:", "NSAutomaticallyPreparesContent"));
+        self._usesLazyFetching = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeBoolForKey:", "_NSUsesLazyFetching"));
+        self._isUsingManagedProxy = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeBoolForKey:", "_NSIsUsingManagedProxy"));
+        self._managedProxy = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "_NSManagedProxy"));
     }
     return self;
 }
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPObjectController, "NSObjectController"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSObjectController__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSObjectController__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPObjectController.isa.objj_msgSend0(CPObjectController, "class");
 }
 ,["Class"])]);
-}p;15;NSOutlineView.jt;2590;@STATIC;1.0;I;22;AppKit/CPOutlineView.jt;2544;objj_executeFile("AppKit/CPOutlineView.j", NO);{
+}{
+var the_class = objj_getClass("_CPManagedProxy")
+if(!the_class) throw new SyntaxError("*** Could not find definition for class \"_CPManagedProxy\"");
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
+{
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("_CPManagedProxy").super_class }, "init");
+    if (self)
+    {
+        self._entityName = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSEntityName"));
+        self._fetchPredicate = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSFetchPredicate"));
+    }
+    return self;
+}
+,["id","CPCoder"])]);
+}{var the_class = objj_allocateClassPair(_CPManagedProxy, "_NSManagedProxy"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
+{
+    return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
+}
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
+{
+    return _CPManagedProxy.isa.objj_msgSend0(_CPManagedProxy, "class");
+}
+,["Class"])]);
+}p;15;NSOutlineView.jt;2488;@STATIC;1.0;I;22;AppKit/CPOutlineView.jt;2442;objj_executeFile("AppKit/CPOutlineView.j", NO);{
 var the_class = objj_getClass("CPOutlineView")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPOutlineView\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPOutlineView__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPOutlineView").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPOutlineView").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
     {
         if ((aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "containsValueForKey:", "NSOutlineViewOutlineTableColumnKey")))
@@ -3615,7 +3720,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPOutlineView, "NSOutlineView"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSOutlineView__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder));
     if (self)
@@ -3625,17 +3730,17 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSOutlineView__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPOutlineView.isa.objj_msgSend0(CPOutlineView, "class");
 }
 ,["Class"])]);
-}p;11;NSPopover.jt;1495;@STATIC;1.0;I;18;AppKit/CPPopover.jt;1453;objj_executeFile("AppKit/CPPopover.j", NO);{
+}p;11;NSPopover.jt;1405;@STATIC;1.0;I;18;AppKit/CPPopover.jt;1363;objj_executeFile("AppKit/CPPopover.j", NO);{
 var the_class = objj_getClass("CPPopover")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPPopover\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPPopover__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPPopover").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPPopover").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
     {
         self._behavior = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSBehavior"));
@@ -3647,25 +3752,25 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPPopover, "NSPopover"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSPopover__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSPopover__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPPopover.isa.objj_msgSend0(CPPopover, "class");
 }
 ,["Class"])]);
-}p;15;NSPopUpButton.jt;3955;@STATIC;1.0;I;22;AppKit/CPPopUpButton.ji;8;NSMenu.ji;12;NSMenuItem.jt;3880;objj_executeFile("AppKit/CPPopUpButton.j", NO);objj_executeFile("NSMenu.j", YES);objj_executeFile("NSMenuItem.j", YES);{
+}p;15;NSPopUpButton.jt;3664;@STATIC;1.0;I;22;AppKit/CPPopUpButton.ji;8;NSMenu.ji;12;NSMenuItem.jt;3589;objj_executeFile("AppKit/CPPopUpButton.j", NO);objj_executeFile("NSMenu.j", YES);objj_executeFile("NSMenuItem.j", YES);{
 var the_class = objj_getClass("CPPopUpButton")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPPopUpButton\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPPopUpButton__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    return objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPPopUpButton").super_class }, "NS_initWithCoder:", aCoder);
+    return objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPPopUpButton").super_class }, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function $CPPopUpButton__NS_initWithCell_(self, _cmd, cell)
+,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function(self, _cmd, cell)
 {
-    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPPopUpButton").super_class }, "NS_initWithCell:", cell);
+    objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPPopUpButton").super_class }, "NS_initWithCell:", cell);
     self._menu = (cell == null ? null : cell.isa.objj_msgSend0(cell, "menu"));
     self.isa.objj_msgSend1(self, "setPullsDown:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "pullsDown")));
     self._preferredEdge = (cell == null ? null : cell.isa.objj_msgSend0(cell, "preferredEdge"));
@@ -3673,7 +3778,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["void","NSCell"])]);
 }{var the_class = objj_allocateClassPair(CPPopUpButton, "NSPopUpButton"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSPopUpButton__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder));
     if (self)
@@ -3684,32 +3789,32 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSPopUpButton__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPPopUpButton.isa.objj_msgSend0(CPPopUpButton, "class");
 }
 ,["Class"])]);
 }{var the_class = objj_allocateClassPair(NSMenuItemCell, "NSPopUpButtonCell"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("pullsDown"), new objj_ivar("selectedIndex"), new objj_ivar("preferredEdge"), new objj_ivar("menu")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("pullsDown"), function $NSPopUpButtonCell__pullsDown(self, _cmd)
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("pullsDown", "BOOL"), new objj_ivar("selectedIndex", "int"), new objj_ivar("preferredEdge", "int"), new objj_ivar("menu", "CPMenu")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("pullsDown"), function(self, _cmd)
 {
     return self.pullsDown;
 }
-,["BOOL"]), new objj_method(sel_getUid("selectedIndex"), function $NSPopUpButtonCell__selectedIndex(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("selectedIndex"), function(self, _cmd)
 {
     return self.selectedIndex;
 }
-,["int"]), new objj_method(sel_getUid("preferredEdge"), function $NSPopUpButtonCell__preferredEdge(self, _cmd)
+,["int"]), new objj_method(sel_getUid("preferredEdge"), function(self, _cmd)
 {
     return self.preferredEdge;
 }
-,["int"]), new objj_method(sel_getUid("menu"), function $NSPopUpButtonCell__menu(self, _cmd)
+,["int"]), new objj_method(sel_getUid("menu"), function(self, _cmd)
 {
     return self.menu;
 }
-,["CPMenu"]), new objj_method(sel_getUid("initWithCoder:"), function $NSPopUpButtonCell__initWithCoder_(self, _cmd, aCoder)
+,["CPMenu"]), new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("NSPopUpButtonCell").super_class }, "initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("NSPopUpButtonCell").super_class }, "initWithCoder:", aCoder);
     if (self)
     {
         self.pullsDown = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeBoolForKey:", "NSPullDown"));
@@ -3719,17 +3824,17 @@ class_addMethods(the_class, [new objj_method(sel_getUid("pullsDown"), function $
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("objectValue"), function $NSPopUpButtonCell__objectValue(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("objectValue"), function(self, _cmd)
 {
     return self.selectedIndex;
 }
 ,["CPUInteger"])]);
-}p;19;NSPredicateEditor.jt;4016;@STATIC;1.0;I;26;AppKit/CPPredicateEditor.jt;3966;objj_executeFile("AppKit/CPPredicateEditor.j", NO);{
+}p;19;NSPredicateEditor.jt;3755;@STATIC;1.0;I;26;AppKit/CPPredicateEditor.jt;3705;objj_executeFile("AppKit/CPPredicateEditor.j", NO);{
 var the_class = objj_getClass("CPPredicateEditor")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPPredicateEditor\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPPredicateEditor__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPPredicateEditor").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPPredicateEditor").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
     {
         self._allTemplates = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSPredicateTemplates"));
@@ -3739,7 +3844,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPPredicateEditor, "NSPredicateEditor"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSPredicateEditor__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder));
     if (self)
@@ -3749,7 +3854,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSPredicateEditor__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPPredicateEditor.isa.objj_msgSend0(CPPredicateEditor, "class");
 }
@@ -3757,9 +3862,9 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
 }{
 var the_class = objj_getClass("CPPredicateEditorRowTemplate")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPPredicateEditorRowTemplate\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPPredicateEditorRowTemplate__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPPredicateEditorRowTemplate").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("CPPredicateEditorRowTemplate").super_class }, "init");
     if (self)
     {
         self._templateType = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSPredicateTemplateType"));
@@ -3776,22 +3881,22 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPPredicateEditorRowTemplate, "NSPredicateEditorRowTemplate"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSPredicateEditorRowTemplate__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSPredicateEditorRowTemplate__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPPredicateEditorRowTemplate.isa.objj_msgSend0(CPPredicateEditorRowTemplate, "class");
 }
 ,["Class"])]);
-}p;21;NSProgressIndicator.jt;2978;@STATIC;1.0;I;28;AppKit/CPProgressIndicator.jt;2926;objj_executeFile("AppKit/CPProgressIndicator.j", NO);var NSProgressIndicatorSpinningFlag = 1 << 12;
+}p;21;NSProgressIndicator.jt;2858;@STATIC;1.0;I;28;AppKit/CPProgressIndicator.jt;2806;objj_executeFile("AppKit/CPProgressIndicator.j", NO);var NSProgressIndicatorSpinningFlag = 1 << 12;
 {
 var the_class = objj_getClass("CPProgressIndicator")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPProgressIndicator\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPProgressIndicator__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPProgressIndicator").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPProgressIndicator").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
     {
         var NS_flags = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSpiFlags"));
@@ -3822,21 +3927,21 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPProgressIndicator, "NSProgressIndicator"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSProgressIndicator__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSProgressIndicator__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPProgressIndicator.isa.objj_msgSend0(CPProgressIndicator, "class");
 }
 ,["Class"])]);
-}p;13;NSResponder.jt;1309;@STATIC;1.0;I;20;AppKit/CPResponder.jt;1265;objj_executeFile("AppKit/CPResponder.j", NO);{
+}p;13;NSResponder.jt;1213;@STATIC;1.0;I;20;AppKit/CPResponder.jt;1169;objj_executeFile("AppKit/CPResponder.j", NO);{
 var the_class = objj_getClass("CPResponder")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPResponder\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPResponder__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPResponder").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("CPResponder").super_class }, "init");
     if (self)
         (self == null ? null : self.isa.objj_msgSend1(self, "setNextResponder:", (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSNextResponder"))));
     return self;
@@ -3844,21 +3949,21 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPResponder, "NSResponder"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSResponder__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSResponder__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPResponder.isa.objj_msgSend0(CPResponder, "class");
 }
 ,["Class"])]);
-}p;14;NSRuleEditor.jt;5289;@STATIC;1.0;I;21;AppKit/CPRuleEditor.jI;20;AppKit/CPTextField.ji;8;NSCell.ji;11;NSControl.jt;5191;objj_executeFile("AppKit/CPRuleEditor.j", NO);objj_executeFile("AppKit/CPTextField.j", NO);objj_executeFile("NSCell.j", YES);objj_executeFile("NSControl.j", YES);{
+}p;14;NSRuleEditor.jt;4983;@STATIC;1.0;I;21;AppKit/CPRuleEditor.jI;20;AppKit/CPTextField.ji;8;NSCell.ji;11;NSControl.jt;4885;objj_executeFile("AppKit/CPRuleEditor.j", NO);objj_executeFile("AppKit/CPTextField.j", NO);objj_executeFile("NSCell.j", YES);objj_executeFile("NSControl.j", YES);{
 var the_class = objj_getClass("CPRuleEditor")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPRuleEditor\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPRuleEditor__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPRuleEditor").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPRuleEditor").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
     {
         self._alignmentGridWidth = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeFloatForKey:", "NSRuleEditorAlignmentGridWidth"));
@@ -3882,7 +3987,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPRuleEditor, "NSRuleEditor"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSRuleEditor__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder));
     if (self)
@@ -3892,41 +3997,41 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSRuleEditor__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPRuleEditor.isa.objj_msgSend0(CPRuleEditor, "class");
 }
 ,["Class"])]);
 }{var the_class = objj_allocateClassPair(_CPRuleEditorViewSliceHolder, "_NSRuleEditorViewSliceHolder"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $_NSRuleEditorViewSliceHolder__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $_NSRuleEditorViewSliceHolder__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPRuleEditorViewSliceHolder.isa.objj_msgSend0(_CPRuleEditorViewSliceHolder, "class");
 }
 ,["Class"])]);
 }{var the_class = objj_allocateClassPair(_CPRuleEditorViewUnboundRowHolder, "_NSRuleEditorViewUnboundRowHolder"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $_NSRuleEditorViewUnboundRowHolder__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
-    if (self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("_NSRuleEditorViewUnboundRowHolder").super_class }, "init"))
+    if (self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("_NSRuleEditorViewUnboundRowHolder").super_class }, "init"))
         self.boundArray = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSBoundArray"));
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $_NSRuleEditorViewUnboundRowHolder__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPRuleEditorViewUnboundRowHolder.isa.objj_msgSend0(_CPRuleEditorViewUnboundRowHolder, "class");
 }
 ,["Class"])]);
-}p;12;NSScroller.jt;2969;@STATIC;1.0;I;19;AppKit/CPScroller.jt;2926;objj_executeFile("AppKit/CPScroller.j", NO);{
+}p;12;NSScroller.jt;2876;@STATIC;1.0;I;19;AppKit/CPScroller.jt;2833;objj_executeFile("AppKit/CPScroller.j", NO);{
 var the_class = objj_getClass("CPScroller")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPScroller\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPScroller__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    if (self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPScroller").super_class }, "NS_initWithCoder:", aCoder))
+    if (self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPScroller").super_class }, "NS_initWithCoder:", aCoder))
     {
         self._controlSize = CPRegularControlSize;
         self._knobProportion = 1.0;
@@ -3952,7 +4057,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPScroller, "NSScroller"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSScroller__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder));
     if (self)
@@ -3962,17 +4067,17 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSScroller__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPScroller.isa.objj_msgSend0(CPScroller, "class");
 }
 ,["Class"])]);
-}p;14;NSScrollView.jt;2819;@STATIC;1.0;I;21;AppKit/CPScrollView.jt;2774;objj_executeFile("AppKit/CPScrollView.j", NO);{
+}p;14;NSScrollView.jt;2720;@STATIC;1.0;I;21;AppKit/CPScrollView.jt;2675;objj_executeFile("AppKit/CPScrollView.j", NO);{
 var the_class = objj_getClass("CPScrollView")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPScrollView\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPScrollView__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    if (self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPScrollView").super_class }, "NS_initWithCoder:", aCoder))
+    if (self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPScrollView").super_class }, "NS_initWithCoder:", aCoder))
     {
         var flags = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSsFlags"));
         self._verticalScroller = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSVScroller"));
@@ -4000,25 +4105,25 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPScrollView, "NSScrollView"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSScrollView__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSScrollView__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPScrollView.isa.objj_msgSend0(CPScrollView, "class");
 }
 ,["Class"])]);
-}p;15;NSSearchField.jt;5110;@STATIC;1.0;I;22;AppKit/CPSearchField.ji;13;NSTextField.jt;5046;objj_executeFile("AppKit/CPSearchField.j", NO);objj_executeFile("NSTextField.j", YES);{
+}p;15;NSSearchField.jt;4627;@STATIC;1.0;I;22;AppKit/CPSearchField.ji;13;NSTextField.jt;4563;objj_executeFile("AppKit/CPSearchField.j", NO);objj_executeFile("NSTextField.j", YES);{
 var the_class = objj_getClass("CPSearchField")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPSearchField\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPSearchField__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    return objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPSearchField").super_class }, "NS_initWithCoder:", aCoder);
+    return objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPSearchField").super_class }, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function $CPSearchField__NS_initWithCell_(self, _cmd, cell)
+,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function(self, _cmd, cell)
 {
-    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPSearchField").super_class }, "NS_initWithCell:", cell);
+    objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPSearchField").super_class }, "NS_initWithCell:", cell);
     self.isa.objj_msgSend1(self, "setRecentsAutosaveName:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "recentsAutosaveName")));
     self.isa.objj_msgSend1(self, "setMaximumRecents:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "maximumRecents")));
     self.isa.objj_msgSend1(self, "setSendsWholeSearchString:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "sendsWholeSearchString")));
@@ -4027,7 +4132,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["void","NSCell"])]);
 }{var the_class = objj_allocateClassPair(CPSearchField, "NSSearchField"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSSearchField__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder));
     if (self)
@@ -4038,48 +4143,48 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSSearchField__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPSearchField.isa.objj_msgSend0(CPSearchField, "class");
 }
 ,["Class"])]);
 }{var the_class = objj_allocateClassPair(NSTextFieldCell, "NSSearchFieldCell"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_recentsAutosaveName"), new objj_ivar("_maximumRecents"), new objj_ivar("_sendsWholeSearchString"), new objj_ivar("_sendsSearchStringImmediately")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("recentsAutosaveName"), function $NSSearchFieldCell__recentsAutosaveName(self, _cmd)
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_recentsAutosaveName", "CPString"), new objj_ivar("_maximumRecents", "int"), new objj_ivar("_sendsWholeSearchString", "BOOL"), new objj_ivar("_sendsSearchStringImmediately", "BOOL")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("recentsAutosaveName"), function(self, _cmd)
 {
     return self._recentsAutosaveName;
 }
-,["CPString"]), new objj_method(sel_getUid("setRecentsAutosaveName:"), function $NSSearchFieldCell__setRecentsAutosaveName_(self, _cmd, newValue)
+,["CPString"]), new objj_method(sel_getUid("setRecentsAutosaveName:"), function(self, _cmd, newValue)
 {
     self._recentsAutosaveName = newValue;
 }
-,["void","CPString"]), new objj_method(sel_getUid("maximumRecents"), function $NSSearchFieldCell__maximumRecents(self, _cmd)
+,["void","CPString"]), new objj_method(sel_getUid("maximumRecents"), function(self, _cmd)
 {
     return self._maximumRecents;
 }
-,["int"]), new objj_method(sel_getUid("setMaximumRecents:"), function $NSSearchFieldCell__setMaximumRecents_(self, _cmd, newValue)
+,["int"]), new objj_method(sel_getUid("setMaximumRecents:"), function(self, _cmd, newValue)
 {
     self._maximumRecents = newValue;
 }
-,["void","int"]), new objj_method(sel_getUid("sendsWholeSearchString"), function $NSSearchFieldCell__sendsWholeSearchString(self, _cmd)
+,["void","int"]), new objj_method(sel_getUid("sendsWholeSearchString"), function(self, _cmd)
 {
     return self._sendsWholeSearchString;
 }
-,["BOOL"]), new objj_method(sel_getUid("setSendsWholeSearchString:"), function $NSSearchFieldCell__setSendsWholeSearchString_(self, _cmd, newValue)
+,["BOOL"]), new objj_method(sel_getUid("setSendsWholeSearchString:"), function(self, _cmd, newValue)
 {
     self._sendsWholeSearchString = newValue;
 }
-,["void","BOOL"]), new objj_method(sel_getUid("sendsSearchStringImmediately"), function $NSSearchFieldCell__sendsSearchStringImmediately(self, _cmd)
+,["void","BOOL"]), new objj_method(sel_getUid("sendsSearchStringImmediately"), function(self, _cmd)
 {
     return self._sendsSearchStringImmediately;
 }
-,["BOOL"]), new objj_method(sel_getUid("setSendsSearchStringImmediately:"), function $NSSearchFieldCell__setSendsSearchStringImmediately_(self, _cmd, newValue)
+,["BOOL"]), new objj_method(sel_getUid("setSendsSearchStringImmediately:"), function(self, _cmd, newValue)
 {
     self._sendsSearchStringImmediately = newValue;
 }
-,["void","BOOL"]), new objj_method(sel_getUid("initWithCoder:"), function $NSSearchFieldCell__initWithCoder_(self, _cmd, aCoder)
+,["void","BOOL"]), new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
-    if (self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("NSSearchFieldCell").super_class }, "initWithCoder:", aCoder))
+    if (self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("NSSearchFieldCell").super_class }, "initWithCoder:", aCoder))
     {
         self._recentsAutosaveName = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSRecentsAutosaveName"));
         self._maximumRecents = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSMaximumRecents"));
@@ -4089,9 +4194,9 @@ class_addMethods(the_class, [new objj_method(sel_getUid("recentsAutosaveName"), 
     return self;
 }
 ,["id","CPCoder"])]);
-}p;19;NSSecureTextField.jt;1243;@STATIC;1.0;I;26;AppKit/CPSecureTextField.ji;13;NSTextField.jt;1175;objj_executeFile("AppKit/CPSecureTextField.j", NO);objj_executeFile("NSTextField.j", YES);{var the_class = objj_allocateClassPair(CPSecureTextField, "NSSecureTextField"),
+}p;19;NSSecureTextField.jt;1166;@STATIC;1.0;I;26;AppKit/CPSecureTextField.ji;13;NSTextField.jt;1098;objj_executeFile("AppKit/CPSecureTextField.j", NO);objj_executeFile("NSTextField.j", YES);{var the_class = objj_allocateClassPair(CPSecureTextField, "NSSecureTextField"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSSecureTextField__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder));
     if (self)
@@ -4102,41 +4207,39 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSSecureTextField__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPSecureTextField.isa.objj_msgSend0(CPSecureTextField, "class");
 }
 ,["Class"])]);
 }{var the_class = objj_allocateClassPair(NSTextFieldCell, "NSSecureTextFieldCell"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-}p;20;NSSegmentedControl.jt;6674;@STATIC;1.0;I;27;AppKit/CPSegmentedControl.ji;8;NSCell.jt;6611;objj_executeFile("AppKit/CPSegmentedControl.j", NO);objj_executeFile("NSCell.j", YES);{
+}p;20;NSSegmentedControl.jt;6276;@STATIC;1.0;I;27;AppKit/CPSegmentedControl.ji;8;NSCell.jt;6213;objj_executeFile("AppKit/CPSegmentedControl.j", NO);objj_executeFile("NSCell.j", YES);{
 var the_class = objj_getClass("CPSegmentedControl")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPSegmentedControl\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPSegmentedControl__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
     self._segments = [];
     self._themeStates = [];
-    return objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPSegmentedControl").super_class }, "NS_initWithCoder:", aCoder);
+    return objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPSegmentedControl").super_class }, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function $CPSegmentedControl__NS_initWithCell_(self, _cmd, cell)
+,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function(self, _cmd, cell)
 {
-    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPSegmentedControl").super_class }, "NS_initWithCell:", cell);
+    objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPSegmentedControl").super_class }, "NS_initWithCell:", cell);
     self._segments = (cell == null ? null : cell.isa.objj_msgSend0(cell, "segments"));
     self._selectedSegment = (cell == null ? null : cell.isa.objj_msgSend0(cell, "selectedSegment"));
     self._segmentStyle = (cell == null ? null : cell.isa.objj_msgSend0(cell, "segmentStyle"));
     self._trackingMode = (cell == null ? null : cell.isa.objj_msgSend0(cell, "trackingMode"));
     self.isa.objj_msgSend2(self, "setValue:forThemeAttribute:", CPCenterTextAlignment, "alignment");
     for (var i = 0; i < self._segments.length; i++)
-    {
         self._themeStates[i] = self._segments[i].selected ? CPThemeStateSelected : CPThemeStateNormal;
-        self.isa.objj_msgSend1(self, "tileWithChangedSegment:", i);
-    }
+    self.isa.objj_msgSend0(self, "tile");
     self.isa.objj_msgSend1(self, "setEnabled:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "isEnabled")));
 }
 ,["void","NSCell"])]);
 }{var the_class = objj_allocateClassPair(CPSegmentedControl, "NSSegmentedControl"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSSegmentedControl__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder));
     if (self)
@@ -4147,32 +4250,32 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSSegmentedControl__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPSegmentedControl.isa.objj_msgSend0(CPSegmentedControl, "class");
 }
 ,["Class"])]);
 }{var the_class = objj_allocateClassPair(NSActionCell, "NSSegmentedCell"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_segments"), new objj_ivar("_selectedSegment"), new objj_ivar("_segmentStyle"), new objj_ivar("_trackingMode")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("segments"), function $NSSegmentedCell__segments(self, _cmd)
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_segments", "CPArray"), new objj_ivar("_selectedSegment", "int"), new objj_ivar("_segmentStyle", "int"), new objj_ivar("_trackingMode", "CPSegmentSwitchTracking")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("segments"), function(self, _cmd)
 {
     return self._segments;
 }
-,["CPArray"]), new objj_method(sel_getUid("selectedSegment"), function $NSSegmentedCell__selectedSegment(self, _cmd)
+,["CPArray"]), new objj_method(sel_getUid("selectedSegment"), function(self, _cmd)
 {
     return self._selectedSegment;
 }
-,["int"]), new objj_method(sel_getUid("segmentStyle"), function $NSSegmentedCell__segmentStyle(self, _cmd)
+,["int"]), new objj_method(sel_getUid("segmentStyle"), function(self, _cmd)
 {
     return self._segmentStyle;
 }
-,["int"]), new objj_method(sel_getUid("trackingMode"), function $NSSegmentedCell__trackingMode(self, _cmd)
+,["int"]), new objj_method(sel_getUid("trackingMode"), function(self, _cmd)
 {
     return self._trackingMode;
 }
-,["CPSegmentSwitchTracking"]), new objj_method(sel_getUid("initWithCoder:"), function $NSSegmentedCell__initWithCoder_(self, _cmd, aCoder)
+,["CPSegmentSwitchTracking"]), new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
-    if (self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("NSSegmentedCell").super_class }, "initWithCoder:", aCoder))
+    if (self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("NSSegmentedCell").super_class }, "initWithCoder:", aCoder))
     {
         self._segments = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSSegmentImages"));
         self._selectedSegment = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSSelectedSegment"));
@@ -4189,9 +4292,9 @@ class_addMethods(the_class, [new objj_method(sel_getUid("segments"), function $N
 }{
 var the_class = objj_getClass("_CPSegmentItem")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"_CPSegmentItem\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $_CPSegmentItem__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    if (self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("_CPSegmentItem").super_class }, "init"))
+    if (self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("_CPSegmentItem").super_class }, "init"))
     {
         self.image = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSSegmentItemImage"));
         self.label = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSSegmentItemLabel"));
@@ -4207,18 +4310,18 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(_CPSegmentItem, "NSSegmentItem"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSSegmentItem__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSSegmentItem__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPSegmentItem.isa.objj_msgSend0(_CPSegmentItem, "class");
 }
 ,["Class"])]);
-}p;7;NSSet.jt;808;@STATIC;1.0;I;21;Foundation/CPObject.jI;18;Foundation/CPSet.jt;741;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPSet.j", NO);{var the_class = objj_allocateClassPair(CPObject, "NSSet"),
+}p;7;NSSet.jt;785;@STATIC;1.0;I;21;Foundation/CPObject.jI;18;Foundation/CPSet.jt;718;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPSet.j", NO);{var the_class = objj_allocateClassPair(CPObject, "NSSet"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSSet__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return ((___r1 = CPSet.isa.objj_msgSend0(CPSet, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "initWithArray:", (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NS.objects"))));
     var ___r1;
@@ -4226,26 +4329,26 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(NSSet, "NSMutableSet"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-}p;10;NSSlider.jt;4805;@STATIC;1.0;I;17;AppKit/CPSlider.ji;8;NSCell.jt;4752;objj_executeFile("AppKit/CPSlider.j", NO);objj_executeFile("NSCell.j", YES);{
+}p;10;NSSlider.jt;4574;@STATIC;1.0;I;17;AppKit/CPSlider.ji;8;NSCell.jt;4521;objj_executeFile("AppKit/CPSlider.j", NO);objj_executeFile("NSCell.j", YES);{
 var the_class = objj_getClass("CPSlider")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPSlider\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPSlider__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
     var cell = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSCell"));
     self._minValue = (cell == null ? null : cell.isa.objj_msgSend0(cell, "minValue"));
     self._maxValue = (cell == null ? null : cell.isa.objj_msgSend0(cell, "maxValue"));
-    return objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPSlider").super_class }, "NS_initWithCoder:", aCoder);
+    return objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPSlider").super_class }, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function $CPSlider__NS_initWithCell_(self, _cmd, cell)
+,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function(self, _cmd, cell)
 {
-    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPSlider").super_class }, "NS_initWithCell:", cell);
+    objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPSlider").super_class }, "NS_initWithCell:", cell);
     self._altIncrementValue = (cell == null ? null : cell.isa.objj_msgSend0(cell, "altIncrementValue"));
     self.isa.objj_msgSend1(self, "setSliderType:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "sliderType")));
 }
 ,["void","NSCell"])]);
 }{var the_class = objj_allocateClassPair(CPSlider, "NSSlider"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSSlider__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder));
     if (self)
@@ -4261,36 +4364,36 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSSlider__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPSlider.isa.objj_msgSend0(CPSlider, "class");
 }
 ,["Class"])]);
 }{var the_class = objj_allocateClassPair(NSCell, "NSSliderCell"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_minValue"), new objj_ivar("_maxValue"), new objj_ivar("_altIncrementValue"), new objj_ivar("_vertical"), new objj_ivar("_sliderType")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("minValue"), function $NSSliderCell__minValue(self, _cmd)
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_minValue", "double"), new objj_ivar("_maxValue", "double"), new objj_ivar("_altIncrementValue", "double"), new objj_ivar("_vertical", "BOOL"), new objj_ivar("_sliderType", "int")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("minValue"), function(self, _cmd)
 {
     return self._minValue;
 }
-,["double"]), new objj_method(sel_getUid("maxValue"), function $NSSliderCell__maxValue(self, _cmd)
+,["double"]), new objj_method(sel_getUid("maxValue"), function(self, _cmd)
 {
     return self._maxValue;
 }
-,["double"]), new objj_method(sel_getUid("altIncrementValue"), function $NSSliderCell__altIncrementValue(self, _cmd)
+,["double"]), new objj_method(sel_getUid("altIncrementValue"), function(self, _cmd)
 {
     return self._altIncrementValue;
 }
-,["double"]), new objj_method(sel_getUid("isVertical"), function $NSSliderCell__isVertical(self, _cmd)
+,["double"]), new objj_method(sel_getUid("isVertical"), function(self, _cmd)
 {
     return self._vertical;
 }
-,["BOOL"]), new objj_method(sel_getUid("sliderType"), function $NSSliderCell__sliderType(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("sliderType"), function(self, _cmd)
 {
     return self._sliderType;
 }
-,["int"]), new objj_method(sel_getUid("initWithCoder:"), function $NSSliderCell__initWithCoder_(self, _cmd, aCoder)
+,["int"]), new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("NSSliderCell").super_class }, "initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("NSSliderCell").super_class }, "initWithCoder:", aCoder);
     if (self)
     {
         self._objectValue = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeDoubleForKey:", "NSValue"));
@@ -4303,12 +4406,12 @@ class_addMethods(the_class, [new objj_method(sel_getUid("minValue"), function $N
     return self;
 }
 ,["id","CPCoder"])]);
-}p;18;NSSortDescriptor.jt;1572;@STATIC;1.0;I;29;Foundation/CPSortDescriptor.jt;1519;objj_executeFile("Foundation/CPSortDescriptor.j", NO);{
+}p;18;NSSortDescriptor.jt;1461;@STATIC;1.0;I;29;Foundation/CPSortDescriptor.jt;1408;objj_executeFile("Foundation/CPSortDescriptor.j", NO);{
 var the_class = objj_getClass("CPSortDescriptor")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPSortDescriptor\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPSortDescriptor__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    if (self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPSortDescriptor").super_class }, "init"))
+    if (self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("CPSortDescriptor").super_class }, "init"))
     {
         self._key = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSKey"));
         self._selector = CPSelectorFromString((aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSSelector")));
@@ -4319,22 +4422,22 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPSortDescriptor, "NSSortDescriptor"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSSortDescriptor__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSSortDescriptor__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPSortDescriptor.isa.objj_msgSend0(CPSortDescriptor, "class");
 }
 ,["Class"])]);
-}p;13;NSSplitView.jt;1580;@STATIC;1.0;I;20;AppKit/CPSplitView.jt;1536;objj_executeFile("AppKit/CPSplitView.j", NO);var NSThinDividerStyle = 2;
+}p;13;NSSplitView.jt;1484;@STATIC;1.0;I;20;AppKit/CPSplitView.jt;1440;objj_executeFile("AppKit/CPSplitView.j", NO);var NSThinDividerStyle = 2;
 {
 var the_class = objj_getClass("CPSplitView")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPSplitView\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPSplitView__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    if (self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPSplitView").super_class }, "NS_initWithCoder:", aCoder))
+    if (self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPSplitView").super_class }, "NS_initWithCoder:", aCoder))
     {
         self._isVertical = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeBoolForKey:", "NSIsVertical"));
         self._isPaneSplitter = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSDividerStyle")) != NSThinDividerStyle;
@@ -4345,25 +4448,25 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPSplitView, "NSSplitView"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSSplitView__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSSplitView__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPSplitView.isa.objj_msgSend0(CPSplitView, "class");
 }
 ,["Class"])]);
-}p;11;NSStepper.jt;4315;@STATIC;1.0;I;18;AppKit/CPStepper.ji;8;NSCell.jt;4261;objj_executeFile("AppKit/CPStepper.j", NO);objj_executeFile("NSCell.j", YES);{
+}p;11;NSStepper.jt;4083;@STATIC;1.0;I;18;AppKit/CPStepper.ji;8;NSCell.jt;4029;objj_executeFile("AppKit/CPStepper.j", NO);objj_executeFile("NSCell.j", YES);{
 var the_class = objj_getClass("CPStepper")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPStepper\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPStepper__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    return objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPStepper").super_class }, "NS_initWithCoder:", aCoder);
+    return objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPStepper").super_class }, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function $CPStepper__NS_initWithCell_(self, _cmd, cell)
+,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function(self, _cmd, cell)
 {
-    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPStepper").super_class }, "NS_initWithCell:", cell);
+    objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPStepper").super_class }, "NS_initWithCell:", cell);
     self._minValue = (cell == null ? null : cell.isa.objj_msgSend0(cell, "minValue"));
     self._maxValue = (cell == null ? null : cell.isa.objj_msgSend0(cell, "maxValue"));
     self._increment = (cell == null ? null : cell.isa.objj_msgSend0(cell, "increment"));
@@ -4374,7 +4477,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["void","NSCell"])]);
 }{var the_class = objj_allocateClassPair(CPStepper, "NSStepper"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSStepper__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder));
     if (self)
@@ -4385,36 +4488,36 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSStepper__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPStepper.isa.objj_msgSend0(CPStepper, "class");
 }
 ,["Class"])]);
 }{var the_class = objj_allocateClassPair(NSCell, "NSStepperCell"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_minValue"), new objj_ivar("_maxValue"), new objj_ivar("_increment"), new objj_ivar("_valueWraps"), new objj_ivar("_autorepeat")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("minValue"), function $NSStepperCell__minValue(self, _cmd)
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_minValue", "double"), new objj_ivar("_maxValue", "double"), new objj_ivar("_increment", "double"), new objj_ivar("_valueWraps", "BOOL"), new objj_ivar("_autorepeat", "BOOL")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("minValue"), function(self, _cmd)
 {
     return self._minValue;
 }
-,["double"]), new objj_method(sel_getUid("maxValue"), function $NSStepperCell__maxValue(self, _cmd)
+,["double"]), new objj_method(sel_getUid("maxValue"), function(self, _cmd)
 {
     return self._maxValue;
 }
-,["double"]), new objj_method(sel_getUid("increment"), function $NSStepperCell__increment(self, _cmd)
+,["double"]), new objj_method(sel_getUid("increment"), function(self, _cmd)
 {
     return self._increment;
 }
-,["double"]), new objj_method(sel_getUid("valueWraps"), function $NSStepperCell__valueWraps(self, _cmd)
+,["double"]), new objj_method(sel_getUid("valueWraps"), function(self, _cmd)
 {
     return self._valueWraps;
 }
-,["BOOL"]), new objj_method(sel_getUid("autorepeat"), function $NSStepperCell__autorepeat(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("autorepeat"), function(self, _cmd)
 {
     return self._autorepeat;
 }
-,["BOOL"]), new objj_method(sel_getUid("initWithCoder:"), function $NSStepperCell__initWithCoder_(self, _cmd, aCoder)
+,["BOOL"]), new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("NSStepperCell").super_class }, "initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("NSStepperCell").super_class }, "initWithCoder:", aCoder);
     if (self)
     {
         self._objectValue = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeDoubleForKey:", "NSValue"));
@@ -4427,30 +4530,30 @@ class_addMethods(the_class, [new objj_method(sel_getUid("minValue"), function $N
     return self;
 }
 ,["id","CPCoder"])]);
-}p;17;NSTableCellView.jt;1154;@STATIC;1.0;I;20;AppKit/CPTableView.jt;1110;objj_executeFile("AppKit/CPTableView.j", NO);{
+}p;17;NSTableCellView.jt;1046;@STATIC;1.0;I;20;AppKit/CPTableView.jt;1002;objj_executeFile("AppKit/CPTableView.j", NO);{
 var the_class = objj_getClass("CPTableCellView")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPTableCellView\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPTableCellView__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    return objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPTableCellView").super_class }, "NS_initWithCoder:", aCoder);
+    return objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPTableCellView").super_class }, "NS_initWithCoder:", aCoder);
 }
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPTableCellView, "NSTableCellView"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSTableCellView__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSTableCellView__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPTableCellView.isa.objj_msgSend0(CPTableCellView, "class");
 }
 ,["Class"])]);
-}p;15;NSTableColumn.jt;8617;@STATIC;1.0;I;25;AppKit/CPLevelIndicator.jI;22;AppKit/CPTableColumn.jI;26;AppKit/CPTableHeaderView.jI;17;AppKit/CPButton.ji;10;NSButton.ji;13;NSImageView.ji;18;NSLevelIndicator.ji;13;NSTextField.jt;8414;objj_executeFile("AppKit/CPLevelIndicator.j", NO);objj_executeFile("AppKit/CPTableColumn.j", NO);objj_executeFile("AppKit/CPTableHeaderView.j", NO);objj_executeFile("AppKit/CPButton.j", NO);objj_executeFile("NSButton.j", YES);objj_executeFile("NSImageView.j", YES);objj_executeFile("NSLevelIndicator.j", YES);objj_executeFile("NSTextField.j", YES);var IBDefaultFontSizeTableHeader = 11.0;
+}p;15;NSTableColumn.jt;8412;@STATIC;1.0;I;25;AppKit/CPLevelIndicator.jI;22;AppKit/CPTableColumn.jI;26;AppKit/CPTableHeaderView.jI;17;AppKit/CPButton.ji;10;NSButton.ji;13;NSImageView.ji;18;NSLevelIndicator.ji;13;NSTextField.jt;8209;objj_executeFile("AppKit/CPLevelIndicator.j", NO);objj_executeFile("AppKit/CPTableColumn.j", NO);objj_executeFile("AppKit/CPTableHeaderView.j", NO);objj_executeFile("AppKit/CPButton.j", NO);objj_executeFile("NSButton.j", YES);objj_executeFile("NSImageView.j", YES);objj_executeFile("NSLevelIndicator.j", YES);objj_executeFile("NSTextField.j", YES);var IBDefaultFontSizeTableHeader = 11.0;
 {
 var the_class = objj_getClass("CPTableColumn")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPTableColumn\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPTableColumn__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend0(self, "init"));
     if (self)
@@ -4492,7 +4595,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
     return self;
     var ___r1;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("makeDataViewOfClass:withCell:"), function $CPTableColumn__makeDataViewOfClass_withCell_(self, _cmd, aClass, aCell)
+,["id","CPCoder"]), new objj_method(sel_getUid("makeDataViewOfClass:withCell:"), function(self, _cmd, aClass, aCell)
 {
     var dataView = ((___r1 = (aClass == null ? null : aClass.isa.objj_msgSend0(aClass, "alloc"))), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "initWithFrame:", CGRectMakeZero()));
     (dataView == null ? null : dataView.isa.objj_msgSend1(dataView, "setThemeState:", CPThemeStateTableDataView));
@@ -4512,7 +4615,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
     return dataView;
     var ___r1;
 }
-,["id","Class","NSCell"]), new objj_method(sel_getUid("valueForDataViewThemeAttribute:inState:"), function $CPTableColumn__valueForDataViewThemeAttribute_inState_(self, _cmd, attribute, state)
+,["id","Class","NSCell"]), new objj_method(sel_getUid("valueForDataViewThemeAttribute:inState:"), function(self, _cmd, attribute, state)
 {
     var themes = ((___r1 = (Nib2Cib == null ? null : Nib2Cib.isa.objj_msgSend0(Nib2Cib, "sharedNib2Cib"))), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "themes"));
     for (var i = 0; i < themes.length; ++i)
@@ -4527,23 +4630,23 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPString","int"])]);
 }{var the_class = objj_allocateClassPair(CPTableColumn, "NSTableColumn"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSTableColumn__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSTableColumn__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPTableColumn.isa.objj_msgSend0(CPTableColumn, "class");
 }
 ,["Class"])]);
 }{var the_class = objj_allocateClassPair(NSActionCell, "NSTableHeaderCell"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-}p;19;NSTableHeaderView.jt;1798;@STATIC;1.0;I;26;AppKit/CPTableHeaderView.jt;1748;objj_executeFile("AppKit/CPTableHeaderView.j", NO);{
+}p;19;NSTableHeaderView.jt;1646;@STATIC;1.0;I;26;AppKit/CPTableHeaderView.jt;1596;objj_executeFile("AppKit/CPTableHeaderView.j", NO);{
 var the_class = objj_getClass("CPTableHeaderView")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPTableHeaderView\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPTableHeaderView__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    if (self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPTableHeaderView").super_class }, "NS_initWithCoder:", aCoder))
+    if (self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPTableHeaderView").super_class }, "NS_initWithCoder:", aCoder))
     {
         self._tableView = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSTableView"));
         if (self._bounds.size.height === 17)
@@ -4553,28 +4656,27 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
             self._bounds.size.height = height;
             self._frame.size.height = height;
         }
-        self._drawsColumnLines = YES;
     }
     return self;
 }
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPTableHeaderView, "NSTableHeaderView"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSTableHeaderView__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSTableHeaderView__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPTableHeaderView.isa.objj_msgSend0(CPTableHeaderView, "class");
 }
 ,["Class"])]);
-}p;13;NSTableView.jt;4693;@STATIC;1.0;I;20;AppKit/CPTableView.jt;4649;objj_executeFile("AppKit/CPTableView.j", NO);{
+}p;13;NSTableView.jt;4597;@STATIC;1.0;I;20;AppKit/CPTableView.jt;4553;objj_executeFile("AppKit/CPTableView.j", NO);{
 var the_class = objj_getClass("CPTableView")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPTableView\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPTableView__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPTableView").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPTableView").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
     {
         var flags = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSTvFlags"));
@@ -4612,7 +4714,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPTableView, "NSTableView"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSTableView__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder));
     if (self)
@@ -4622,53 +4724,53 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSTableView__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPTableView.isa.objj_msgSend0(CPTableView, "class");
 }
 ,["Class"])]);
-}p;11;NSTabView.jt;1822;@STATIC;1.0;I;18;AppKit/CPTabView.ji;15;NSTabViewItem.jt;1760;objj_executeFile("AppKit/CPTabView.j", NO);objj_executeFile("NSTabViewItem.j", YES);{
+}p;11;NSTabView.jt;1625;@STATIC;1.0;I;18;AppKit/CPTabView.ji;15;NSTabViewItem.jt;1563;objj_executeFile("AppKit/CPTabView.j", NO);objj_executeFile("NSTabViewItem.j", YES);{
 var the_class = objj_getClass("CPTabView")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPTabView\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPTabView__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    if (self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPTabView").super_class }, "NS_initWithCoder:", aCoder))
+    if (self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPTabView").super_class }, "NS_initWithCoder:", aCoder))
     {
         var flags = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSTvFlags"));
         self._type = flags & 0x7;
         self._items = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSTabViewItems"));
-        self._selectedIndex = ((___r1 = self._items), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "indexOfObject:", (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSSelectedTabViewItem"))));
+        self._selectedTabViewItem = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSSelectedTabViewItem"));
         self._font = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSFont"));
     }
     return self;
-    var ___r1;
 }
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPTabView, "NSTabView"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSTabView__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSTabView__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPTabView.isa.objj_msgSend0(CPTabView, "class");
 }
 ,["Class"])]);
-}p;15;NSTabViewItem.jt;1841;@STATIC;1.0;I;22;AppKit/CPTabViewItem.jt;1795;objj_executeFile("AppKit/CPTabViewItem.j", NO);{
+}p;15;NSTabViewItem.jt;1826;@STATIC;1.0;I;22;AppKit/CPTabViewItem.jt;1780;objj_executeFile("AppKit/CPTabViewItem.j", NO);{
 var the_class = objj_getClass("CPTabViewItem")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPTabViewItem\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPTabViewItem__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    if (self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPTabViewItem").super_class }, "init"))
+    if (self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("CPTabViewItem").super_class }, "init"))
     {
         self._identifier = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSIdentifier"));
         self._label = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSLabel"));
+        self._image = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSImage"));
         self._view = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSView"));
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("awakeFromNib"), function $CPTabViewItem__awakeFromNib(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("awakeFromNib"), function(self, _cmd)
 {
     if (((___r1 = self._view), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "superview")))
         ((___r1 = self._view), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "removeFromSuperview"));
@@ -4677,25 +4779,25 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["void"])]);
 }{var the_class = objj_allocateClassPair(CPTabViewItem, "NSTabViewItem"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSTabViewItem__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSTabViewItem__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPTabViewItem.isa.objj_msgSend0(CPTabViewItem, "class");
 }
 ,["Class"])]);
-}p;13;NSTextField.jt;6983;@STATIC;1.0;I;15;AppKit/CPFont.jI;20;AppKit/CPTextField.ji;8;NSCell.ji;11;NSControl.jt;6891;objj_executeFile("AppKit/CPFont.j", NO);objj_executeFile("AppKit/CPTextField.j", NO);objj_executeFile("NSCell.j", YES);objj_executeFile("NSControl.j", YES);{
+}p;13;NSTextField.jt;6731;@STATIC;1.0;I;15;AppKit/CPFont.jI;20;AppKit/CPTextField.ji;8;NSCell.ji;11;NSControl.jt;6639;objj_executeFile("AppKit/CPFont.j", NO);objj_executeFile("AppKit/CPTextField.j", NO);objj_executeFile("NSCell.j", YES);objj_executeFile("NSControl.j", YES);{
 var the_class = objj_getClass("CPTextField")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPTextField\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPTextField__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    return objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPTextField").super_class }, "NS_initWithCoder:", aCoder);
+    return objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPTextField").super_class }, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function $CPTextField__NS_initWithCell_(self, _cmd, cell)
+,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function(self, _cmd, cell)
 {
-    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPTextField").super_class }, "NS_initWithCell:", cell);
+    objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPTextField").super_class }, "NS_initWithCell:", cell);
     self.isa.objj_msgSend1(self, "setEditable:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "isEditable")));
     self.isa.objj_msgSend1(self, "setEnabled:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "isEnabled")));
     self.isa.objj_msgSend1(self, "setSelectable:", (cell == null ? null : cell.isa.objj_msgSend0(cell, "isSelectable")));
@@ -4723,7 +4825,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["void","NSCell"])]);
 }{var the_class = objj_allocateClassPair(CPTextField, "NSTextField"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSTextField__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder));
     if (self)
@@ -4734,36 +4836,36 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSTextField__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPTextField.isa.objj_msgSend0(CPTextField, "class");
 }
 ,["Class"])]);
 }{var the_class = objj_allocateClassPair(NSCell, "NSTextFieldCell"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_bezelStyle"), new objj_ivar("_drawsBackground"), new objj_ivar("_backgroundColor"), new objj_ivar("_textColor"), new objj_ivar("_placeholderString")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("bezelStyle"), function $NSTextFieldCell__bezelStyle(self, _cmd)
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_bezelStyle", "CPTextFieldBezelStyle"), new objj_ivar("_drawsBackground", "BOOL"), new objj_ivar("_backgroundColor", "CPColor"), new objj_ivar("_textColor", "CPColor"), new objj_ivar("_placeholderString", "CPString")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("bezelStyle"), function(self, _cmd)
 {
     return self._bezelStyle;
 }
-,["CPTextFieldBezelStyle"]), new objj_method(sel_getUid("drawsBackground"), function $NSTextFieldCell__drawsBackground(self, _cmd)
+,["CPTextFieldBezelStyle"]), new objj_method(sel_getUid("drawsBackground"), function(self, _cmd)
 {
     return self._drawsBackground;
 }
-,["BOOL"]), new objj_method(sel_getUid("backgroundColor"), function $NSTextFieldCell__backgroundColor(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("backgroundColor"), function(self, _cmd)
 {
     return self._backgroundColor;
 }
-,["CPColor"]), new objj_method(sel_getUid("textColor"), function $NSTextFieldCell__textColor(self, _cmd)
+,["CPColor"]), new objj_method(sel_getUid("textColor"), function(self, _cmd)
 {
     return self._textColor;
 }
-,["CPColor"]), new objj_method(sel_getUid("placeholderString"), function $NSTextFieldCell__placeholderString(self, _cmd)
+,["CPColor"]), new objj_method(sel_getUid("placeholderString"), function(self, _cmd)
 {
     return self._placeholderString;
 }
-,["CPString"]), new objj_method(sel_getUid("initWithCoder:"), function $NSTextFieldCell__initWithCoder_(self, _cmd, aCoder)
+,["CPString"]), new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("NSTextFieldCell").super_class }, "initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("NSTextFieldCell").super_class }, "initWithCoder:", aCoder);
     if (self)
     {
         self._bezelStyle = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSTextBezelStyle")) || CPTextFieldSquareBezel;
@@ -4775,21 +4877,21 @@ class_addMethods(the_class, [new objj_method(sel_getUid("bezelStyle"), function 
     return self;
 }
 ,["id","CPCoder"])]);
-}p;14;NSTokenField.jt;2748;@STATIC;1.0;I;15;AppKit/CPFont.jI;21;AppKit/CPTokenField.ji;11;NSControl.ji;8;NSCell.ji;13;NSTextField.jt;2637;objj_executeFile("AppKit/CPFont.j", NO);objj_executeFile("AppKit/CPTokenField.j", NO);objj_executeFile("NSControl.j", YES);objj_executeFile("NSCell.j", YES);objj_executeFile("NSTextField.j", YES);{
+}p;14;NSTokenField.jt;2562;@STATIC;1.0;I;15;AppKit/CPFont.jI;21;AppKit/CPTokenField.ji;11;NSControl.ji;8;NSCell.ji;13;NSTextField.jt;2451;objj_executeFile("AppKit/CPFont.j", NO);objj_executeFile("AppKit/CPTokenField.j", NO);objj_executeFile("NSControl.j", YES);objj_executeFile("NSCell.j", YES);objj_executeFile("NSTextField.j", YES);{
 var the_class = objj_getClass("CPTokenField")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPTokenField\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPTokenField__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    return objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPTokenField").super_class }, "NS_initWithCoder:", aCoder);
+    return objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPTokenField").super_class }, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function $CPTokenField__NS_initWithCell_(self, _cmd, cell)
+,["id","CPCoder"]), new objj_method(sel_getUid("NS_initWithCell:"), function(self, _cmd, cell)
 {
-    objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPTokenField").super_class }, "NS_initWithCell:", cell);
+    objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPTokenField").super_class }, "NS_initWithCell:", cell);
 }
 ,["void","NSCell"])]);
 }{var the_class = objj_allocateClassPair(CPTokenField, "NSTokenField"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSTokenField__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     self = (self == null ? null : self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder));
     if (self)
@@ -4800,20 +4902,20 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSTokenField__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPTokenField.isa.objj_msgSend0(CPTokenField, "class");
 }
 ,["Class"])]);
 }{var the_class = objj_allocateClassPair(NSTextFieldCell, "NSTokenFieldCell"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_tokenStyle")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("tokenStyle"), function $NSTokenFieldCell__tokenStyle(self, _cmd)
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_tokenStyle", "int")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("tokenStyle"), function(self, _cmd)
 {
     return self._tokenStyle;
 }
-,["int"]), new objj_method(sel_getUid("initWithCoder:"), function $NSTokenFieldCell__initWithCoder_(self, _cmd, aCoder)
+,["int"]), new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("NSTokenFieldCell").super_class }, "initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("NSTokenFieldCell").super_class }, "initWithCoder:", aCoder);
     if (self)
     {
         self._tokenStyle = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSTokenStyle"));
@@ -4821,10 +4923,10 @@ class_addMethods(the_class, [new objj_method(sel_getUid("tokenStyle"), function 
     return self;
 }
 ,["id","CPCoder"])]);
-}p;11;NSToolbar.jt;3389;@STATIC;1.0;I;18;AppKit/CPToolbar.ji;15;NSToolbarItem.jt;3327;objj_executeFile("AppKit/CPToolbar.j", NO);objj_executeFile("NSToolbarItem.j", YES);{
+}p;11;NSToolbar.jt;3298;@STATIC;1.0;I;18;AppKit/CPToolbar.ji;15;NSToolbarItem.jt;3236;objj_executeFile("AppKit/CPToolbar.j", NO);objj_executeFile("NSToolbarItem.j", YES);{
 var the_class = objj_getClass("CPToolbar")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPToolbar\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPToolbar__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
     if (self)
     {
@@ -4854,29 +4956,29 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPToolbar, "NSToolbar"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSToolbar__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSToolbar__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPToolbar.isa.objj_msgSend0(CPToolbar, "class");
 }
 ,["Class"])]);
-}p;28;NSToolbarFlexibleSpaceItem.jt;552;@STATIC;1.0;I;36;AppKit/_CPToolbarFlexibleSpaceItem.jt;493;objj_executeFile("AppKit/_CPToolbarFlexibleSpaceItem.j", NO);{var the_class = objj_allocateClassPair(_CPToolbarFlexibleSpaceItem, "NSToolbarFlexibleSpaceItem"),
+}p;28;NSToolbarFlexibleSpaceItem.jt;501;@STATIC;1.0;I;36;AppKit/_CPToolbarFlexibleSpaceItem.jt;442;objj_executeFile("AppKit/_CPToolbarFlexibleSpaceItem.j", NO);{var the_class = objj_allocateClassPair(_CPToolbarFlexibleSpaceItem, "NSToolbarFlexibleSpaceItem"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("classForKeyedArchiver"), function $NSToolbarFlexibleSpaceItem__classForKeyedArchiver(self, _cmd)
+class_addMethods(the_class, [new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPToolbarFlexibleSpaceItem.isa.objj_msgSend0(_CPToolbarFlexibleSpaceItem, "class");
 }
 ,["Class"])]);
-}p;15;NSToolbarItem.jt;4775;@STATIC;1.0;I;22;AppKit/CPToolbarItem.jt;4729;objj_executeFile("AppKit/CPToolbarItem.j", NO);NS_CPToolbarItemIdentifierMap = {"NSToolbarSeparatorItem": CPToolbarSeparatorItemIdentifier, "NSToolbarSpaceItem": CPToolbarSpaceItemIdentifier, "NSToolbarFlexibleSpaceItem": CPToolbarFlexibleSpaceItemIdentifier, "NSToolbarShowColorsItem": CPToolbarShowColorsItemIdentifier, "NSToolbarShowFontsItem": CPToolbarShowFontsItemIdentifier, "NSToolbarCustomizeToolbarItem": CPToolbarCustomizeToolbarItemIdentifier, "NSToolbarPrintItem": CPToolbarPrintItemIdentifier};
+}p;15;NSToolbarItem.jt;4673;@STATIC;1.0;I;22;AppKit/CPToolbarItem.jt;4627;objj_executeFile("AppKit/CPToolbarItem.j", NO);NS_CPToolbarItemIdentifierMap = {"NSToolbarSeparatorItem": CPToolbarSeparatorItemIdentifier, "NSToolbarSpaceItem": CPToolbarSpaceItemIdentifier, "NSToolbarFlexibleSpaceItem": CPToolbarFlexibleSpaceItemIdentifier, "NSToolbarShowColorsItem": CPToolbarShowColorsItemIdentifier, "NSToolbarShowFontsItem": CPToolbarShowFontsItemIdentifier, "NSToolbarCustomizeToolbarItem": CPToolbarCustomizeToolbarItemIdentifier, "NSToolbarPrintItem": CPToolbarPrintItemIdentifier};
 {
 var the_class = objj_getClass("CPToolbarItem")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPToolbarItem\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPToolbarItem__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPToolbarItem").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("CPToolbarItem").super_class }, "init");
     if (self)
     {
         var NS_itemIdentifier = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSToolbarItemIdentifier"));
@@ -4910,44 +5012,44 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPToolbarItem, "NSToolbarItem"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSToolbarItem__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSToolbarItem__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPToolbarItem.isa.objj_msgSend0(CPToolbarItem, "class");
 }
 ,["Class"])]);
-}p;24;NSToolbarSeparatorItem.jt;524;@STATIC;1.0;I;32;AppKit/_CPToolbarSeparatorItem.jt;469;objj_executeFile("AppKit/_CPToolbarSeparatorItem.j", NO);{var the_class = objj_allocateClassPair(_CPToolbarSeparatorItem, "NSToolbarSeparatorItem"),
+}p;24;NSToolbarSeparatorItem.jt;477;@STATIC;1.0;I;32;AppKit/_CPToolbarSeparatorItem.jt;422;objj_executeFile("AppKit/_CPToolbarSeparatorItem.j", NO);{var the_class = objj_allocateClassPair(_CPToolbarSeparatorItem, "NSToolbarSeparatorItem"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("classForKeyedArchiver"), function $NSToolbarSeparatorItem__classForKeyedArchiver(self, _cmd)
+class_addMethods(the_class, [new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPToolbarSeparatorItem.isa.objj_msgSend0(_CPToolbarSeparatorItem, "class");
 }
 ,["Class"])]);
-}p;25;NSToolbarShowColorsItem.jt;531;@STATIC;1.0;I;33;AppKit/_CPToolbarShowColorsItem.jt;475;objj_executeFile("AppKit/_CPToolbarShowColorsItem.j", NO);{var the_class = objj_allocateClassPair(_CPToolbarShowColorsItem, "NSToolbarShowColorsItem"),
+}p;25;NSToolbarShowColorsItem.jt;483;@STATIC;1.0;I;33;AppKit/_CPToolbarShowColorsItem.jt;427;objj_executeFile("AppKit/_CPToolbarShowColorsItem.j", NO);{var the_class = objj_allocateClassPair(_CPToolbarShowColorsItem, "NSToolbarShowColorsItem"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("classForKeyedArchiver"), function $NSToolbarShowColorsItem__classForKeyedArchiver(self, _cmd)
+class_addMethods(the_class, [new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPToolbarShowColorsItem.isa.objj_msgSend0(_CPToolbarShowColorsItem, "class");
 }
 ,["Class"])]);
-}p;20;NSToolbarSpaceItem.jt;496;@STATIC;1.0;I;28;AppKit/_CPToolbarSpaceItem.jt;445;objj_executeFile("AppKit/_CPToolbarSpaceItem.j", NO);{var the_class = objj_allocateClassPair(_CPToolbarSpaceItem, "NSToolbarSpaceItem"),
+}p;20;NSToolbarSpaceItem.jt;453;@STATIC;1.0;I;28;AppKit/_CPToolbarSpaceItem.jt;402;objj_executeFile("AppKit/_CPToolbarSpaceItem.j", NO);{var the_class = objj_allocateClassPair(_CPToolbarSpaceItem, "NSToolbarSpaceItem"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("classForKeyedArchiver"), function $NSToolbarSpaceItem__classForKeyedArchiver(self, _cmd)
+class_addMethods(the_class, [new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPToolbarSpaceItem.isa.objj_msgSend0(_CPToolbarSpaceItem, "class");
 }
 ,["Class"])]);
-}p;26;NSUserDefaultsController.jt;1705;@STATIC;1.0;I;33;AppKit/CPUserDefaultsController.jt;1648;objj_executeFile("AppKit/CPUserDefaultsController.j", NO);{
+}p;26;NSUserDefaultsController.jt;1570;@STATIC;1.0;I;33;AppKit/CPUserDefaultsController.jt;1513;objj_executeFile("AppKit/CPUserDefaultsController.j", NO);{
 var the_class = objj_getClass("CPUserDefaultsController")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPUserDefaultsController\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPUserDefaultsController__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
     if ((aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeBoolForKey:", "NSSharedInstance")))
         return CPUserDefaultsController.isa.objj_msgSend0(CPUserDefaultsController, "sharedUserDefaultsController");
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPUserDefaultsController").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPUserDefaultsController").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
     {
         CPException.isa.objj_msgSend2(CPException, "raise:reason:", CPUnsupportedMethodException, "decoding of non-shared NSUserDefaultsController not implemented");
@@ -4957,22 +5059,22 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPUserDefaultsController, "NSUserDefaultsController"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSUserDefaultsController__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSUserDefaultsController__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPUserDefaultsController.isa.objj_msgSend0(CPUserDefaultsController, "class");
 }
 ,["Class"])]);
-}p;9;NSValue.jt;2448;@STATIC;1.0;I;24;Foundation/CPException.jI;30;Foundation/CPKeyedUnarchiver.jI;21;Foundation/CPObject.jI;20;Foundation/CPRange.jI;20;Foundation/CPValue.jI;19;AppKit/CGGeometry.jt;2265;objj_executeFile("Foundation/CPException.j", NO);objj_executeFile("Foundation/CPKeyedUnarchiver.j", NO);objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPRange.j", NO);objj_executeFile("Foundation/CPValue.j", NO);objj_executeFile("AppKit/CGGeometry.j", NO);var NSPointNSValueType = 1,
+}p;9;NSValue.jt;2423;@STATIC;1.0;I;24;Foundation/CPException.jI;30;Foundation/CPKeyedUnarchiver.jI;21;Foundation/CPObject.jI;20;Foundation/CPRange.jI;20;Foundation/CPValue.jI;19;AppKit/CGGeometry.jt;2240;objj_executeFile("Foundation/CPException.j", NO);objj_executeFile("Foundation/CPKeyedUnarchiver.j", NO);objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPRange.j", NO);objj_executeFile("Foundation/CPValue.j", NO);objj_executeFile("AppKit/CGGeometry.j", NO);var NSPointNSValueType = 1,
     NSSizeNSValueType = 2,
     NSRectNSValueType = 3,
     NSRangeNSValueType = 4;
 {var the_class = objj_allocateClassPair(CPObject, "NSValue"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSValue__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     var type = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NS.special"));
     switch(type) {
@@ -4990,20 +5092,20 @@ default:
     var ___r1;
 }
 ,["id","CPCoder"])]);
-}p;8;NSView.jt;4679;@STATIC;1.0;I;15;AppKit/CPView.jt;4640;objj_executeFile("AppKit/CPView.j", NO);var NSViewAutoresizingMask = 0x3F,
+}p;8;NSView.jt;4714;@STATIC;1.0;I;15;AppKit/CPView.jt;4675;objj_executeFile("AppKit/CPView.j", NO);var NSViewAutoresizingMask = 0x3F,
     NSViewAutoresizesSubviewsMask = 1 << 8,
     NSViewHiddenMask = 1 << 31;
 {
 var the_class = objj_getClass("CPView")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPView\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPView__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
     self._frame = CGRectMakeZero();
     if ((aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "containsValueForKey:", "NSFrame")))
         self._frame = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeRectForKey:", "NSFrame"));
     else if ((aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "containsValueForKey:", "NSFrameSize")))
         self._frame.size = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeSizeForKey:", "NSFrameSize"));
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPView").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPView").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
     {
         self._tag = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeIntForKey:", "NSTag"));
@@ -5011,6 +5113,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
         self._window = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSWindow"));
         self._superview = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSSuperview"));
         self._subviews = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSSubviews"));
+        self._appearance = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSAppearance"));
         self._hierarchyScaleSize = CGSizeMake(1.0, 1.0);
         self._scaleSize = CGSizeMake(1.0, 1.0);
         self._isScaled = NO;
@@ -5022,6 +5125,7 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
         self._hitTests = YES;
         self._isHidden = vFlags & NSViewHiddenMask;
         self._opacity = 1.0;
+        self._trackingAreas = [];
         self._themeClass = (self == null ? null : self.isa.objj_msgSend0(self, "themeClass"));
         self._themeAttributes = {};
         self._themeState = CPThemeStateNormal;
@@ -5031,11 +5135,11 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
     }
     return self;
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("NS_isFlipped"), function $CPView__NS_isFlipped(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("NS_isFlipped"), function(self, _cmd)
 {
     return NO;
 }
-,["BOOL"]), new objj_method(sel_getUid("awakeFromNib"), function $CPView__awakeFromNib(self, _cmd)
+,["BOOL"]), new objj_method(sel_getUid("awakeFromNib"), function(self, _cmd)
 {
     var superview = self.isa.objj_msgSend0(self, "superview");
     if (!superview || (superview == null ? null : superview.isa.objj_msgSend0(superview, "NS_isFlipped")))
@@ -5059,21 +5163,21 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["void"])]);
 }{var the_class = objj_allocateClassPair(CPView, "NSView"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSView__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSView__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPView.isa.objj_msgSend0(CPView, "class");
 }
 ,["Class"])]);
-}p;18;NSViewController.jt;1709;@STATIC;1.0;I;25;AppKit/CPViewController.jt;1660;objj_executeFile("AppKit/CPViewController.j", NO);{
+}p;18;NSViewController.jt;1598;@STATIC;1.0;I;25;AppKit/CPViewController.jt;1549;objj_executeFile("AppKit/CPViewController.j", NO);{
 var the_class = objj_getClass("CPViewController")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPViewController\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPViewController__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPViewController").super_class }, "NS_initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPViewController").super_class }, "NS_initWithCoder:", aCoder);
     if (self)
     {
         self._title = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSTitle"));
@@ -5087,16 +5191,41 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPViewController, "NSViewController"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSViewController__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSViewController__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPViewController.isa.objj_msgSend0(CPViewController, "class");
 }
 ,["Class"])]);
-}p;18;NSWindowTemplate.jt;4461;@STATIC;1.0;I;16;AppKit/CPPanel.jI;29;AppKit/_CPCibWindowTemplate.jt;4387;objj_executeFile("AppKit/CPPanel.j", NO);objj_executeFile("AppKit/_CPCibWindowTemplate.j", NO);var NSBorderlessWindowMask = 0x00,
+}p;20;NSVisualEffectView.jt;1453;@STATIC;1.0;I;27;AppKit/CPVisualEffectView.jt;1402;objj_executeFile("AppKit/CPVisualEffectView.j", NO);{
+var the_class = objj_getClass("CPVisualEffectView")
+if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPVisualEffectView\"");
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
+{
+    if (self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPVisualEffectView").super_class }, "NS_initWithCoder:", aCoder))
+    {
+        self._material = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSVisualEffectViewMaterial"));
+        self._state = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "NSVisualEffectViewState"));
+        self._blendingMode = CPVisualEffectBlendingModeWithinWindow;
+    }
+    return self;
+}
+,["id","CPCoder"])]);
+}{var the_class = objj_allocateClassPair(CPVisualEffectView, "NSVisualEffectView"),
+meta_class = the_class.isa;objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
+{
+    return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
+}
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
+{
+    return CPVisualEffectView.isa.objj_msgSend0(CPVisualEffectView, "class");
+}
+,["Class"])]);
+}p;18;NSWindowTemplate.jt;4346;@STATIC;1.0;I;16;AppKit/CPPanel.jI;29;AppKit/_CPCibWindowTemplate.jt;4272;objj_executeFile("AppKit/CPPanel.j", NO);objj_executeFile("AppKit/_CPCibWindowTemplate.j", NO);var NSBorderlessWindowMask = 0x00,
     NSTitledWindowMask = 0x01,
     NSClosableWindowMask = 0x02,
     NSMiniaturizableWindowMask = 0x04,
@@ -5113,9 +5242,9 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
 {
 var the_class = objj_getClass("_CPCibWindowTemplate")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"_CPCibWindowTemplate\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $_CPCibWindowTemplate__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("_CPCibWindowTemplate").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("_CPCibWindowTemplate").super_class }, "init");
     if (self)
     {
         if ((aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "containsValueForKey:", "NSMinSize")))
@@ -5143,30 +5272,30 @@ var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(_CPCibWindowTemplate, "NSWindowTemplate"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $NSWindowTemplate__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $NSWindowTemplate__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return _CPCibWindowTemplate.isa.objj_msgSend0(_CPCibWindowTemplate, "class");
 }
 ,["Class"])]);
-}p;9;WebView.jt;1084;@STATIC;1.0;I;18;AppKit/CPWebView.jt;1042;objj_executeFile("AppKit/CPWebView.j", NO);{
+}p;9;WebView.jt;997;@STATIC;1.0;I;18;AppKit/CPWebView.jt;956;objj_executeFile("AppKit/CPWebView.j", NO);{
 var the_class = objj_getClass("CPWebView")
 if(!the_class) throw new SyntaxError("*** Could not find definition for class \"CPWebView\"");
-var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function $CPWebView__NS_initWithCoder_(self, _cmd, aCoder)
+var meta_class = the_class.isa;class_addMethods(the_class, [new objj_method(sel_getUid("NS_initWithCoder:"), function(self, _cmd, aCoder)
 {
-    return objj_msgSendSuper({ receiver:self, super_class:objj_getClass("CPWebView").super_class }, "NS_initWithCoder:", aCoder);
+    return objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("CPWebView").super_class }, "NS_initWithCoder:", aCoder);
 }
 ,["id","CPCoder"])]);
 }{var the_class = objj_allocateClassPair(CPWebView, "WebView"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $WebView__initWithCoder_(self, _cmd, aCoder)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function(self, _cmd, aCoder)
 {
     return self.isa.objj_msgSend1(self, "NS_initWithCoder:", aCoder);
 }
-,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function $WebView__classForKeyedArchiver(self, _cmd)
+,["id","CPCoder"]), new objj_method(sel_getUid("classForKeyedArchiver"), function(self, _cmd)
 {
     return CPWebView.isa.objj_msgSend0(CPWebView, "class");
 }

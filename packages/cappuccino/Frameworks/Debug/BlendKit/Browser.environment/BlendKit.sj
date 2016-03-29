@@ -1,9 +1,9 @@
-@STATIC;1.0;p;22;BKShowcaseController.jt;31966;@STATIC;1.0;I;21;Foundation/CPObject.jI;25;AppKit/CPCollectionView.jI;21;AppKit/CPColorPanel.jI;21;AppKit/CPScrollView.jI;20;AppKit/CPSplitView.jI;18;AppKit/CPToolbar.jI;15;AppKit/CPView.jI;27;AppKit/CPWindow_Constants.ji;19;BKThemeDescriptor.jt;31714;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("AppKit/CPCollectionView.j", NO);objj_executeFile("AppKit/CPColorPanel.j", NO);objj_executeFile("AppKit/CPScrollView.j", NO);objj_executeFile("AppKit/CPSplitView.j", NO);objj_executeFile("AppKit/CPToolbar.j", NO);objj_executeFile("AppKit/CPView.j", NO);objj_executeFile("AppKit/CPWindow_Constants.j", NO);objj_executeFile("BKThemeDescriptor.j", YES);var LEFT_PANEL_WIDTH = 176.0;
+@STATIC;1.0;p;22;BKShowcaseController.jt;32081;@STATIC;1.0;I;21;Foundation/CPObject.jI;25;AppKit/CPCollectionView.jI;21;AppKit/CPColorPanel.jI;21;AppKit/CPScrollView.jI;20;AppKit/CPSplitView.jI;18;AppKit/CPToolbar.jI;15;AppKit/CPView.jI;27;AppKit/CPWindow_Constants.ji;19;BKThemeDescriptor.jt;31829;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("AppKit/CPCollectionView.j", NO);objj_executeFile("AppKit/CPColorPanel.j", NO);objj_executeFile("AppKit/CPScrollView.j", NO);objj_executeFile("AppKit/CPSplitView.j", NO);objj_executeFile("AppKit/CPToolbar.j", NO);objj_executeFile("AppKit/CPView.j", NO);objj_executeFile("AppKit/CPWindow_Constants.j", NO);objj_executeFile("BKThemeDescriptor.j", YES);var LEFT_PANEL_WIDTH = 176.0;
 var BKLearnMoreToolbarItemIdentifier = "BKLearnMoreToolbarItemIdentifier",
     BKStateToolbarItemIdentifier = "BKStateToolbarItemIdentifier",
     BKBackgroundColorToolbarItemIdentifier = "BKBackgroundColorToolbarItemIdentifier";
 {var the_class = objj_allocateClassPair(CPObject, "BKShowcaseController"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_themeDescriptorClasses"), new objj_ivar("_themesCollectionView"), new objj_ivar("_themedObjectsCollectionView"), new objj_ivar("theWindow")]);objj_registerClassPair(the_class);
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_themeDescriptorClasses", "CPArray"), new objj_ivar("_themesCollectionView", "CPCollectionView"), new objj_ivar("_themedObjectsCollectionView", "CPCollectionView"), new objj_ivar("theWindow", "CPWindow")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("applicationDidFinishLaunching:"), function $BKShowcaseController__applicationDidFinishLaunching_(self, _cmd, aNotification)
 {
     self._themeDescriptorClasses = BKThemeDescriptor.isa.objj_msgSend0(BKThemeDescriptor, "allThemeDescriptorClasses");
@@ -202,7 +202,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("applicationDidFinishLau
 ,["void","id"])]);
 }var SelectionColor = nil;
 {var the_class = objj_allocateClassPair(CPView, "BKThemeDescriptorCell"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_label")]);objj_registerClassPair(the_class);
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_label", "CPTextField")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("setRepresentedObject:"), function $BKThemeDescriptorCell__setRepresentedObject_(self, _cmd, aThemeDescriptor)
 {
     if (!self._label)
@@ -238,10 +238,10 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("selectionColor"), func
 }var ShowcaseCellBackgroundColor = nil,
     BKShowcaseCellBackgroundColorDidChangeNotification = "BKShowcaseCellBackgroundColorDidChangeNotification";
 {var the_class = objj_allocateClassPair(CPView, "BKShowcaseCell"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_backgroundView"), new objj_ivar("_view"), new objj_ivar("_label")]);objj_registerClassPair(the_class);
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_backgroundView", "CPView"), new objj_ivar("_view", "CPView"), new objj_ivar("_label", "CPTextField")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $BKShowcaseCell__init(self, _cmd)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("BKShowcaseCell").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("BKShowcaseCell").super_class }, "init");
     if (self)
         ((___r1 = CPNotificationCenter.isa.objj_msgSend0(CPNotificationCenter, "defaultCenter")), ___r1 == null ? null : ___r1.isa.objj_msgSend(___r1, "addObserver:selector:name:object:", self, sel_getUid("showcaseBackgroundDidChange:"), BKShowcaseCellBackgroundColorDidChangeNotification, nil));
     return self;
@@ -249,7 +249,7 @@ class_addMethods(the_class, [new objj_method(sel_getUid("init"), function $BKSho
 }
 ,["id"]), new objj_method(sel_getUid("initWithCoder:"), function $BKShowcaseCell__initWithCoder_(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("BKShowcaseCell").super_class }, "initWithCoder:", aCoder);
+    self = objj_msgSendSuper1({ receiver:self, super_class:objj_getClass("BKShowcaseCell").super_class }, "initWithCoder:", aCoder);
     if (self)
         ((___r1 = CPNotificationCenter.isa.objj_msgSend0(CPNotificationCenter, "defaultCenter")), ___r1 == null ? null : ___r1.isa.objj_msgSend(___r1, "addObserver:selector:name:object:", self, sel_getUid("showcaseBackgroundDidChange:"), BKShowcaseCellBackgroundColorDidChangeNotification, nil));
     return self;
@@ -309,7 +309,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("setBackgroundColor:"),
     return ShowcaseCellBackgroundColor;
 }
 ,["CPColor"])]);
-}p;19;BKThemeDescriptor.jt;14249;@STATIC;1.0;I;21;Foundation/CPObject.jI;20;Foundation/CPArray.jI;16;AppKit/CPColor.jI;16;AppKit/CPImage.jI;15;AppKit/CPView.jI;29;AppKit/_CPCibCustomResource.jt;14082;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPArray.j", NO);objj_executeFile("AppKit/CPColor.j", NO);objj_executeFile("AppKit/CPImage.j", NO);objj_executeFile("AppKit/CPView.j", NO);objj_executeFile("AppKit/_CPCibCustomResource.j", NO);PatternIsHorizontal = CPColorPatternIsHorizontal;
+}p;19;BKThemeDescriptor.jt;15495;@STATIC;1.0;I;21;Foundation/CPObject.jI;20;Foundation/CPArray.jI;16;AppKit/CPColor.jI;16;AppKit/CPImage.jI;15;AppKit/CPView.jI;29;AppKit/_CPCibCustomResource.jt;15328;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPArray.j", NO);objj_executeFile("AppKit/CPColor.j", NO);objj_executeFile("AppKit/CPImage.j", NO);objj_executeFile("AppKit/CPView.j", NO);objj_executeFile("AppKit/_CPCibCustomResource.j", NO);PatternIsHorizontal = CPColorPatternIsHorizontal;
 PatternIsVertical = CPColorPatternIsVertical;
 var ItemSizes = {},
     ThemedObjects = {},
@@ -451,7 +451,11 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("allThemeDescriptorClas
     return ((___r1 = self.isa.objj_msgSend0(self, "themeName")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "compare:", (aThemeDescriptor == null ? null : aThemeDescriptor.isa.objj_msgSend0(aThemeDescriptor, "themeName"))));
     var ___r1;
 }
-,["int","BKThemeDescriptor"]), new objj_method(sel_getUid("registerThemeValues:forView:"), function $BKThemeDescriptor__registerThemeValues_forView_(self, _cmd, themeValues, aView)
+,["int","BKThemeDescriptor"]), new objj_method(sel_getUid("registerThemeValues:forObject:"), function $BKThemeDescriptor__registerThemeValues_forObject_(self, _cmd, themeValues, anObject)
+{
+    self.isa.objj_msgSend2(self, "registerThemeValues:forView:", themeValues, anObject);
+}
+,["void","CPArray","id"]), new objj_method(sel_getUid("registerThemeValues:forView:"), function $BKThemeDescriptor__registerThemeValues_forView_(self, _cmd, themeValues, aView)
 {
     for (var i = 0; i < themeValues.length; ++i)
     {
@@ -460,12 +464,21 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("allThemeDescriptorClas
             value = attributeValueState[1],
             state = attributeValueState[2];
         if (state)
-            (aView == null ? null : aView.isa.objj_msgSend3(aView, "setValue:forThemeAttribute:inState:", value, attribute, state));
+        {
+            if (state.isa && (state == null ? null : state.isa.objj_msgSend1(state, "isKindOfClass:", CPArray)))
+                (aView == null ? null : aView.isa.objj_msgSend3(aView, "setValue:forThemeAttribute:inStates:", value, attribute, state));
+            else
+                (aView == null ? null : aView.isa.objj_msgSend3(aView, "setValue:forThemeAttribute:inState:", value, attribute, state));
+        }
         else
             (aView == null ? null : aView.isa.objj_msgSend2(aView, "setValue:forThemeAttribute:", value, attribute));
     }
 }
-,["void","CPArray","CPView"]), new objj_method(sel_getUid("registerThemeValues:forView:inherit:"), function $BKThemeDescriptor__registerThemeValues_forView_inherit_(self, _cmd, themeValues, aView, inheritedValues)
+,["void","CPArray","CPView"]), new objj_method(sel_getUid("registerThemeValues:forObject:inherit:"), function $BKThemeDescriptor__registerThemeValues_forObject_inherit_(self, _cmd, themeValues, anObject, inheritedValues)
+{
+    self.isa.objj_msgSend3(self, "registerThemeValues:forView:inherit:", themeValues, anObject, inheritedValues);
+}
+,["void","CPArray","id","CPArray"]), new objj_method(sel_getUid("registerThemeValues:forView:inherit:"), function $BKThemeDescriptor__registerThemeValues_forView_inherit_(self, _cmd, themeValues, aView, inheritedValues)
 {
     if (inheritedValues)
     {
@@ -511,7 +524,12 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("allThemeDescriptorClas
                     }
                 }
                 if (state)
-                    (aView == null ? null : aView.isa.objj_msgSend3(aView, "setValue:forThemeAttribute:inState:", value, attribute, state));
+                {
+                    if (state.isa && (state == null ? null : state.isa.objj_msgSend1(state, "isKindOfClass:", CPArray)))
+                        (aView == null ? null : aView.isa.objj_msgSend3(aView, "setValue:forThemeAttribute:inStates:", value, attribute, state));
+                    else
+                        (aView == null ? null : aView.isa.objj_msgSend3(aView, "setValue:forThemeAttribute:inState:", value, attribute, state));
+                }
                 else
                     (aView == null ? null : aView.isa.objj_msgSend2(aView, "setValue:forThemeAttribute:", value, attribute));
             }
@@ -566,11 +584,11 @@ PatternColor = function()
     args.push(PatternImage);
     return CPColorWithImages.apply(this, args);
 }
-p;24;BKThemedObjectTemplate.jt;1346;@STATIC;1.0;I;15;AppKit/CPView.jt;1307;objj_executeFile("AppKit/CPView.j", NO);{var the_class = objj_allocateClassPair(CPView, "BKThemedObjectTemplate"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_label"), new objj_ivar("_themedObject")]);objj_registerClassPair(the_class);
+p;24;BKThemedObjectTemplate.jt;1365;@STATIC;1.0;I;15;AppKit/CPView.jt;1326;objj_executeFile("AppKit/CPView.j", NO);{var the_class = objj_allocateClassPair(CPView, "BKThemedObjectTemplate"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_label", "CPString"), new objj_ivar("_themedObject", "id")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $BKThemedObjectTemplate__initWithCoder_(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("BKThemedObjectTemplate").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("BKThemedObjectTemplate").super_class }, "init");
     if (self)
     {
         self._label = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "BKThemedObjectTemplateLabel"));
@@ -584,11 +602,11 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), funct
     (aCoder == null ? null : aCoder.isa.objj_msgSend2(aCoder, "encodeObject:forKey:", self._themedObject, "BKThemedObjectTemplateThemedObject"));
 }
 ,["void","CPCoder"])]);
-}p;17;BKThemeTemplate.jt;1294;@STATIC;1.0;I;21;Foundation/CPObject.jt;1249;objj_executeFile("Foundation/CPObject.j", NO);{var the_class = objj_allocateClassPair(CPObject, "BKThemeTemplate"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_name"), new objj_ivar("_description")]);objj_registerClassPair(the_class);
+}p;17;BKThemeTemplate.jt;1319;@STATIC;1.0;I;21;Foundation/CPObject.jt;1274;objj_executeFile("Foundation/CPObject.j", NO);{var the_class = objj_allocateClassPair(CPObject, "BKThemeTemplate"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_name", "CPString"), new objj_ivar("_description", "CPString")]);objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $BKThemeTemplate__initWithCoder_(self, _cmd, aCoder)
 {
-    self = objj_msgSendSuper({ receiver:self, super_class:objj_getClass("BKThemeTemplate").super_class }, "init");
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("BKThemeTemplate").super_class }, "init");
     if (self)
     {
         self._name = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "BKThemeTemplateName"));

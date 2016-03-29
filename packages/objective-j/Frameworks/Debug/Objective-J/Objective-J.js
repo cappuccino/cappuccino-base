@@ -1111,7 +1111,8 @@ CFHTTPRequest = function()
     this._nativeRequest = new NativeRequest();
 
 
-    this._nativeRequest.withCredentials = false;
+    this._withCredentials = false;
+    this._timeout = 60000;
 
     var self = this;
     this._stateChangeHandler = function()
@@ -1119,7 +1120,13 @@ CFHTTPRequest = function()
         determineAndDispatchHTTPRequestEvents(self);
     };
 
+    this._timeoutHandler = function()
+    {
+        dispatchTimeoutHTTPRequestEvents(self);
+    };
+
     this._nativeRequest.onreadystatechange = this._stateChangeHandler;
+    this._nativeRequest.ontimeout = this._timeoutHandler;
 
     if (CFHTTPRequest.AuthenticationDelegate !== nil)
         this._eventDispatcher.addEventListener("HTTP403", function()
@@ -1216,6 +1223,19 @@ CFHTTPRequest.prototype.getResponseHeader = function( aHeader)
     return this._nativeRequest.getResponseHeader(aHeader);
 };
 
+CFHTTPRequest.prototype.setTimeout = function( aTimeout)
+{
+    this._timeout = aTimeout;
+
+    if (this._isOpen)
+        this._nativeRequest.timeout = aTimeout;
+};
+
+CFHTTPRequest.prototype.getTimeout = function( aTimeout)
+{
+    return this._timeout;
+};
+
 CFHTTPRequest.prototype.getAllResponseHeaders = function()
 {
     return this._nativeRequest.getAllResponseHeaders();
@@ -1228,13 +1248,24 @@ CFHTTPRequest.prototype.overrideMimeType = function( aMimeType)
 
 CFHTTPRequest.prototype.open = function( aMethod, aURL, isAsynchronous, aUser, aPassword)
 {
+    var retval;
+
     this._isOpen = true;
     this._URL = aURL;
     this._async = isAsynchronous;
     this._method = aMethod;
     this._user = aUser;
     this._password = aPassword;
-    return this._nativeRequest.open(aMethod, aURL, isAsynchronous, aUser, aPassword);
+
+    requestReturnValue = this._nativeRequest.open(aMethod, aURL, isAsynchronous, aUser, aPassword);
+
+    if (this._async)
+    {
+        this._nativeRequest.withCredentials = this._withCredentials;
+        this._nativeRequest.timeout = this._timeout;
+    }
+
+    return requestReturnValue;
 };
 
 CFHTTPRequest.prototype.send = function( aBody)
@@ -1242,7 +1273,10 @@ CFHTTPRequest.prototype.send = function( aBody)
     if (!this._isOpen)
     {
         delete this._nativeRequest.onreadystatechange;
+        delete this._nativeRequest.ontimeout;
+
         this._nativeRequest.open(this._method, this._URL, this._async, this._user, this._password);
+        this._nativeRequest.ontimeout = this._timeoutHandler;
         this._nativeRequest.onreadystatechange = this._stateChangeHandler;
     }
 
@@ -1271,6 +1305,7 @@ CFHTTPRequest.prototype.send = function( aBody)
 CFHTTPRequest.prototype.abort = function()
 {
     this._isOpen = false;
+
     return this._nativeRequest.abort();
 };
 
@@ -1286,22 +1321,34 @@ CFHTTPRequest.prototype.removeEventListener = function( anEventName, anEventList
 
 CFHTTPRequest.prototype.setWithCredentials = function( willSendWithCredentials)
 {
-    this._nativeRequest.withCredentials = willSendWithCredentials;
+    this._withCredentials = willSendWithCredentials;
+
+    if (this._isOpen && this._async)
+        this._nativeRequest.withCredentials = willSendWithCredentials;
 };
 
 CFHTTPRequest.prototype.withCredentials = function()
 {
-    return this._nativeRequest.withCredentials;
+    return this._withCredentials;
 };
+
+CFHTTPRequest.prototype.isTimeoutRequest = function()
+{
+
+    return !this.success() && !this._nativeRequest.response && !this._nativeRequest.responseText && !this._nativeRequest.responseType && !this._nativeRequest.responseURL && !this._nativeRequest.responseXML;
+};
+
+function dispatchTimeoutHTTPRequestEvents( aRequest)
+{
+    aRequest._eventDispatcher.dispatchEvent({ type:"timeout", request:aRequest});
+}
 
 function determineAndDispatchHTTPRequestEvents( aRequest)
 {
-    var eventDispatcher = aRequest._eventDispatcher;
+    var eventDispatcher = aRequest._eventDispatcher,
+        readyStates = ["uninitialized", "loading", "loaded", "interactive", "complete"];
 
     eventDispatcher.dispatchEvent({ type:"readystatechange", request:aRequest});
-
-    var nativeRequest = aRequest._nativeRequest,
-        readyStates = ["uninitialized", "loading", "loaded", "interactive", "complete"];
 
     if (readyStates[aRequest.readyState()] === "complete")
     {
@@ -1314,7 +1361,9 @@ function determineAndDispatchHTTPRequestEvents( aRequest)
         eventDispatcher.dispatchEvent({ type:readyStates[aRequest.readyState()], request:aRequest});
     }
     else
+    {
         eventDispatcher.dispatchEvent({ type:readyStates[aRequest.readyState()], request:aRequest});
+    }
 }
 
 function FileRequest( aURL, onsuccess, onfailure, onprogress)
@@ -3449,7 +3498,8 @@ var CFBundleUnloaded = 0,
     CFBundleLoadingInfoPlist = 1 << 1,
     CFBundleLoadingExecutable = 1 << 2,
     CFBundleLoadingSpritedImages = 1 << 3,
-    CFBundleLoaded = 1 << 4;
+    CFBundleLoadingLocalizableStrings = 1 << 4,
+    CFBundleLoaded = 1 << 5;
 
 var CFBundlesForURLStrings = { },
     CFBundlesForClasses = { },
@@ -3457,6 +3507,9 @@ var CFBundlesForURLStrings = { },
     CFCacheBuster = new Date().getTime(),
     CFTotalBytesLoaded = 0,
     CPApplicationSizeInBytes = 0;
+
+var CPBundleDefaultBrowserLanguage = "CPBundleDefaultBrowserLanguage",
+    CPBundleDefaultLanguage = "CPBundleDefaultLanguage";
 
 CFBundle = function( aURL)
 {
@@ -3482,6 +3535,9 @@ CFBundle = function( aURL)
     this._infoDictionary = new CFDictionary();
 
     this._eventDispatcher = new EventDispatcher(this);
+
+    this._localizableStrings = [];
+    this._loadedLanguage = NULL;
 }
 
 CFBundle.displayName = "CFBundle";
@@ -3569,10 +3625,13 @@ CFBundle.prototype.resourcesDirectoryURL = function()
 
 CFBundle.prototype.resourcesDirectoryURL.displayName = "CFBundle.prototype.resourcesDirectoryURL";
 
-CFBundle.prototype.resourceURL = function( aResourceName, aType, aSubDirectory)
+CFBundle.prototype.resourceURL = function( aResourceName, aType, aSubDirectory, localizationName)
  {
     if (aType)
         aResourceName = aResourceName + "." + aType;
+
+    if (localizationName)
+        aResourceName = localizationName + aResourceName;
 
     if (aSubDirectory)
         aResourceName = aSubDirectory + "/" + aResourceName;
@@ -3617,6 +3676,11 @@ CFBundle.prototype.infoDictionary = function()
 };
 
 CFBundle.prototype.infoDictionary.displayName = "CFBundle.prototype.infoDictionary";
+
+CFBundle.prototype.loadedLanguage = function()
+{
+    return this._loadedLanguage;
+};
 
 CFBundle.prototype.valueForInfoDictionaryKey = function( aKey)
 {
@@ -3742,6 +3806,7 @@ CFBundle.prototype.load = function( shouldExecute)
             if (self === CFBundle.mainBundle() && self.valueForInfoDictionaryKey("CPApplicationSize"))
                 CPApplicationSizeInBytes = self.valueForInfoDictionaryKey("CPApplicationSize").valueForKey("executable") || 0;
 
+            loadLanguageForBundle(self);
             loadExecutableAndResources(self, shouldExecute);
         }
 
@@ -3778,6 +3843,7 @@ function loadExecutableAndResources( aBundle, shouldExecute)
 
     loadExecutableForBundle(aBundle, success, failure, progress);
     loadSpritedImagesForBundle(aBundle, success, failure, progress);
+    loadLocalizableStringsForBundle(aBundle, success, failure, progress);
 
     if (aBundle._loadStatus === CFBundleLoading)
         return success();
@@ -3912,6 +3978,120 @@ function loadSpritedImagesForBundle( aBundle, success, failure, progress)
             failure(anException);
         }
     }, failure, progress);
+}
+
+function loadLocalizableStringsForBundle( aBundle, success, failure, progress)
+{
+    var language = aBundle._loadedLanguage;
+
+    if (!language)
+        return;
+
+    var localizableStrings = aBundle.valueForInfoDictionaryKey("CPBundleLocalizableStrings");
+
+    if (!localizableStrings)
+        return;
+
+    var self = aBundle,
+        length = localizableStrings.length,
+        languagePathURL = new CFURL(language + ".lproj/", self.resourcesDirectoryURL()),
+        fileSuccessed = 0;
+
+    for (var i = 0; i < length; i++)
+    {
+        var localizableString = localizableStrings[i];
+
+        function onsuccess( anEvent)
+        {
+            var contentFile = anEvent.request.responseText(),
+                tableName = new CFURL(anEvent.request._URL).lastPathComponent();
+
+            try
+            {
+                loadLocalizableContentForFileInBundle(self, contentFile, tableName);
+
+                if (++fileSuccessed == length)
+                {
+                    aBundle._loadStatus &= ~CFBundleLoadingLocalizableStrings;
+                    success();
+                }
+            }
+            catch(e)
+            {
+                failure(new Error("Error when parsing the localizable file " + tableName));
+            }
+        }
+
+        aBundle._loadStatus |= CFBundleLoadingLocalizableStrings;
+        new FileRequest(new CFURL(localizableString, languagePathURL), onsuccess, failure, progress);
+    }
+}
+
+function loadLocalizableContentForFileInBundle(bundle, contentFile, tableName)
+{
+    var values = {},
+        lines = contentFile.split("\n"),
+        currentContext;
+
+    bundle._localizableStrings[tableName] = values;
+
+    for (var i = 0; i < lines.length; i++)
+    {
+        var line = lines[i];
+
+
+        if (line[0] == "/")
+        {
+            currentContext = line.substring(2, line.length - 2).trim();
+            continue;
+        }
+
+
+        if (line[0] == "\"")
+        {
+            var split = line.split("\"")
+
+
+
+
+            var key = split[1];
+
+            if (!(key in values))
+                values[key] = split[3];
+
+            key += currentContext;
+
+            if (!(key in values))
+                values[key] = split[3];
+
+            continue;
+        }
+    }
+}
+
+function loadLanguageForBundle(aBundle)
+{
+    if (aBundle._loadedLanguage)
+        return;
+
+    var defaultLanguage = aBundle.valueForInfoDictionaryKey(CPBundleDefaultLanguage);
+
+    if (defaultLanguage != CPBundleDefaultBrowserLanguage && defaultLanguage)
+    {
+        aBundle._loadedLanguage = defaultLanguage;
+        return;
+    }
+
+    if (typeof navigator == "undefined")
+        return;
+
+
+    var language = (typeof navigator.language !== "undefined") ? navigator.language : navigator.userLanguage;
+
+    if (!language)
+        return;
+
+    aBundle._loadedLanguage = language.substring(0, 2);
 }
 
 var CFBundleSpriteSupportListeners = [],
@@ -4158,10 +4338,56 @@ CFBundle.prototype.path = function()
     return this.bundlePath.apply(this, arguments);
 };
 
-CFBundle.prototype.pathForResource = function(aResource)
+CFBundle.prototype.pathForResource = function(aResource, aType, aSubDirectory, localizationName)
 {
-    return this.resourceURL(aResource).absoluteString();
+    return this.resourceURL(aResource, aType, aSubDirectory, localizationName).absoluteString();
 };
+
+CFBundleCopyLocalizedString = function ( bundle, key, value, tableName)
+{
+    return CFCopyLocalizedStringWithDefaultValue(key, tableName, bundle, value, "");
+}
+
+CFBundleCopyBundleLocalizations = function ( aBundle)
+{
+    return [this._loadedLanguage];
+}
+
+CFCopyLocalizedString = function (key, comment)
+{
+    return CFCopyLocalizedStringFromTable(key, "Localizable", comment);
+}
+
+CFCopyLocalizedStringFromTable = function (key, tableName, comment)
+{
+    return CFCopyLocalizedStringFromTableInBundle(key, tableName, CFBundleGetMainBundle(), comment);
+}
+
+CFCopyLocalizedStringFromTableInBundle = function (key, tableName, bundle, comment)
+{
+    return CFCopyLocalizedStringWithDefaultValue(key, tableName, bundle, null, comment);
+}
+
+CFCopyLocalizedStringWithDefaultValue = function (key, tableName, bundle, value, comment)
+{
+    var string;
+
+    if (!tableName)
+        tableName = "Localizable";
+
+    tableName += ".strings";
+
+    var localizableString = bundle._localizableStrings[tableName];
+
+    string = localizableString ? localizableString[key + comment] : null;
+
+    return string || (value || key);
+}
+
+CFBundleGetMainBundle = function ()
+{
+    return CFBundle.mainBundle();
+}
 
 var rootResources = { };
 
@@ -5912,8 +6138,8 @@ if (typeof exports != "undefined" && !exports.acorn) {
 
 
   var isKeywordPreprocess = makePredicate("define pragma if ifdef ifndef else elif endif defined");
-  var nonASCIIwhitespace = /[\u1680\u180e\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]/;
-  var nonASCIIwhitespaceNoNewLine = /[\u1680\u180e\u2000-\u200a\u202f\u205f\u3000\ufeff]/;
+  var nonASCIIwhitespace = /[\u1680\u180e\u2000-\u200a\u2028\u2029\u202f\u205f\u3000﻿]/;
+  var nonASCIIwhitespaceNoNewLine = /[\u1680\u180e\u2000-\u200a\u202f\u205f\u3000﻿]/;
   var nonASCIIidentifierStartChars = "\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\u02ee\u0370-\u0374\u0376\u0377\u037a-\u037d\u0386\u0388-\u038a\u038c\u038e-\u03a1\u03a3-\u03f5\u03f7-\u0481\u048a-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05d0-\u05ea\u05f0-\u05f2\u0620-\u064a\u066e\u066f\u0671-\u06d3\u06d5\u06e5\u06e6\u06ee\u06ef\u06fa-\u06fc\u06ff\u0710\u0712-\u072f\u074d-\u07a5\u07b1\u07ca-\u07ea\u07f4\u07f5\u07fa\u0800-\u0815\u081a\u0824\u0828\u0840-\u0858\u08a0\u08a2-\u08ac\u0904-\u0939\u093d\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097f\u0985-\u098c\u098f\u0990\u0993-\u09a8\u09aa-\u09b0\u09b2\u09b6-\u09b9\u09bd\u09ce\u09dc\u09dd\u09df-\u09e1\u09f0\u09f1\u0a05-\u0a0a\u0a0f\u0a10\u0a13-\u0a28\u0a2a-\u0a30\u0a32\u0a33\u0a35\u0a36\u0a38\u0a39\u0a59-\u0a5c\u0a5e\u0a72-\u0a74\u0a85-\u0a8d\u0a8f-\u0a91\u0a93-\u0aa8\u0aaa-\u0ab0\u0ab2\u0ab3\u0ab5-\u0ab9\u0abd\u0ad0\u0ae0\u0ae1\u0b05-\u0b0c\u0b0f\u0b10\u0b13-\u0b28\u0b2a-\u0b30\u0b32\u0b33\u0b35-\u0b39\u0b3d\u0b5c\u0b5d\u0b5f-\u0b61\u0b71\u0b83\u0b85-\u0b8a\u0b8e-\u0b90\u0b92-\u0b95\u0b99\u0b9a\u0b9c\u0b9e\u0b9f\u0ba3\u0ba4\u0ba8-\u0baa\u0bae-\u0bb9\u0bd0\u0c05-\u0c0c\u0c0e-\u0c10\u0c12-\u0c28\u0c2a-\u0c33\u0c35-\u0c39\u0c3d\u0c58\u0c59\u0c60\u0c61\u0c85-\u0c8c\u0c8e-\u0c90\u0c92-\u0ca8\u0caa-\u0cb3\u0cb5-\u0cb9\u0cbd\u0cde\u0ce0\u0ce1\u0cf1\u0cf2\u0d05-\u0d0c\u0d0e-\u0d10\u0d12-\u0d3a\u0d3d\u0d4e\u0d60\u0d61\u0d7a-\u0d7f\u0d85-\u0d96\u0d9a-\u0db1\u0db3-\u0dbb\u0dbd\u0dc0-\u0dc6\u0e01-\u0e30\u0e32\u0e33\u0e40-\u0e46\u0e81\u0e82\u0e84\u0e87\u0e88\u0e8a\u0e8d\u0e94-\u0e97\u0e99-\u0e9f\u0ea1-\u0ea3\u0ea5\u0ea7\u0eaa\u0eab\u0ead-\u0eb0\u0eb2\u0eb3\u0ebd\u0ec0-\u0ec4\u0ec6\u0edc-\u0edf\u0f00\u0f40-\u0f47\u0f49-\u0f6c\u0f88-\u0f8c\u1000-\u102a\u103f\u1050-\u1055\u105a-\u105d\u1061\u1065\u1066\u106e-\u1070\u1075-\u1081\u108e\u10a0-\u10c5\u10c7\u10cd\u10d0-\u10fa\u10fc-\u1248\u124a-\u124d\u1250-\u1256\u1258\u125a-\u125d\u1260-\u1288\u128a-\u128d\u1290-\u12b0\u12b2-\u12b5\u12b8-\u12be\u12c0\u12c2-\u12c5\u12c8-\u12d6\u12d8-\u1310\u1312-\u1315\u1318-\u135a\u1380-\u138f\u13a0-\u13f4\u1401-\u166c\u166f-\u167f\u1681-\u169a\u16a0-\u16ea\u16ee-\u16f0\u1700-\u170c\u170e-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176c\u176e-\u1770\u1780-\u17b3\u17d7\u17dc\u1820-\u1877\u1880-\u18a8\u18aa\u18b0-\u18f5\u1900-\u191c\u1950-\u196d\u1970-\u1974\u1980-\u19ab\u19c1-\u19c7\u1a00-\u1a16\u1a20-\u1a54\u1aa7\u1b05-\u1b33\u1b45-\u1b4b\u1b83-\u1ba0\u1bae\u1baf\u1bba-\u1be5\u1c00-\u1c23\u1c4d-\u1c4f\u1c5a-\u1c7d\u1ce9-\u1cec\u1cee-\u1cf1\u1cf5\u1cf6\u1d00-\u1dbf\u1e00-\u1f15\u1f18-\u1f1d\u1f20-\u1f45\u1f48-\u1f4d\u1f50-\u1f57\u1f59\u1f5b\u1f5d\u1f5f-\u1f7d\u1f80-\u1fb4\u1fb6-\u1fbc\u1fbe\u1fc2-\u1fc4\u1fc6-\u1fcc\u1fd0-\u1fd3\u1fd6-\u1fdb\u1fe0-\u1fec\u1ff2-\u1ff4\u1ff6-\u1ffc\u2071\u207f\u2090-\u209c\u2102\u2107\u210a-\u2113\u2115\u2119-\u211d\u2124\u2126\u2128\u212a-\u212d\u212f-\u2139\u213c-\u213f\u2145-\u2149\u214e\u2160-\u2188\u2c00-\u2c2e\u2c30-\u2c5e\u2c60-\u2ce4\u2ceb-\u2cee\u2cf2\u2cf3\u2d00-\u2d25\u2d27\u2d2d\u2d30-\u2d67\u2d6f\u2d80-\u2d96\u2da0-\u2da6\u2da8-\u2dae\u2db0-\u2db6\u2db8-\u2dbe\u2dc0-\u2dc6\u2dc8-\u2dce\u2dd0-\u2dd6\u2dd8-\u2dde\u2e2f\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303c\u3041-\u3096\u309d-\u309f\u30a1-\u30fa\u30fc-\u30ff\u3105-\u312d\u3131-\u318e\u31a0-\u31ba\u31f0-\u31ff\u3400-\u4db5\u4e00-\u9fcc\ua000-\ua48c\ua4d0-\ua4fd\ua500-\ua60c\ua610-\ua61f\ua62a\ua62b\ua640-\ua66e\ua67f-\ua697\ua6a0-\ua6ef\ua717-\ua71f\ua722-\ua788\ua78b-\ua78e\ua790-\ua793\ua7a0-\ua7aa\ua7f8-\ua801\ua803-\ua805\ua807-\ua80a\ua80c-\ua822\ua840-\ua873\ua882-\ua8b3\ua8f2-\ua8f7\ua8fb\ua90a-\ua925\ua930-\ua946\ua960-\ua97c\ua984-\ua9b2\ua9cf\uaa00-\uaa28\uaa40-\uaa42\uaa44-\uaa4b\uaa60-\uaa76\uaa7a\uaa80-\uaaaf\uaab1\uaab5\uaab6\uaab9-\uaabd\uaac0\uaac2\uaadb-\uaadd\uaae0-\uaaea\uaaf2-\uaaf4\uab01-\uab06\uab09-\uab0e\uab11-\uab16\uab20-\uab26\uab28-\uab2e\uabc0-\uabe2\uac00-\ud7a3\ud7b0-\ud7c6\ud7cb-\ud7fb\uf900-\ufa6d\ufa70-\ufad9\ufb00-\ufb06\ufb13-\ufb17\ufb1d\ufb1f-\ufb28\ufb2a-\ufb36\ufb38-\ufb3c\ufb3e\ufb40\ufb41\ufb43\ufb44\ufb46-\ufbb1\ufbd3-\ufd3d\ufd50-\ufd8f\ufd92-\ufdc7\ufdf0-\ufdfb\ufe70-\ufe74\ufe76-\ufefc\uff21-\uff3a\uff41-\uff5a\uff66-\uffbe\uffc2-\uffc7\uffca-\uffcf\uffd2-\uffd7\uffda-\uffdc";
   var nonASCIIidentifierChars = "\u0371-\u0374\u0483-\u0487\u0591-\u05bd\u05bf\u05c1\u05c2\u05c4\u05c5\u05c7\u0610-\u061a\u0620-\u0649\u0672-\u06d3\u06e7-\u06e8\u06fb-\u06fc\u0730-\u074a\u0800-\u0814\u081b-\u0823\u0825-\u0827\u0829-\u082d\u0840-\u0857\u08e4-\u08fe\u0900-\u0903\u093a-\u093c\u093e-\u094f\u0951-\u0957\u0962-\u0963\u0966-\u096f\u0981-\u0983\u09bc\u09be-\u09c4\u09c7\u09c8\u09d7\u09df-\u09e0\u0a01-\u0a03\u0a3c\u0a3e-\u0a42\u0a47\u0a48\u0a4b-\u0a4d\u0a51\u0a66-\u0a71\u0a75\u0a81-\u0a83\u0abc\u0abe-\u0ac5\u0ac7-\u0ac9\u0acb-\u0acd\u0ae2-\u0ae3\u0ae6-\u0aef\u0b01-\u0b03\u0b3c\u0b3e-\u0b44\u0b47\u0b48\u0b4b-\u0b4d\u0b56\u0b57\u0b5f-\u0b60\u0b66-\u0b6f\u0b82\u0bbe-\u0bc2\u0bc6-\u0bc8\u0bca-\u0bcd\u0bd7\u0be6-\u0bef\u0c01-\u0c03\u0c46-\u0c48\u0c4a-\u0c4d\u0c55\u0c56\u0c62-\u0c63\u0c66-\u0c6f\u0c82\u0c83\u0cbc\u0cbe-\u0cc4\u0cc6-\u0cc8\u0cca-\u0ccd\u0cd5\u0cd6\u0ce2-\u0ce3\u0ce6-\u0cef\u0d02\u0d03\u0d46-\u0d48\u0d57\u0d62-\u0d63\u0d66-\u0d6f\u0d82\u0d83\u0dca\u0dcf-\u0dd4\u0dd6\u0dd8-\u0ddf\u0df2\u0df3\u0e34-\u0e3a\u0e40-\u0e45\u0e50-\u0e59\u0eb4-\u0eb9\u0ec8-\u0ecd\u0ed0-\u0ed9\u0f18\u0f19\u0f20-\u0f29\u0f35\u0f37\u0f39\u0f41-\u0f47\u0f71-\u0f84\u0f86-\u0f87\u0f8d-\u0f97\u0f99-\u0fbc\u0fc6\u1000-\u1029\u1040-\u1049\u1067-\u106d\u1071-\u1074\u1082-\u108d\u108f-\u109d\u135d-\u135f\u170e-\u1710\u1720-\u1730\u1740-\u1750\u1772\u1773\u1780-\u17b2\u17dd\u17e0-\u17e9\u180b-\u180d\u1810-\u1819\u1920-\u192b\u1930-\u193b\u1951-\u196d\u19b0-\u19c0\u19c8-\u19c9\u19d0-\u19d9\u1a00-\u1a15\u1a20-\u1a53\u1a60-\u1a7c\u1a7f-\u1a89\u1a90-\u1a99\u1b46-\u1b4b\u1b50-\u1b59\u1b6b-\u1b73\u1bb0-\u1bb9\u1be6-\u1bf3\u1c00-\u1c22\u1c40-\u1c49\u1c5b-\u1c7d\u1cd0-\u1cd2\u1d00-\u1dbe\u1e01-\u1f15\u200c\u200d\u203f\u2040\u2054\u20d0-\u20dc\u20e1\u20e5-\u20f0\u2d81-\u2d96\u2de0-\u2dff\u3021-\u3028\u3099\u309a\ua640-\ua66d\ua674-\ua67d\ua69f\ua6f0-\ua6f1\ua7f8-\ua800\ua806\ua80b\ua823-\ua827\ua880-\ua881\ua8b4-\ua8c4\ua8d0-\ua8d9\ua8f3-\ua8f7\ua900-\ua909\ua926-\ua92d\ua930-\ua945\ua980-\ua983\ua9b3-\ua9c0\uaa00-\uaa27\uaa40-\uaa41\uaa4c-\uaa4d\uaa50-\uaa59\uaa7b\uaae0-\uaae9\uaaf2-\uaaf3\uabc0-\uabe1\uabec\uabed\uabf0-\uabf9\ufb20-\ufb28\ufe00-\ufe0f\ufe20-\ufe26\ufe33\ufe34\ufe4d-\ufe4f\uff10-\uff19\uff3f";
   var nonASCIIidentifierStart = new RegExp("[" + nonASCIIidentifierStartChars + "]");
@@ -8946,8 +9172,6 @@ var MethodDef = function(name, types)
     this.types = types;
 }
 
-var currentCompilerFlags = "";
-
 var reservedIdentifiers = exports.acorn.makePredicate("self _cmd undefined localStorage arguments");
 
 var wordPrefixOperators = exports.acorn.makePredicate("delete in instanceof new typeof void");
@@ -8974,25 +9198,31 @@ var ObjJAcornCompiler = function( aString, aURL, flags, pass, classDefs, protoco
             var message = this.prettifyMessage(e, "ERROR");
 
             console.log(message);
-
-
-
         }
+
         throw e;
     }
 
     this.dependencies = [];
-    this.flags = flags | ObjJAcornCompiler.Flags.IncludeDebugSymbols;
+    this.flags = flags & (ObjJAcornCompiler.Flags.IncludeDebugSymbols | ObjJAcornCompiler.Flags.InlineMsgSend | ObjJAcornCompiler.Flags.IncludeTypeSignatures);
     this.classDefs = classDefs ? classDefs : Object.create(null);
     this.protocolDefs = protocolDefs ? protocolDefs : Object.create(null);
     this.typeDefs = typeDefs ? typeDefs : Object.create(null);
     this.lastPos = 0;
-    if (currentCompilerFlags & ObjJAcornCompiler.Flags.Generate)
-        this.generate = true;
     this.generate = true;
 
     compile(this.tokens, new Scope(null ,{ compiler: this }), pass === 2 ? pass2 : pass1);
 }
+
+ObjJAcornCompiler.Flags = { };
+
+ObjJAcornCompiler.Flags.IncludeDebugSymbols = 1 << 0;
+ObjJAcornCompiler.Flags.IncludeTypeSignatures = 1 << 1;
+ObjJAcornCompiler.Flags.Generate = 1 << 2;
+ObjJAcornCompiler.Flags.InlineMsgSend = 1 << 3;
+
+var currentCompilerFlags = ObjJAcornCompiler.Flags.IncludeTypeSignatures;
+var currentGccCompilerFlags = "";
 
 exports.ObjJAcornCompiler = ObjJAcornCompiler;
 
@@ -9015,6 +9245,8 @@ exports.ObjJAcornCompiler.compileFileDependencies = function( aString, aURL, fla
 
 ObjJAcornCompiler.prototype.compilePass2 = function()
 {
+    var warnings = [];
+
     ObjJAcornCompiler.currentCompileFile = this.URL;
     this.pass = 2;
     this.jsBuffer = new StringBuffer();
@@ -9023,19 +9255,57 @@ ObjJAcornCompiler.prototype.compilePass2 = function()
     compile(this.tokens, new Scope(null ,{ compiler: this }), pass2);
     for (var i = 0; i < this.warnings.length; i++)
     {
-       var message = this.prettifyMessage(this.warnings[i], "WARNING");
+        var warning = this.warnings[i],
+            type = "WARNING";
+
+        var message = this.prettifyMessage(warning, type);
 
         console.log(message);
-
-
-
     }
+
+    if (warnings.length && exports.outputFormatInXML)
+        print(CFPropertyListCreateXMLData(warnings, kCFPropertyListXMLFormat_v1_0).rawString());
 
 
     return this.jsBuffer.toString();
 }
 
-var currentCompilerFlags = "";
+exports.setCurrentGccCompilerFlags = function( compilerFlags)
+{
+    if (currentGccCompilerFlags === compilerFlags) return;
+
+    currentGccCompilerFlags = compilerFlags;
+
+    var args = compilerFlags.split(" "),
+        count = args.length,
+        objjcFlags = ObjJAcornCompiler.Flags.IncludeTypeSignatures;
+
+    for (var index = 0; index < count; ++index)
+    {
+        var argument = args[index];
+
+        if (argument.indexOf("-g") === 0)
+            objjcFlags |= ObjJAcornCompiler.Flags.IncludeDebugSymbols;
+        else if (argument.indexOf("-O") === 0) {
+            objjcFlags |= ObjJAcornCompiler.Flags.Compress;
+
+
+            if (argument.length > 2)
+                objjcFlags |= ObjJAcornCompiler.Flags.InlineMsgSend;
+        }
+        else if (argument.indexOf("-G") === 0)
+            objjcFlags |= ObjJAcornCompiler.Flags.Generate;
+        else if (argument.indexOf("-T") === 0)
+            objjcFlags &= ~ObjJAcornCompiler.Flags.IncludeTypeSignatures;
+    }
+
+    currentCompilerFlags = objjcFlags;
+}
+
+exports.currentGccCompilerFlags = function( compilerFlags)
+{
+    return currentGccCompilerFlags;
+}
 
 exports.setCurrentCompilerFlags = function( compilerFlags)
 {
@@ -9046,12 +9316,6 @@ exports.currentCompilerFlags = function( compilerFlags)
 {
     return currentCompilerFlags;
 }
-
-ObjJAcornCompiler.Flags = { };
-
-ObjJAcornCompiler.Flags.IncludeDebugSymbols = 1 << 0;
-ObjJAcornCompiler.Flags.IncludeTypeSignatures = 1 << 1;
-ObjJAcornCompiler.Flags.Generate = 1 << 2;
 
 ObjJAcornCompiler.prototype.addWarning = function( aWarning)
 {
@@ -9241,9 +9505,13 @@ ObjJAcornCompiler.prototype.prettifyMessage = function( aMessage, messageType)
 ObjJAcornCompiler.prototype.error_message = function(errorMessage, node)
 {
     var pos = exports.acorn.getLineInfo(this.source, node.start),
-        syntaxError = {message: errorMessage, line: pos.line, column: pos.column, lineStart: pos.lineStart, lineEnd: pos.lineEnd};
+        syntaxErrorData = {message: errorMessage, line: pos.line, column: pos.column, lineStart: pos.lineStart, lineEnd: pos.lineEnd},
+        syntaxError = new SyntaxError(this.prettifyMessage(syntaxErrorData, "ERROR"));
 
-    return new SyntaxError(this.prettifyMessage(syntaxError, "ERROR"));
+    syntaxError.line = pos.line;
+    syntaxError.path = this.URL.path();
+
+    return syntaxError;
 }
 
 ObjJAcornCompiler.prototype.pushImport = function(url)
@@ -10161,64 +10429,170 @@ Literal: function(node, st, c) {
 },
 ArrayLiteral: function(node, st, c) {
     var compiler = st.compiler,
-        generate = compiler.generate;
+        generate = compiler.generate,
+        buffer = compiler.jsBuffer;
+
     if (!generate) {
-        compiler.jsBuffer.concat(compiler.source.substring(compiler.lastPos, node.start));
+        buffer.concat(compiler.source.substring(compiler.lastPos, node.start));
         compiler.lastPos = node.start;
     }
 
     if (!generate) buffer.concat(" ");
+    if (!st.receiverLevel) st.receiverLevel = 0;
     if (!node.elements.length) {
-        compiler.jsBuffer.concat("objj_msgSend(objj_msgSend(CPArray, \"alloc\"), \"init\")");
+        if (compiler.flags & ObjJAcornCompiler.Flags.InlineMsgSend) {
+            buffer.concat("(___r");
+            buffer.concat(++st.receiverLevel + "");
+            buffer.concat(" = (CPArray.isa.method_msgSend[\"alloc\"] || _objj_forward)(CPArray, \"alloc\"), ___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(" == null ? null : (___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(".isa.method_msgSend[\"init\"] || _objj_forward)(___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(", \"init\"))");
+        } else {
+            buffer.concat("(___r");
+            buffer.concat(++st.receiverLevel + "");
+            buffer.concat(" = CPArray.isa.objj_msgSend0(CPArray, \"alloc\"), ___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(" == null ? null : ___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(".isa.objj_msgSend0(___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(", \"init\"))");
+        }
+
+        if (!(st.maxReceiverLevel >= st.receiverLevel))
+            st.maxReceiverLevel = st.receiverLevel;
     } else {
-        compiler.jsBuffer.concat("objj_msgSend(objj_msgSend(CPArray, \"alloc\"), \"initWithObjects:count:\", [");
+        if (compiler.flags & ObjJAcornCompiler.Flags.InlineMsgSend) {
+            buffer.concat("(___r");
+            buffer.concat(++st.receiverLevel + "");
+            buffer.concat(" = (CPArray.isa.method_msgSend[\"alloc\"] || _objj_forward)(CPArray, \"alloc\"), ___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(" == null ? null : (___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(".isa.method_msgSend[\"initWithObjects:count:\"] || _objj_forward)(___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(", \"initWithObjects:count:\", [");
+        } else {
+            buffer.concat("(___r");
+            buffer.concat(++st.receiverLevel + "");
+            buffer.concat(" = CPArray.isa.objj_msgSend0(CPArray, \"alloc\"), ___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(" == null ? null : ___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(".isa.objj_msgSend2(___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(", \"initWithObjects:count:\", [");
+        }
+
+        if (!(st.maxReceiverLevel >= st.receiverLevel))
+            st.maxReceiverLevel = st.receiverLevel;
+
         for (var i = 0; i < node.elements.length; i++) {
             var elt = node.elements[i];
 
             if (i)
-                compiler.jsBuffer.concat(", ");
+                buffer.concat(", ");
 
             if (!generate) compiler.lastPos = elt.start;
             c(elt, st, "Expression");
-            if (!generate) compiler.jsBuffer.concat(compiler.source.substring(compiler.lastPos, elt.end));
+            if (!generate) buffer.concat(compiler.source.substring(compiler.lastPos, elt.end));
         }
-        compiler.jsBuffer.concat("], " + node.elements.length + ")");
+        buffer.concat("], " + node.elements.length + "))");
     }
 
+    st.receiverLevel--;
     if (!generate) compiler.lastPos = node.end;
 },
 DictionaryLiteral: function(node, st, c) {
     var compiler = st.compiler,
-        generate = compiler.generate;
+        generate = compiler.generate,
+        buffer = compiler.jsBuffer,
+        noOfKeys = node.keys.length;
+
     if (!generate) {
-        compiler.jsBuffer.concat(compiler.source.substring(compiler.lastPos, node.start));
+        buffer.concat(compiler.source.substring(compiler.lastPos, node.start));
         compiler.lastPos = node.start;
     }
 
     if (!generate) buffer.concat(" ");
-    if (!node.keys.length) {
-        compiler.jsBuffer.concat("objj_msgSend(objj_msgSend(CPDictionary, \"alloc\"), \"init\")");
+    if (!st.receiverLevel) st.receiverLevel = 0;
+    if (!noOfKeys) {
+        if (compiler.flags & ObjJAcornCompiler.Flags.InlineMsgSend) {
+            buffer.concat("(___r");
+            buffer.concat(++st.receiverLevel + "");
+            buffer.concat(" = (CPDictionary.isa.method_msgSend[\"alloc\"] || _objj_forward)(CPDictionary, \"alloc\"), ___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(" == null ? null : (___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(".isa.method_msgSend[\"init\"] || _objj_forward)(___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(", \"init\"))");
+        } else {
+            buffer.concat("(___r");
+            buffer.concat(++st.receiverLevel + "");
+            buffer.concat(" = CPDictionary.isa.objj_msgSend0(CPDictionary, \"alloc\"), ___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(" == null ? null : ___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(".isa.objj_msgSend0(___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(", \"init\"))");
+        }
+
+        if (!(st.maxReceiverLevel >= st.receiverLevel))
+            st.maxReceiverLevel = st.receiverLevel;
     } else {
-        compiler.jsBuffer.concat("objj_msgSend(objj_msgSend(CPDictionary, \"alloc\"), \"initWithObjectsAndKeys:\"");
-        for (var i = 0; i < node.keys.length; i++) {
-            var key = node.keys[i],
-                value = node.values[i];
+        if (compiler.flags & ObjJAcornCompiler.Flags.InlineMsgSend) {
+            buffer.concat("(___r");
+            buffer.concat(++st.receiverLevel + "");
+            buffer.concat(" = (CPDictionary.isa.method_msgSend[\"alloc\"] || _objj_forward)(CPDictionary, \"alloc\"), ___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(" == null ? null : (___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(".isa.method_msgSend[\"initWithObjects:forKeys:\"] || _objj_forward)(___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(", \"initWithObjects:forKeys:\", [");
+        } else {
+            buffer.concat("(___r");
+            buffer.concat(++st.receiverLevel + "");
+            buffer.concat(" = CPDictionary.isa.objj_msgSend0(CPDictionary, \"alloc\"), ___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(" == null ? null : ___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(".isa.objj_msgSend2(___r");
+            buffer.concat(st.receiverLevel + "");
+            buffer.concat(", \"initWithObjects:forKeys:\", [");
+        }
 
-            compiler.jsBuffer.concat(", ");
+        if (!(st.maxReceiverLevel >= st.receiverLevel))
+            st.maxReceiverLevel = st.receiverLevel;
 
+        for (var i = 0; i < noOfKeys; i++) {
+            var value = node.values[i];
+
+            if (i) buffer.concat(", ");
             if (!generate) compiler.lastPos = value.start;
             c(value, st, "Expression");
-            if (!generate) compiler.jsBuffer.concat(compiler.source.substring(compiler.lastPos, value.end));
+            if (!generate) buffer.concat(compiler.source.substring(compiler.lastPos, value.end));
+        }
 
-            compiler.jsBuffer.concat(", ");
+        buffer.concat("], [");
 
+        for (var i = 0; i < noOfKeys; i++) {
+            var key = node.keys[i];
+
+            if (i) buffer.concat(", ");
             if (!generate) compiler.lastPos = key.start;
             c(key, st, "Expression");
-            if (!generate) compiler.jsBuffer.concat(compiler.source.substring(compiler.lastPos, key.end));
+            if (!generate) buffer.concat(compiler.source.substring(compiler.lastPos, key.end));
         }
-        compiler.jsBuffer.concat(")");
+        buffer.concat("]))");
     }
 
+    st.receiverLevel--;
     if (!generate) compiler.lastPos = node.end;
 },
 ImportStatement: function(node, st, c) {
@@ -10326,8 +10700,15 @@ ClassDeclarationStatement: function(node, st, c) {
                 ivar = {"type": ivarType, "name": ivarName},
                 accessors = ivarDecl.accessors;
 
-            if (ivars[ivarName])
-                throw compiler.error_message("Instance variable '" + ivarName + "' is already declared for class " + className, ivarDecl.id);
+            var checkIfIvarIsAlreadyDeclaredAndInSuperClass = function(aClassDef, recursiveFunction) {
+                if (aClassDef.ivars[ivarName])
+                    throw compiler.error_message("Instance variable '" + ivarName + "' is already declared for class " + className + (aClassDef.name !== className ? " in superclass " + aClassDef.name : ""), ivarDecl.id);
+                if (aClassDef.superClass)
+                    recursiveFunction(aClassDef.superClass, recursiveFunction);
+            }
+
+
+            checkIfIvarIsAlreadyDeclaredAndInSuperClass(classDef, checkIfIvarIsAlreadyDeclaredAndInSuperClass);
 
             var isTypeDefined = !ivarTypeIsClass || typeof global[ivarType] !== "undefined" || typeof window[ivarType] !== "undefined"
                                 || compiler.getClassDef(ivarType) || compiler.getTypeDef(ivarType) || ivarType == classDef.name;
@@ -10712,7 +11093,7 @@ MethodDeclarationStatement: function(node, st, c) {
         compiler.jsBuffer.concat("Nil\n");
     }
 
-    if (compiler.flags & ObjJAcornCompiler.Flags.IncludeDebugSymbols)
+    if (compiler.flags & ObjJAcornCompiler.Flags.IncludeTypeSignatures)
         compiler.jsBuffer.concat(","+JSON.stringify(types));
 
     compiler.jsBuffer.concat(")");
@@ -10785,17 +11166,48 @@ MethodDeclarationStatement: function(node, st, c) {
 MessageSendExpression: function(node, st, c) {
     var compiler = st.compiler,
         generate = compiler.generate,
+        inlineMsgSend = compiler.flags & ObjJAcornCompiler.Flags.InlineMsgSend,
         buffer = compiler.jsBuffer,
-        nodeObject = node.object;
+        nodeObject = node.object,
+        selectors = node.selectors,
+        arguments = node.arguments,
+        argumentsLength = arguments.length,
+        firstSelector = selectors[0],
+        selector = firstSelector ? firstSelector.name : "";
+
+
+    for (var i = 0; i < argumentsLength; i++)
+        if (i === 0)
+            selector += ":";
+        else
+            selector += (selectors[i] ? selectors[i].name : "") + ":";
+
     if (!generate) {
         buffer.concat(compiler.source.substring(compiler.lastPos, node.start));
         compiler.lastPos = nodeObject ? nodeObject.start : node.arguments.length ? node.arguments[0].start : node.end;
+    } else if (!inlineMsgSend) {
+
+        var totalNoOfParameters = argumentsLength;
+
+        if (node.parameters)
+            totalNoOfParameters += node.parameters.length;
     }
     if (node.superObject)
     {
         if (!generate) buffer.concat(" ");
-        buffer.concat("objj_msgSendSuper(");
-        buffer.concat("{ receiver:self, super_class:" + (st.currentMethodType() === "+" ? compiler.currentSuperMetaClass : compiler.currentSuperClass ) + " }");
+        if (inlineMsgSend) {
+            buffer.concat("(");
+            buffer.concat(st.currentMethodType() === "+" ? compiler.currentSuperMetaClass : compiler.currentSuperClass);
+            buffer.concat(".method_dtable[\"");
+            buffer.concat(selector);
+            buffer.concat("\"] || _objj_forward)(self");
+        } else {
+            buffer.concat("objj_msgSendSuper");
+            if (totalNoOfParameters < 4) {
+                buffer.concat("" + totalNoOfParameters);
+            }
+            buffer.concat("({ receiver:self, super_class:" + (st.currentMethodType() === "+" ? compiler.currentSuperMetaClass : compiler.currentSuperClass ) + " }");
+        }
     }
     else
     {
@@ -10821,6 +11233,8 @@ MessageSendExpression: function(node, st, c) {
                     c(nodeObject, st, "Expression");
                     buffer.concat(" == null ? null : ");
                 }
+                if (inlineMsgSend)
+                    buffer.concat("(");
                 c(nodeObject, st, "Expression");
             } else {
                 receiverIsNotSelf = true;
@@ -10831,12 +11245,20 @@ MessageSendExpression: function(node, st, c) {
                 c(nodeObject, st, "Expression");
                 buffer.concat("), ___r");
                 buffer.concat(st.receiverLevel + "");
-                buffer.concat(" == null ? null : ___r");
+                buffer.concat(" == null ? null : ");
+                if (inlineMsgSend)
+                    buffer.concat("(");
+                buffer.concat("___r");
                 buffer.concat(st.receiverLevel + "");
                 if (!(st.maxReceiverLevel >= st.receiverLevel))
                     st.maxReceiverLevel = st.receiverLevel;
             }
-            buffer.concat(".isa.objj_msgSend");
+            if (inlineMsgSend) {
+                buffer.concat(".isa.method_msgSend[\"");
+                buffer.concat(selector);
+                buffer.concat("\"] || _objj_forward)");
+            } else
+                buffer.concat(".isa.objj_msgSend");
         } else {
             buffer.concat(" ");
             buffer.concat("objj_msgSend(");
@@ -10844,19 +11266,11 @@ MessageSendExpression: function(node, st, c) {
         }
     }
 
-    var selectors = node.selectors,
-        arguments = node.arguments,
-        argumentsLength = arguments.length,
-        firstSelector = selectors[0],
-        selector = firstSelector ? firstSelector.name : "";
-
     if (generate && !node.superObject) {
-        var totalNoOfParameters = argumentsLength;
-
-        if (node.parameters)
-            totalNoOfParameters += node.parameters.length;
-        if (totalNoOfParameters < 4) {
-            buffer.concat("" + totalNoOfParameters);
+        if (!inlineMsgSend) {
+            if (totalNoOfParameters < 4) {
+                buffer.concat("" + totalNoOfParameters);
+            }
         }
 
         if (receiverIsIdentifier) {
@@ -10867,13 +11281,6 @@ MessageSendExpression: function(node, st, c) {
             buffer.concat(st.receiverLevel + "");
         }
     }
-
-
-    for (var i = 0; i < argumentsLength; i++)
-        if (i === 0)
-            selector += ":";
-        else
-            selector += (selectors[i] ? selectors[i].name : "") + ":";
 
     buffer.concat(", \"");
     buffer.concat(selector);
@@ -11209,7 +11616,7 @@ Executable.prototype.setCode = function(code)
     var parameters = this.functionParameters().join(",");
         var absoluteString = this.URL().absoluteString();
 
-        code += "/**/\n//@ sourceURL=" + absoluteString;
+        code += "/**/\n//# sourceURL=" + absoluteString;
 
 
 
@@ -11531,7 +11938,7 @@ function FileExecutable( aURL, aFilenameTranslateDictionary)
     if (fileContents.match(/^@STATIC;/))
         executable = decompile(fileContents, aURL);
     else if ((extension === "j" || !extension) && !fileContents.match(/^{/))
-        executable = exports.ObjJAcornCompiler.compileFileDependencies(fileContents, aURL, ObjJAcornCompiler.Flags.IncludeDebugSymbols);
+        executable = exports.ObjJAcornCompiler.compileFileDependencies(fileContents, aURL, exports.currentCompilerFlags());
     else
         executable = new Executable(fileContents, [], aURL);
 
@@ -11626,9 +12033,12 @@ objj_ivar = function( aName, aType)
 
 objj_method = function( aName, anImplementation, types)
 {
-    this.name = aName;
-    this.method_imp = anImplementation;
-    this.types = types;
+    var method = anImplementation || function( aReceiver, aSelector) {CPException.isa.objj_msgSend2(CPException, "raise:reason:", CPInternalInconsistencyException, aReceiver.isa.method_msgSend0(self, "className") + " does not have an implementation for selector '" + aSelector + "'")};
+    method.method_name = aName;
+    method.method_imp = anImplementation;
+    method.method_types = types;
+
+    return method;
 }
 
 objj_class = function(displayName)
@@ -11774,7 +12184,7 @@ class_addMethod = function( aClass, aName, anImplementation, types)
 
 
 
-    method.method_imp.displayName = (((aClass.info & (CLS_META))) ? '+' : '-') + " [" + class_getName(aClass) + ' ' + method_getName(method) + ']';
+    method.displayName = (((aClass.info & (CLS_META))) ? '+' : '-') + " [" + class_getName(aClass) + ' ' + method_getName(method) + ']';
 
 
 
@@ -11799,11 +12209,11 @@ class_addMethods = function( aClass, methods)
 
 
         method_list.push(method);
-        method_dtable[method.name] = method;
+        method_dtable[method.method_name] = method;
 
 
 
-        method.method_imp.displayName = (((aClass.info & (CLS_META))) ? '+' : '-') + " [" + class_getName(aClass) + ' ' + method_getName(method) + ']';
+        method.displayName = (((aClass.info & (CLS_META))) ? '+' : '-') + " [" + class_getName(aClass) + ' ' + method_getName(method) + ']';
 
     }
 
@@ -11869,12 +12279,22 @@ class_replaceMethod = function( aClass, aSelector, aMethodImplementation)
         return NULL;
 
     var method = aClass.method_dtable[aSelector],
-        method_imp = NULL;
+        method_imp = method.method_imp,
+        new_method = new objj_method(method.method_name, aMethodImplementation, method.method_types);
 
-    if (method)
-        method_imp = method.method_imp;
+    new_method.displayName = method.displayName;
+    aClass.method_dtable[aSelector] = new_method;
 
-    method.method_imp = aMethodImplementation;
+    var index = aClass.method_list.indexOf(method);
+
+    if (index !== -1)
+    {
+        aClass.method_list[index] = new_method;
+    }
+    else
+    {
+        aClass.method_list.push(new_method);
+    }
 
     return method_imp;
 }
@@ -11996,7 +12416,7 @@ protocol_addMethodDescriptions = function( proto, methods, isRequiredMethod, isI
     {
         var method = methods[index];
 
-        method_dtable[method.name] = method;
+        method_dtable[method.method_name] = method;
     }
 }
 
@@ -12068,26 +12488,43 @@ var _class_initialize = function( aClass)
         meta.objj_msgSend2 = objj_msgSendFast2;
         meta.objj_msgSend3 = objj_msgSendFast3;
 
+        aClass.method_msgSend = aClass.method_dtable;
+        meta.method_msgSend = meta.method_dtable;
+
         meta.objj_msgSend0(aClass, "initialize");
 
         meta.info = (meta.info | (CLS_INITIALIZED)) & ~(CLS_INITIALIZING);
     }
 }
 
-var _objj_forward = function(self, _cmd)
+_objj_forward = function(self, _cmd)
 {
     var isa = self.isa,
-        implementation = isa.method_dtable[SEL_forwardingTargetForSelector_];
+        meta = (((isa.info & (CLS_META))) ? isa : isa.isa);
+
+    if (!(meta.info & (CLS_INITIALIZED)) && !(meta.info & (CLS_INITIALIZING)))
+    {
+        _class_initialize(isa);
+    }
+
+    var implementation = isa.method_msgSend[_cmd];
 
     if (implementation)
     {
-        var target = implementation.method_imp.call(this, self, SEL_forwardingTargetForSelector_, _cmd);
+        return implementation.apply(isa, arguments);
+    }
+
+    implementation = isa.method_dtable[SEL_forwardingTargetForSelector_];
+
+    if (implementation)
+    {
+        var target = implementation(self, SEL_forwardingTargetForSelector_, _cmd);
 
         if (target && target !== self)
         {
             arguments[0] = target;
 
-            return objj_msgSend.apply(this, arguments);
+            return target.isa.objj_msgSend.apply(target.isa, arguments);
         }
     }
 
@@ -12099,7 +12536,7 @@ var _objj_forward = function(self, _cmd)
 
         if (forwardInvocationImplementation)
         {
-            var signature = implementation.method_imp.call(this, self, SEL_methodSignatureForSelector_, _cmd);
+            var signature = implementation(self, SEL_methodSignatureForSelector_, _cmd);
 
             if (signature)
             {
@@ -12118,7 +12555,7 @@ var _objj_forward = function(self, _cmd)
                             invocationIsa.objj_msgSend2(invocation, SEL_setArgument_atIndex_, arguments[index], index);
                     }
 
-                    forwardInvocationImplementation.method_imp.call(this, self, SEL_forwardInvocation_, invocation);
+                    forwardInvocationImplementation(self, SEL_forwardInvocation_, invocation);
 
                     return invocation == null ? null : invocationIsa.objj_msgSend0(invocation, SEL_returnValue);
                 }
@@ -12129,13 +12566,13 @@ var _objj_forward = function(self, _cmd)
     implementation = isa.method_dtable[SEL_doesNotRecognizeSelector_];
 
     if (implementation)
-        return implementation.method_imp.call(this, self, SEL_doesNotRecognizeSelector_, _cmd);
+        return implementation(self, SEL_doesNotRecognizeSelector_, _cmd);
 
     throw class_getName(isa) + " does not implement doesNotRecognizeSelector:. Did you forget a superclass for " + class_getName(isa) + "?";
 };
 class_getMethodImplementation = function( aClass, aSelector)
 {
-    if (!((((aClass.info & (CLS_META))) ? aClass : aClass.isa).info & (CLS_INITIALIZED))) _class_initialize(aClass); var method = aClass.method_dtable[aSelector]; var implementation = method ? method.method_imp : _objj_forward;;
+    if (!((((aClass.info & (CLS_META))) ? aClass : aClass.isa).info & (CLS_INITIALIZED))) _class_initialize(aClass); var implementation = aClass.method_dtable[aSelector] || _objj_forward;;
 
     return implementation;
 }
@@ -12366,7 +12803,7 @@ objj_msgSend = function( aReceiver, aSelector)
 
     var isa = aReceiver.isa;
 
-    if (!((((isa.info & (CLS_META))) ? isa : isa.isa).info & (CLS_INITIALIZED))) _class_initialize(isa); var method = isa.method_dtable[aSelector]; var implementation = method ? method.method_imp : _objj_forward;;
+    if (!((((isa.info & (CLS_META))) ? isa : isa.isa).info & (CLS_INITIALIZED))) _class_initialize(isa); var implementation = isa.method_dtable[aSelector] || _objj_forward;;
     switch(arguments.length)
     {
         case 2: return implementation(aReceiver, aSelector);
@@ -12389,16 +12826,41 @@ objj_msgSendSuper = function( aSuper, aSelector)
 
     arguments[0] = aSuper.receiver;
 
-    if (!((((super_class.info & (CLS_META))) ? super_class : super_class.isa).info & (CLS_INITIALIZED))) _class_initialize(super_class); var method = super_class.method_dtable[aSelector]; var implementation = method ? method.method_imp : _objj_forward;;
+    if (!((((super_class.info & (CLS_META))) ? super_class : super_class.isa).info & (CLS_INITIALIZED))) _class_initialize(super_class); var implementation = super_class.method_dtable[aSelector] || _objj_forward;;
 
     return implementation.apply(aSuper.receiver, arguments);
 }
 
+objj_msgSendSuper0 = function( aSuper, aSelector)
+{
+    return (aSuper.super_class.method_dtable[aSelector] || _objj_forward)(aSuper.receiver, aSelector);
+}
+
+objj_msgSendSuper1 = function( aSuper, aSelector, arg0)
+{
+    return (aSuper.super_class.method_dtable[aSelector] || _objj_forward)(aSuper.receiver, aSelector, arg0);
+}
+
+objj_msgSendSuper2 = function( aSuper, aSelector, arg0, arg1)
+{
+    return (aSuper.super_class.method_dtable[aSelector] || _objj_forward)(aSuper.receiver, aSelector, arg0, arg1);
+}
+
+objj_msgSendSuper3 = function( aSuper, aSelector, arg0, arg1, arg2)
+{
+    return (aSuper.super_class.method_dtable[aSelector] || _objj_forward)(aSuper.receiver, aSelector, arg0, arg1, arg2);
+}
+
 objj_msgSendFast = function( aReceiver, aSelector)
 {
-    var method = this.method_dtable[aSelector],
-        implementation = method ? method.method_imp : _objj_forward;
-    return implementation.apply(aReceiver, arguments);
+
+
+
+
+
+
+
+    return (this.method_dtable[aSelector] || _objj_forward).apply(aReceiver, arguments);
 
 
 
@@ -12415,9 +12877,14 @@ var objj_msgSendFastInitialize = function( aReceiver, aSelector)
 
 objj_msgSendFast0 = function( aReceiver, aSelector)
 {
-    var method = this.method_dtable[aSelector],
-        implementation = method ? method.method_imp : _objj_forward;
-    return implementation(aReceiver, aSelector);
+
+
+
+
+
+
+
+    return (this.method_dtable[aSelector] || _objj_forward)(aReceiver, aSelector);
 
 
 
@@ -12434,9 +12901,14 @@ var objj_msgSendFast0Initialize = function( aReceiver, aSelector)
 
 objj_msgSendFast1 = function( aReceiver, aSelector, arg0)
 {
-    var method = this.method_dtable[aSelector],
-        implementation = method ? method.method_imp : _objj_forward;
-    return implementation(aReceiver, aSelector, arg0);
+
+
+
+
+
+
+
+    return (this.method_dtable[aSelector] || _objj_forward)(aReceiver, aSelector, arg0);
 
 
 
@@ -12453,9 +12925,14 @@ var objj_msgSendFast1Initialize = function( aReceiver, aSelector, arg0)
 
 objj_msgSendFast2 = function( aReceiver, aSelector, arg0, arg1)
 {
-    var method = this.method_dtable[aSelector],
-        implementation = method ? method.method_imp : _objj_forward;
-    return implementation(aReceiver, aSelector, arg0, arg1);
+
+
+
+
+
+
+
+    return (this.method_dtable[aSelector] || _objj_forward)(aReceiver, aSelector, arg0, arg1);
 
 
 
@@ -12472,9 +12949,14 @@ var objj_msgSendFast2Initialize = function( aReceiver, aSelector, arg0, arg1)
 
 objj_msgSendFast3 = function( aReceiver, aSelector, arg0, arg1, arg2)
 {
-    var method = this.method_dtable[aSelector],
-        implementation = method ? method.method_imp : _objj_forward;
-    return implementation(aReceiver, aSelector, arg0, arg1, arg2);
+
+
+
+
+
+
+
+    return (this.method_dtable[aSelector] || _objj_forward)(aReceiver, aSelector, arg0, arg1, arg2);
 
 
 
@@ -12493,7 +12975,55 @@ var objj_msgSendFast3Initialize = function( aReceiver, aSelector, arg0, arg1, ar
 
 method_getName = function( aMethod)
 {
-    return aMethod.name;
+    return aMethod.method_name;
+}
+
+
+method_copyReturnType = function( aMethod)
+{
+    var types = aMethod.method_types;
+
+    if (types)
+    {
+        var argType = types[0];
+
+        return argType != NULL ? argType : NULL;
+    }
+    else
+        return NULL;
+}
+
+
+method_copyArgumentType = function( aMethod, index)
+{
+    switch (index) {
+        case 0:
+            return "id";
+
+        case 1:
+            return "SEL";
+
+        default:
+            var types = aMethod.method_types;
+
+            if (types)
+            {
+                var argType = types[index - 1];
+
+                return argType != NULL ? argType : NULL;
+            }
+            else
+                return NULL;
+    }
+}
+
+
+
+method_getNumberOfArguments = function( aMethod)
+{
+    var types = aMethod.method_types;
+
+    return types ? types.length + 1 : ((aMethod.method_name.match(/:/g) || []).length + 2);
 }
 
 method_getImplementation = function( aMethod)
@@ -12559,6 +13089,7 @@ objj_class.prototype.objj_msgSend0 = objj_msgSendFast0Initialize;
 objj_class.prototype.objj_msgSend1 = objj_msgSendFast1Initialize;
 objj_class.prototype.objj_msgSend2 = objj_msgSendFast2Initialize;
 objj_class.prototype.objj_msgSend3 = objj_msgSendFast3Initialize;
+objj_class.prototype.method_msgSend = Object.create(null);
 
 var SEL_description = sel_getUid("description"),
     SEL_forwardingTargetForSelector_ = sel_getUid("forwardingTargetForSelector:"),
@@ -12778,7 +13309,7 @@ objj_typecheck_decorator = function(msgSend)
         if (!aReceiver)
             return msgSend.apply(this, arguments);
 
-        var types = aReceiver.isa.method_dtable[aSelector].types;
+        var types = aReceiver.isa.method_dtable[aSelector].method_types;
         for (var i = 2; i < arguments.length; i++)
         {
             try
@@ -12887,6 +13418,23 @@ if (DOMBaseElementsCount > 0)
 
     if (DOMBaseElementHref)
         pageURL = new CFURL(DOMBaseElementHref, pageURL);
+}
+
+
+
+if (typeof OBJJ_COMPILER_FLAGS !== 'undefined')
+{
+    var flags = 0;
+    for (var i = 0; i < OBJJ_COMPILER_FLAGS.length; i++)
+    {
+        var flag = ObjJAcornCompiler.Flags[OBJJ_COMPILER_FLAGS[i]];
+
+        if (flag != null)
+        {
+            flags |= flag;
+        }
+    }
+    exports.setCurrentCompilerFlags(flags);
 }
 
 
