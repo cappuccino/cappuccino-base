@@ -10193,7 +10193,7 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("null"), function(self,
     var ___r1;
 }
 ,["CPNull"])]);
-}p;10;CPNumber.jt;8343;@STATIC;1.0;i;13;CPException.ji;8;CPNull.ji;10;CPObject.ji;15;CPObjJRuntime.jt;8259;objj_executeFile("CPException.j", YES);objj_executeFile("CPNull.j", YES);objj_executeFile("CPObject.j", YES);objj_executeFile("CPObjJRuntime.j", YES);var CPNumberUIDs = new CFMutableDictionary();
+}p;10;CPNumber.jt;8175;@STATIC;1.0;i;13;CPException.ji;8;CPNull.ji;10;CPObject.ji;15;CPObjJRuntime.jt;8091;objj_executeFile("CPException.j", YES);objj_executeFile("CPNull.j", YES);objj_executeFile("CPObject.j", YES);objj_executeFile("CPObjJRuntime.j", YES);var CPNumberUIDs = new CFMutableDictionary();
 {var the_class = objj_allocateClassPair(CPObject, "CPNumber"),
 meta_class = the_class.isa;objj_registerClassPair(the_class);
 class_addMethods(the_class, [new objj_method(sel_getUid("initWithBool:"), function(self, _cmd, aBoolean)
@@ -10294,33 +10294,23 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithBool:"), functi
 }
 ,["float"]), new objj_method(sel_getUid("intValue"), function(self, _cmd)
 {
-    if (typeof self == "boolean")
-        return self ? 1 : 0;
-    return self;
+    return self >= 0 ? Math.floor(self) : Math.ceil(self);
 }
 ,["int"]), new objj_method(sel_getUid("integerValue"), function(self, _cmd)
 {
-    if (typeof self == "boolean")
-        return self ? 1 : 0;
-    return self;
+    return self >= 0 ? Math.floor(self) : Math.ceil(self);
 }
 ,["int"]), new objj_method(sel_getUid("longLongValue"), function(self, _cmd)
 {
-    if (typeof self == "boolean")
-        return self ? 1 : 0;
-    return self;
+    return self >= 0 ? Math.floor(self) : Math.ceil(self);
 }
 ,["long long"]), new objj_method(sel_getUid("longValue"), function(self, _cmd)
 {
-    if (typeof self == "boolean")
-        return self ? 1 : 0;
-    return self;
+    return self >= 0 ? Math.floor(self) : Math.ceil(self);
 }
 ,["long"]), new objj_method(sel_getUid("shortValue"), function(self, _cmd)
 {
-    if (typeof self == "boolean")
-        return self ? 1 : 0;
-    return self;
+    return self >= 0 ? Math.floor(self) : Math.ceil(self);
 }
 ,["short"]), new objj_method(sel_getUid("stringValue"), function(self, _cmd)
 {
@@ -10332,21 +10322,15 @@ class_addMethods(the_class, [new objj_method(sel_getUid("initWithBool:"), functi
 }
 ,["unsigned char"]), new objj_method(sel_getUid("unsignedIntValue"), function(self, _cmd)
 {
-    if (typeof self == "boolean")
-        return self ? 1 : 0;
-    return self;
+    return self >= 0 ? Math.floor(self) : Math.ceil(self);
 }
 ,["unsigned int"]), new objj_method(sel_getUid("unsignedLongValue"), function(self, _cmd)
 {
-    if (typeof self == "boolean")
-        return self ? 1 : 0;
-    return self;
+    return self >= 0 ? Math.floor(self) : Math.ceil(self);
 }
 ,["unsigned long"]), new objj_method(sel_getUid("unsignedShortValue"), function(self, _cmd)
 {
-    if (typeof self == "boolean")
-        return self ? 1 : 0;
-    return self;
+    return self >= 0 ? Math.floor(self) : Math.ceil(self);
 }
 ,["unsigned short"]), new objj_method(sel_getUid("compare:"), function(self, _cmd, aNumber)
 {
