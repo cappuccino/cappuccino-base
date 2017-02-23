@@ -42,6 +42,20 @@ function compressSingle(code, options) {
 
 var servers = {};
 
+function shutdownServers() {
+    Object.keys(servers).forEach(function(key) {
+        var server = servers[key];
+        server.stdin.close();
+        server.stdout.close();
+        server.stderr.close();
+    });
+}
+
+if (system && system.requireCleanup) {
+    // register shutdown
+    system.requireCleanup(shutdownServers);
+}
+
 function compressUsingServer(code, options) {
     if (!servers[options.charset]) {
         var cmd = [
