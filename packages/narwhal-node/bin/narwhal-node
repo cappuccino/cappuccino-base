@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -euf -o pipefail
+
+# get the absolute path of the executable
+SELF_PATH=$(cd -P -- "$(dirname -- "$0")" && pwd -P) && SELF_PATH="$SELF_PATH/$(basename -- "$0")"
+
+# resolve symlinks
+while [ -h "$SELF_PATH" ]; do
+	DIR=$(dirname -- "$SELF_PATH")
+	SYM=$(readlink -- "$SELF_PATH")
+	SELF_PATH=$(cd -- "$DIR" && cd -- $(dirname -- "$SYM") && pwd)/$(basename -- "$SYM")
+done
+
+# NARWHAL_ENGINE_HOME is the 2nd ancestor directory of this shell script
+export NARWHAL_ENGINE_HOME=$(dirname -- "$(dirname -- "$SELF_PATH")")
+
+
+if [ -z ${NARWHAL_HOME:-} ]; then
+	export NARWHAL_HOME=$(dirname -- "$(dirname -- "$NARWHAL_ENGINE_HOME")")
+fi
+
+NODE_FLAGS=
+
+# When debugging narwhal with the node engine, it is helpful to
+# set the stack trace limit to something high, like 80.
+# The v8 --stack-trace-limit defaults to 10.
+
+#NODE_FLAGS="--stack-trace-limit=80 $NODE_FLAGS"
+
+exec node $NODE_FLAGS $NARWHAL_ENGINE_HOME/bootstrap.js "$@"
