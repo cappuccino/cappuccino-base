@@ -17,8 +17,7 @@ util.forEachApply([
     ['a/b', '..', '../../'],
     ['a/b', 'c', '../c'],
     ['a/b', 'c/d', '../c/d'],
-    // XXX the next two are disputed - kriskowal
-    ["a", "a/b/c", "b/c"],
+    // XXX the next one is disputed - kriskowal
     ["a/", "a/b/c", "b/c"]
         
 ], function (source, target, expected) {
