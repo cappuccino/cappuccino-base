@@ -32,14 +32,9 @@ cd $NARWHAL_HOME
 # synchronize - Write asynchronous code as if it's synchronous (a wrapper for fibers)
 #               MIT licensed, https://github.com/alexeypetrushin/synchronize
 #               Used by the narwhal node wrapper to simplify the use of fibers.
-# jsdom       - A JavaScript implementation of the WHATWG DOM and HTML
-#               standards, for use with node.js
-#               MIT licensed, https://github.com/tmpvar/jsdom
-#               Used in the dom.js narwhal node wrapper to provide the
-#               DOMParser and Document.
-#
-# Installing jsdom actually installs a lot of packages: 92!  Future work could
-# involve looking into what can be done to lessen the exposure to so many.
+# xmldom      - A pure JS W3C Standard based (XML DOM Level 2 Core) DOMParser and XMLSerializer.
+#               MIT licensed, author also allows LGPL, https://github.com/jindw/xmldom
+#               Used in the dom.js narwhal node wrapper to provide the DOMParser.
 
 if [ -e node_modules ] ; then
     # This isn't necessaryily an error and one could say there is no harm in
@@ -49,4 +44,4 @@ if [ -e node_modules ] ; then
 fi
 
 set -x
-npm install fibers synchronize jsdom
+npm install fibers synchronize xmldom

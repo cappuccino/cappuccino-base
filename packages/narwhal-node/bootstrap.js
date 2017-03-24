@@ -38,7 +38,6 @@ const bootstrap = function() {
     const console = require("console"); // using node's require()
     const fs      = require("fs");      // using node's require()
     const path    = require("path");    // using node's require()
-    const jsdom   = require('jsdom');   // using node's require()
 
     const args = process.argv.slice(); // make copy
     args.shift();                      // drop the node name
@@ -170,7 +169,6 @@ const bootstrap = function() {
         fs        : fs,
         process   : process,
         sync      : sync,
-        jsdom     : jsdom,
     };
 
     const sea             = process.env["SEA"];
