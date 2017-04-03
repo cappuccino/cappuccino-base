@@ -4,14 +4,14 @@
 {
 }
 
-- (BOOL)matches:(id)actual
+- (void)matches:(id)actual
 {
-    return [super matches:[actual class]];
+    [super matches:[actual class]];
 }
 
-- (BOOL)doesNotMatch:(id)actual
+- (void)doesNotMatch:(id)actual
 {
-    return [super doesNotMatch:[actual class]];
+    [super doesNotMatch:[actual class]];
 }
 
 @end

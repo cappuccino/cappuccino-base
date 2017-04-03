@@ -2,13 +2,13 @@
 
 @implementation OJSpecShouldBeSameAs : OJSpecMatcher
 
-- (BOOL)matches:(id)actual
+- (void)matches:(id)actual
 {
     [self setActual:actual];
     [OJAssert assertTrue:([self expected] === [self actual])];
 }
 
-- (BOOL)doesNotMatch:(id)actual
+- (void)doesNotMatch:(id)actual
 {
     [self setActual:actual];
     [OJAssert assertTrue:([self expected] !== [self actual])];
