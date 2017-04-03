@@ -8,15 +8,15 @@ util.forEachApply([
     ['', '.'],
     ['.', '.'],
     ['foo', '.'],
-    ['foo/', '.'],
+    ['foo/', 'foo'],
     ['foo/bar', 'foo'],
-    ['foo/bar/', 'foo'],
+    ['foo/bar/', 'foo/bar'],
     // absolute
     ["/", "/"],
     ["/foo", "/"],
-    ["/foo/", "/"],
+    ["/foo/", "/foo"],
     ["/foo/bar", "/foo"],
-    ["/foo/bar/", "/foo"]
+    ["/foo/bar/", "/foo/bar"]
     // TODO: many more tests
     // TODO: Windows tests
 ], function (path, expected) {

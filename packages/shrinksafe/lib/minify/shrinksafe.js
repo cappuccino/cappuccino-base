@@ -29,10 +29,15 @@ function compressSingle(code, options) {
     try {
         p.stdin.write(code).close();
 
-        if (p.wait() !== 0)
-            throw new Error("ShrinkSafe error: " + p.stderr.read());
+        //Next two lines does not work with JSC. It just hangs here
+        //if (p.wait() !== 0)
+        //    throw new Error("ShrinkSafe error: " + p.stderr.read());
 
-        return p.stdout.read();
+        var r, result = "";
+        while (r = p.stdout.read()) {
+           result += r
+        }
+        return result;
     } finally {
         p.stdin.close();
         p.stdout.close();
@@ -41,6 +46,20 @@ function compressSingle(code, options) {
 }
 
 var servers = {};
+
+function shutdownServers() {
+    Object.keys(servers).forEach(function(key) {
+        var server = servers[key];
+        server.stdin.close();
+        server.stdout.close();
+        server.stderr.close();
+    });
+}
+
+if (system && system.requireCleanup) {
+    // register shutdown
+    system.requireCleanup(shutdownServers);
+}
 
 function compressUsingServer(code, options) {
     if (!servers[options.charset]) {

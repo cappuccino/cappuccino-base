@@ -54,8 +54,15 @@ if (canary.deprecated) {
 
 // global reference
 // XXX: beyond-compliance with CommonJS
-global = system.global;
-global.global = global;
+// on rhino, typeof global is 'function'
+// on jsc  , typeof global is 'undefined'
+// on node , typeof global is 'object'
+
+if (typeof global !== "object") {
+    // Set these for jsc or rhino.  For node, they are already set correctly.
+    global = system.global;
+    global.global = global;
+}
 global.system = system;
 global.print = system.print;
 

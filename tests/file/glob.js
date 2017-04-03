@@ -156,12 +156,12 @@ exports["tests matches the literal character '\\' with option File::FNM_NOESCAPE
     }
 }
 
-exports["tests returns nil for directories current user has no permission to read"] = function() {
+exports["tests returns [] for directories current user has no permission to read"] = function() {
     FILE.mkdirs('no_permission');
     FILE.chmod('no_permission', 0);
 
     try {
-        assert.eq(null, FILE.glob('no_permission/*'));
+        assert.eq([], FILE.glob('no_permission/*'));
     } finally {
         FILE.rmdir('no_permission')
     }
