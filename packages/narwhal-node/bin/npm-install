@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+set -euf -o pipefail
+
+# get the absolute path of the executable
+SELF_PATH=$(cd -P -- "$(dirname -- "$0")" && pwd -P) && SELF_PATH="$SELF_PATH/$(basename -- "$0")"
+
+# resolve symlinks
+while [ -h "$SELF_PATH" ]; do
+	DIR=$(dirname -- "$SELF_PATH")
+	SYM=$(readlink -- "$SELF_PATH")
+	SELF_PATH=$(cd -- "$DIR" && cd -- $(dirname -- "$SYM") && pwd)/$(basename -- "$SYM")
+done
+
+# NARWHAL_ENGINE_HOME is the 2nd ancestor directory of this shell script
+export NARWHAL_ENGINE_HOME=$(dirname -- "$(dirname -- "$SELF_PATH")")
+
+
+if [ -z ${NARWHAL_HOME:-} ]; then
+	export NARWHAL_HOME=$(dirname -- "$(dirname -- "$NARWHAL_ENGINE_HOME")")
+fi
+
+cd $NARWHAL_HOME
+
+# The npm packages used by the node engine:
+#
+# fibers      - Fiber/coroutine support for v8 and node.
+#               MIT licensed, https://github.com/laverdet/node-fibers
+#               Used by the narwhal node wrapper to suspend the main thread in
+#               order to let events trigger that the main thread wants to wait
+#               on.
+# synchronize - Write asynchronous code as if it's synchronous (a wrapper for fibers)
+#               MIT licensed, https://github.com/alexeypetrushin/synchronize
+#               Used by the narwhal node wrapper to simplify the use of fibers.
+# xmldom      - A pure JS W3C Standard based (XML DOM Level 2 Core) DOMParser and XMLSerializer.
+#               MIT licensed, author also allows LGPL, https://github.com/jindw/xmldom
+#               Used in the dom.js narwhal node wrapper to provide the DOMParser.
+
+if [ -e node_modules ] ; then
+    # This isn't necessaryily an error and one could say there is no harm in
+    # running the npm install anyway.
+    echo $NARWHAL_HOME/node_modules already exists.
+    exit 1
+fi
+
+set -x
+npm install fibers synchronize xmldom

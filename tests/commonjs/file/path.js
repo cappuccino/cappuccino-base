@@ -5,10 +5,9 @@ var util = require("narwhal/util");
 
 util.forEachApply([
     ["/", "a", "/a"],
-    [".", "a", "./a"]
 ], function (path, rel, expected) {
     exports['test path.join ' + util.repr(arguments)] = function () {
-        assert.eq(expected, system.fs.path(path).join(rel));
+        assert.eq(expected, String(system.fs.path(path).join(rel)));
     };
 });
 

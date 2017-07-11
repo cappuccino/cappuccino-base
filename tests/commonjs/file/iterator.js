@@ -57,22 +57,15 @@ exports.testReadLines = Test(function (path) {
 
 exports.testForEach = Test(function (path) {
     var output = path.open('w');
+    output.print('1').print('2').print('3').print('4');
+    output.close();
+
     var input = path.open('r');
-    output.print('1');
-    output.print('1');
     var count = 0;
     input.forEach(function (line) {
-        assert.eq('1', line);
-        count++;
-    });
-    assert.eq(2, count);
-    output.print('2').print('2');
-    input.forEach(function (line) {
-        assert.eq('2', line);
         count++;
     });
     assert.eq(4, count);
-    output.close();
     input.close();
 });
 
