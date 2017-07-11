@@ -1,108 +1,122 @@
-@STATIC;1.0;p;15;Configuration.jt;8956;@STATIC;1.0;I;25;Foundation/CPDictionary.jI;21;Foundation/CPString.jI;21;Foundation/CPObject.jI;18;Foundation/CPSet.jt;8832;objj_executeFile("Foundation/CPDictionary.j", NO);objj_executeFile("Foundation/CPString.j", NO);objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPSet.j", NO);var FILE = require("file"),
+@STATIC;1.0;p;15;Configuration.jt;11001;@STATIC;1.0;I;25;Foundation/CPDictionary.jI;21;Foundation/CPString.jI;21;Foundation/CPObject.jI;18;Foundation/CPSet.jt;10876;objj_executeFile("Foundation/CPDictionary.j", NO);objj_executeFile("Foundation/CPString.j", NO);objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPSet.j", NO);var FILE = require("file"),
     SYSTEM = require("system");
 var DefaultDictionary = nil,
     DefaultConfiguration = nil,
     UserConfiguration = nil;
+
 {var the_class = objj_allocateClassPair(CPObject, "Configuration"),
 meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("path", "CPString"), new objj_ivar("dictionary", "CPDictionary"), new objj_ivar("temporaryDictionary", "CPDictionary")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithPath:"), function(self, _cmd, aPath)
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithPath:"), function $Configuration__initWithPath_(self, _cmd, aPath)
 {
-    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("Configuration").super_class }, "init");
+    self = (objj_getClass("Configuration").super_class.method_dtable["init"] || _objj_forward)(self, "init");
     if (self)
     {
         self.path = aPath;
-        self.temporaryDictionary = (___r1 = CPDictionary.isa.objj_msgSend0(CPDictionary, "alloc"), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "init"));
+        self.temporaryDictionary = (___r1 = (CPDictionary.isa.method_msgSend["alloc"] || _objj_forward)(CPDictionary, "alloc"), ___r1 == null ? null : (___r1.isa.method_msgSend["init"] || _objj_forward)(___r1, "init"));
         if (self.path && FILE.isReadable(self.path))
             self.dictionary = CFPropertyList.readPropertyListFromFile(self.path);
         if (!self.dictionary)
-            self.dictionary = (___r1 = CPDictionary.isa.objj_msgSend0(CPDictionary, "alloc"), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "init"));
+            self.dictionary = (___r1 = (CPDictionary.isa.method_msgSend["alloc"] || _objj_forward)(CPDictionary, "alloc"), ___r1 == null ? null : (___r1.isa.method_msgSend["init"] || _objj_forward)(___r1, "init"));
     }
     return self;
     var ___r1;
 }
-,["id","CPString"]), new objj_method(sel_getUid("path"), function(self, _cmd)
+
+,["id","CPString"]), new objj_method(sel_getUid("path"), function $Configuration__path(self, _cmd)
 {
     return self.path;
 }
-,["CPString"]), new objj_method(sel_getUid("storedKeyEnumerator"), function(self, _cmd)
+
+,["CPString"]), new objj_method(sel_getUid("storedKeyEnumerator"), function $Configuration__storedKeyEnumerator(self, _cmd)
 {
-    return ((___r1 = self.dictionary), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "keyEnumerator"));
+    return ((___r1 = self.dictionary), ___r1 == null ? null : (___r1.isa.method_msgSend["keyEnumerator"] || _objj_forward)(___r1, "keyEnumerator"));
     var ___r1;
 }
-,["CPEnumerator"]), new objj_method(sel_getUid("keyEnumerator"), function(self, _cmd)
+
+,["CPEnumerator"]), new objj_method(sel_getUid("keyEnumerator"), function $Configuration__keyEnumerator(self, _cmd)
 {
-    var set = CPSet.isa.objj_msgSend1(CPSet, "setWithArray:", ((___r1 = self.dictionary), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "allKeys")));
-    (set == null ? null : set.isa.objj_msgSend1(set, "addObjectsFromArray:", ((___r1 = self.temporaryDictionary), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "allKeys"))));
-    (set == null ? null : set.isa.objj_msgSend1(set, "addObjectsFromArray:", (DefaultDictionary == null ? null : DefaultDictionary.isa.objj_msgSend0(DefaultDictionary, "allKeys"))));
-    return (set == null ? null : set.isa.objj_msgSend0(set, "objectEnumerator"));
+    var set = (CPSet.isa.method_msgSend["setWithArray:"] || _objj_forward)(CPSet, "setWithArray:", ((___r1 = self.dictionary), ___r1 == null ? null : (___r1.isa.method_msgSend["allKeys"] || _objj_forward)(___r1, "allKeys")));
+    (set == null ? null : (set.isa.method_msgSend["addObjectsFromArray:"] || _objj_forward)(set, "addObjectsFromArray:", ((___r1 = self.temporaryDictionary), ___r1 == null ? null : (___r1.isa.method_msgSend["allKeys"] || _objj_forward)(___r1, "allKeys"))));
+    (set == null ? null : (set.isa.method_msgSend["addObjectsFromArray:"] || _objj_forward)(set, "addObjectsFromArray:", (DefaultDictionary == null ? null : (DefaultDictionary.isa.method_msgSend["allKeys"] || _objj_forward)(DefaultDictionary, "allKeys"))));
+    return (set == null ? null : (set.isa.method_msgSend["objectEnumerator"] || _objj_forward)(set, "objectEnumerator"));
     var ___r1;
 }
-,["CPEnumerator"]), new objj_method(sel_getUid("valueForKey:"), function(self, _cmd, aKey)
+
+,["CPEnumerator"]), new objj_method(sel_getUid("valueForKey:"), function $Configuration__valueForKey_(self, _cmd, aKey)
 {
-    var value = ((___r1 = self.dictionary), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "objectForKey:", aKey));
+    var value = ((___r1 = self.dictionary), ___r1 == null ? null : (___r1.isa.method_msgSend["objectForKey:"] || _objj_forward)(___r1, "objectForKey:", aKey));
     if (!value)
-        value = ((___r1 = self.temporaryDictionary), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "objectForKey:", aKey));
+        value = ((___r1 = self.temporaryDictionary), ___r1 == null ? null : (___r1.isa.method_msgSend["objectForKey:"] || _objj_forward)(___r1, "objectForKey:", aKey));
     if (!value)
-        value = (DefaultDictionary == null ? null : DefaultDictionary.isa.objj_msgSend1(DefaultDictionary, "objectForKey:", aKey));
+        value = (DefaultDictionary == null ? null : (DefaultDictionary.isa.method_msgSend["objectForKey:"] || _objj_forward)(DefaultDictionary, "objectForKey:", aKey));
     return value;
     var ___r1;
 }
-,["CPString","CPString"]), new objj_method(sel_getUid("setValue:forKey:"), function(self, _cmd, aString, aKey)
+
+,["CPString","CPString"]), new objj_method(sel_getUid("setValue:forKey:"), function $Configuration__setValue_forKey_(self, _cmd, aString, aKey)
 {
-    ((___r1 = self.dictionary), ___r1 == null ? null : ___r1.isa.objj_msgSend2(___r1, "setObject:forKey:", aString, aKey));
+    ((___r1 = self.dictionary), ___r1 == null ? null : (___r1.isa.method_msgSend["setObject:forKey:"] || _objj_forward)(___r1, "setObject:forKey:", aString, aKey));
     var ___r1;
 }
-,["void","CPString","CPString"]), new objj_method(sel_getUid("removeValueForKey:"), function(self, _cmd, aKey)
+
+,["void","CPString","CPString"]), new objj_method(sel_getUid("removeValueForKey:"), function $Configuration__removeValueForKey_(self, _cmd, aKey)
 {
-    ((___r1 = self.dictionary), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "removeObjectForKey:", aKey));
+    ((___r1 = self.dictionary), ___r1 == null ? null : (___r1.isa.method_msgSend["removeObjectForKey:"] || _objj_forward)(___r1, "removeObjectForKey:", aKey));
     var ___r1;
 }
-,["void","CPString"]), new objj_method(sel_getUid("setTemporaryValue:forKey:"), function(self, _cmd, aString, aKey)
+
+,["void","CPString"]), new objj_method(sel_getUid("setTemporaryValue:forKey:"), function $Configuration__setTemporaryValue_forKey_(self, _cmd, aString, aKey)
 {
-    ((___r1 = self.temporaryDictionary), ___r1 == null ? null : ___r1.isa.objj_msgSend2(___r1, "setObject:forKey:", aString, aKey));
+    ((___r1 = self.temporaryDictionary), ___r1 == null ? null : (___r1.isa.method_msgSend["setObject:forKey:"] || _objj_forward)(___r1, "setObject:forKey:", aString, aKey));
     var ___r1;
 }
-,["void","CPString","CPString"]), new objj_method(sel_getUid("save"), function(self, _cmd)
+
+,["void","CPString","CPString"]), new objj_method(sel_getUid("save"), function $Configuration__save(self, _cmd)
 {
-    var aPath = self.isa.objj_msgSend0(self, "path");
+    var aPath = (self.isa.method_msgSend["path"] || _objj_forward)(self, "path");
     if (!aPath)
         return;
     CFPropertyList.writePropertyListToFile(self.dictionary, aPath);
 }
+
 ,["void"])]);
-class_addMethods(meta_class, [new objj_method(sel_getUid("initialize"), function(self, _cmd)
+class_addMethods(meta_class, [new objj_method(sel_getUid("initialize"), function $Configuration__initialize(self, _cmd)
 {
-    if (self !== Configuration.isa.objj_msgSend0(Configuration, "class"))
+    if (self !== (Configuration.isa.method_msgSend["class"] || _objj_forward)(Configuration, "class"))
         return;
-    DefaultDictionary = (___r1 = CPDictionary.isa.objj_msgSend0(CPDictionary, "alloc"), ___r1 == null ? null : ___r1.isa.objj_msgSend0(___r1, "init"));
-    (DefaultDictionary == null ? null : DefaultDictionary.isa.objj_msgSend2(DefaultDictionary, "setObject:forKey:", "You", "user.name"));
-    (DefaultDictionary == null ? null : DefaultDictionary.isa.objj_msgSend2(DefaultDictionary, "setObject:forKey:", "you@yourcompany.com", "user.email"));
-    (DefaultDictionary == null ? null : DefaultDictionary.isa.objj_msgSend2(DefaultDictionary, "setObject:forKey:", "Your Company", "organization.name"));
-    (DefaultDictionary == null ? null : DefaultDictionary.isa.objj_msgSend2(DefaultDictionary, "setObject:forKey:", "feedback @nospam@ yourcompany.com", "organization.email"));
-    (DefaultDictionary == null ? null : DefaultDictionary.isa.objj_msgSend2(DefaultDictionary, "setObject:forKey:", "http://yourcompany.com", "organization.url"));
-    (DefaultDictionary == null ? null : DefaultDictionary.isa.objj_msgSend2(DefaultDictionary, "setObject:forKey:", "com.yourcompany", "organization.identifier"));
+    DefaultDictionary = (___r1 = (CPDictionary.isa.method_msgSend["alloc"] || _objj_forward)(CPDictionary, "alloc"), ___r1 == null ? null : (___r1.isa.method_msgSend["init"] || _objj_forward)(___r1, "init"));
+    (DefaultDictionary == null ? null : (DefaultDictionary.isa.method_msgSend["setObject:forKey:"] || _objj_forward)(DefaultDictionary, "setObject:forKey:", "You", "user.name"));
+    (DefaultDictionary == null ? null : (DefaultDictionary.isa.method_msgSend["setObject:forKey:"] || _objj_forward)(DefaultDictionary, "setObject:forKey:", "you@yourcompany.com", "user.email"));
+    (DefaultDictionary == null ? null : (DefaultDictionary.isa.method_msgSend["setObject:forKey:"] || _objj_forward)(DefaultDictionary, "setObject:forKey:", "Your Company", "organization.name"));
+    (DefaultDictionary == null ? null : (DefaultDictionary.isa.method_msgSend["setObject:forKey:"] || _objj_forward)(DefaultDictionary, "setObject:forKey:", "feedback @nospam@ yourcompany.com", "organization.email"));
+    (DefaultDictionary == null ? null : (DefaultDictionary.isa.method_msgSend["setObject:forKey:"] || _objj_forward)(DefaultDictionary, "setObject:forKey:", "http://yourcompany.com", "organization.url"));
+    (DefaultDictionary == null ? null : (DefaultDictionary.isa.method_msgSend["setObject:forKey:"] || _objj_forward)(DefaultDictionary, "setObject:forKey:", "com.yourcompany", "organization.identifier"));
     var date = new Date(),
         months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    (DefaultDictionary == null ? null : DefaultDictionary.isa.objj_msgSend2(DefaultDictionary, "setObject:forKey:", date.getFullYear(), "project.year"));
-    (DefaultDictionary == null ? null : DefaultDictionary.isa.objj_msgSend2(DefaultDictionary, "setObject:forKey:", months[date.getMonth()] + ' ' + date.getDate() + ", " + date.getFullYear(), "project.date"));
+    (DefaultDictionary == null ? null : (DefaultDictionary.isa.method_msgSend["setObject:forKey:"] || _objj_forward)(DefaultDictionary, "setObject:forKey:", date.getFullYear(), "project.year"));
+    (DefaultDictionary == null ? null : (DefaultDictionary.isa.method_msgSend["setObject:forKey:"] || _objj_forward)(DefaultDictionary, "setObject:forKey:", months[date.getMonth()] + ' ' + date.getDate() + ", " + date.getFullYear(), "project.date"));
     var ___r1;
 }
-,["void"]), new objj_method(sel_getUid("defaultConfiguration"), function(self, _cmd)
+
+,["void"]), new objj_method(sel_getUid("defaultConfiguration"), function $Configuration__defaultConfiguration(self, _cmd)
 {
     if (!DefaultConfiguration)
-        DefaultConfiguration = ((___r1 = self.isa.objj_msgSend0(self, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "initWithPath:", nil));
+        DefaultConfiguration = ((___r1 = (self.isa.method_msgSend["alloc"] || _objj_forward)(self, "alloc")), ___r1 == null ? null : (___r1.isa.method_msgSend["initWithPath:"] || _objj_forward)(___r1, "initWithPath:", nil));
     return DefaultConfiguration;
     var ___r1;
 }
-,["id"]), new objj_method(sel_getUid("userConfiguration"), function(self, _cmd)
+
+,["id"]), new objj_method(sel_getUid("userConfiguration"), function $Configuration__userConfiguration(self, _cmd)
 {
     if (!UserConfiguration)
-        UserConfiguration = ((___r1 = self.isa.objj_msgSend0(self, "alloc")), ___r1 == null ? null : ___r1.isa.objj_msgSend1(___r1, "initWithPath:", FILE.join(SYSTEM.env["HOME"], ".cappconfig")));
+        UserConfiguration = ((___r1 = (self.isa.method_msgSend["alloc"] || _objj_forward)(self, "alloc")), ___r1 == null ? null : (___r1.isa.method_msgSend["initWithPath:"] || _objj_forward)(___r1, "initWithPath:", FILE.join(SYSTEM.env["HOME"], ".cappconfig")));
     return UserConfiguration;
     var ___r1;
 }
+
 ,["id"])]);
-}config = function()
+}
+config = function()
 {
     var count = arguments.length;
     if (count === 0 || count > 2)
@@ -116,62 +130,62 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("initialize"), function
         action = nil,
         valid = YES;
     switch(argument) {
-    case "--get":
-    case "--remove":
-        action = argument.substring(2);
-        if (count === 2)
-            key = arguments[1];
-        else
-            valid = NO;
-        break;
-    case "-l":
-    case "--list":
-        action = "list";
-        valid = count === 1;
-        break;
+        case "--get":
+        case "--remove":
+            action = argument.substring(2);
+            if (count === 2)
+                key = arguments[1];
+            else
+                valid = NO;
+            break;
+        case "-l":
+        case "--list":
+            action = "list";
+            valid = count === 1;
+            break;
 default:
-        action = "set";
-        key = argument;
-        if (count === 2)
-            value = arguments[1];
-        else
-            valid = NO;
+            action = "set";
+            key = argument;
+            if (count === 2)
+                value = arguments[1];
+            else
+                valid = NO;
     }
     if (!valid)
     {
         printUsage();
         return;
     }
-    var configuration = Configuration.isa.objj_msgSend0(Configuration, "userConfiguration");
+    var configuration = (Configuration.isa.method_msgSend["userConfiguration"] || _objj_forward)(Configuration, "userConfiguration");
     if (action === "list")
     {
         var key = nil,
-            keyEnumerator = (configuration == null ? null : configuration.isa.objj_msgSend0(configuration, "storedKeyEnumerator"));
-        while ((key = (keyEnumerator == null ? null : keyEnumerator.isa.objj_msgSend0(keyEnumerator, "nextObject"))) !== nil)
-            print(key + '=' + (configuration == null ? null : configuration.isa.objj_msgSend1(configuration, "valueForKey:", key)));
+            keyEnumerator = (configuration == null ? null : (configuration.isa.method_msgSend["storedKeyEnumerator"] || _objj_forward)(configuration, "storedKeyEnumerator"));
+        while ((key = (keyEnumerator == null ? null : (keyEnumerator.isa.method_msgSend["nextObject"] || _objj_forward)(keyEnumerator, "nextObject"))) !== nil)
+            print(key + '=' + (configuration == null ? null : (configuration.isa.method_msgSend["valueForKey:"] || _objj_forward)(configuration, "valueForKey:", key)));
     }
     else if (action === "get")
     {
-        var value = (configuration == null ? null : configuration.isa.objj_msgSend1(configuration, "valueForKey:", key));
+        var value = (configuration == null ? null : (configuration.isa.method_msgSend["valueForKey:"] || _objj_forward)(configuration, "valueForKey:", key));
         if (value != nil)
             print(value);
     }
     else if (action === "remove")
     {
-        var value = (configuration == null ? null : configuration.isa.objj_msgSend1(configuration, "valueForKey:", key));
+        var value = (configuration == null ? null : (configuration.isa.method_msgSend["valueForKey:"] || _objj_forward)(configuration, "valueForKey:", key));
         if (value != nil)
         {
-            (configuration == null ? null : configuration.isa.objj_msgSend1(configuration, "removeValueForKey:", key));
-            (configuration == null ? null : configuration.isa.objj_msgSend0(configuration, "save"));
+            (configuration == null ? null : (configuration.isa.method_msgSend["removeValueForKey:"] || _objj_forward)(configuration, "removeValueForKey:", key));
+            (configuration == null ? null : (configuration.isa.method_msgSend["save"] || _objj_forward)(configuration, "save"));
         }
     }
     else if (key !== nil && value !== nil)
     {
-        (configuration == null ? null : configuration.isa.objj_msgSend2(configuration, "setValue:forKey:", value, key));
-        (configuration == null ? null : configuration.isa.objj_msgSend0(configuration, "save"));
+        (configuration == null ? null : (configuration.isa.method_msgSend["setValue:forKey:"] || _objj_forward)(configuration, "setValue:forKey:", value, key));
+        (configuration == null ? null : (configuration.isa.method_msgSend["save"] || _objj_forward)(configuration, "save"));
     }
 }
-p;10;Generate.jt;14220;@STATIC;1.0;i;15;Configuration.jt;14180;objj_executeFile("Configuration.j", YES);var OS = require("os"),
+p;10;Generate.jt;14620;@STATIC;1.0;i;15;Configuration.jt;14580;objj_executeFile("Configuration.j", YES);var OS = require("os"),
     SYSTEM = require("system"),
     FILE = require("file"),
     OBJJ = require("objective-j"),
@@ -243,7 +257,7 @@ gen = function()
     if (FILE.isFile(configFile))
         config = JSON.parse(FILE.read(configFile, {charset: "UTF-8"}));
     var destinationProject = destination,
-        configuration = options.noconfig ? Configuration.isa.objj_msgSend0(Configuration, "defaultConfiguration") : Configuration.isa.objj_msgSend0(Configuration, "userConfiguration"),
+        configuration = options.noconfig ? (Configuration.isa.method_msgSend["defaultConfiguration"] || _objj_forward)(Configuration, "defaultConfiguration") : (Configuration.isa.method_msgSend["userConfiguration"] || _objj_forward)(Configuration, "userConfiguration"),
         frameworks = options.frameworks,
         themes = options.themes;
     if (!options.noFrameworks)
@@ -259,10 +273,10 @@ gen = function()
         var files = FILE.glob(FILE.join(destinationProject, "**", "*")),
             count = files.length,
             name = FILE.basename(destinationProject),
-            orgIdentifier = (configuration == null ? null : configuration.isa.objj_msgSend1(configuration, "valueForKey:", "organization.identifier")) || "";
-        (configuration == null ? null : configuration.isa.objj_msgSend2(configuration, "setTemporaryValue:forKey:", name, "project.name"));
-        (configuration == null ? null : configuration.isa.objj_msgSend2(configuration, "setTemporaryValue:forKey:", orgIdentifier + '.' + toIdentifier(name), "project.identifier"));
-        (configuration == null ? null : configuration.isa.objj_msgSend2(configuration, "setTemporaryValue:forKey:", toIdentifier(name), "project.nameasidentifier"));
+            orgIdentifier = (configuration == null ? null : (configuration.isa.method_msgSend["valueForKey:"] || _objj_forward)(configuration, "valueForKey:", "organization.identifier")) || "";
+        (configuration == null ? null : (configuration.isa.method_msgSend["setTemporaryValue:forKey:"] || _objj_forward)(configuration, "setTemporaryValue:forKey:", name, "project.name"));
+        (configuration == null ? null : (configuration.isa.method_msgSend["setTemporaryValue:forKey:"] || _objj_forward)(configuration, "setTemporaryValue:forKey:", orgIdentifier + '.' + toIdentifier(name), "project.identifier"));
+        (configuration == null ? null : (configuration.isa.method_msgSend["setTemporaryValue:forKey:"] || _objj_forward)(configuration, "setTemporaryValue:forKey:", toIdentifier(name), "project.nameasidentifier"));
         for (var index = 0; index < count; ++index)
         {
             var path = files[index];
@@ -272,17 +286,18 @@ gen = function()
                 continue;
             if ([".png", ".jpg", ".jpeg", ".gif", ".tif", ".tiff"].indexOf((FILE.extension(path)).toLowerCase()) !== -1)
                 continue;
-            try            {
+            try {
                 var contents = FILE.read(path, {charset: "UTF-8"}),
                     key = null,
-                    keyEnumerator = (configuration == null ? null : configuration.isa.objj_msgSend0(configuration, "keyEnumerator"));
-                while ((key = (keyEnumerator == null ? null : keyEnumerator.isa.objj_msgSend0(keyEnumerator, "nextObject"))) !== nil)
-                    contents = contents.replace(new RegExp("__" + RegExp.escape(key) + "__", 'g'), (configuration == null ? null : configuration.isa.objj_msgSend1(configuration, "valueForKey:", key)));
+                    keyEnumerator = (configuration == null ? null : (configuration.isa.method_msgSend["keyEnumerator"] || _objj_forward)(configuration, "keyEnumerator"));
+                while ((key = (keyEnumerator == null ? null : (keyEnumerator.isa.method_msgSend["nextObject"] || _objj_forward)(keyEnumerator, "nextObject"))) !== nil)
+                    contents = contents.replace(new RegExp("__" + RegExp.escape(key) + "__", 'g'), (configuration == null ? null : (configuration.isa.method_msgSend["valueForKey:"] || _objj_forward)(configuration, "valueForKey:", key)));
                 FILE.write(path, contents, {charset: "UTF-8"});
             }
-            catch(anException)             {
+            catch(anException) {
                 warn("An error occurred (" + anException.toString() + ") while applying the " + (options.noconfig ? "default" : "user") + " configuration to: " + logPath(path));
-            }        }
+            }
+        }
         var frameworkDestination = destinationProject;
         if (config.FrameworksPath)
             frameworkDestination = FILE.join(frameworkDestination, config.FrameworksPath);
@@ -313,7 +328,7 @@ createFrameworksInFile = function(frameworks, aFile, symlink, build, force)
         var builtFrameworks = FILE.path(SYSTEM.env["CAPP_BUILD"]),
             sourceFrameworks = builtFrameworks.join("Release"),
             sourceDebugFrameworks = builtFrameworks.join("Debug");
-        frameworks.forEach(function(framework)
+        frameworks.forEach(        function(framework)
         {
             installFramework(sourceFrameworks.join(framework), destinationFrameworks.join(framework), force, symlink);
             installFramework(sourceDebugFrameworks.join(framework), destinationDebugFrameworks.join(framework), force, symlink);
@@ -321,7 +336,7 @@ createFrameworksInFile = function(frameworks, aFile, symlink, build, force)
     }
     else
     {
-        frameworks.forEach(function(framework)
+        frameworks.forEach(        function(framework)
         {
             if (framework === "Objective-J")
             {
@@ -331,8 +346,7 @@ createFrameworksInFile = function(frameworks, aFile, symlink, build, force)
                 installFramework(objjPath, destinationFrameworks.join("Objective-J"), force, symlink);
                 installFramework(objjDebugPath, destinationDebugFrameworks.join("Objective-J"), force, symlink);
                 return;
-            }
-            var found = false;
+            }            var found = false;
             for (var i = 0; i < OBJJ.objj_frameworks.length; i++)
             {
                 var sourceFramework = (FILE.path(OBJJ.objj_frameworks[i])).join(framework);
@@ -341,9 +355,7 @@ createFrameworksInFile = function(frameworks, aFile, symlink, build, force)
                     installFramework(sourceFramework, destinationFrameworks.join(framework), force, symlink);
                     found = true;
                     break;
-                }
-            }
-            if (!found)
+                }            }            if (!found)
                 warn("Couldn't find the framework: " + logPath(framework));
             for (var i = 0, found = false; i < OBJJ.objj_debug_frameworks.length; i++)
             {
@@ -353,9 +365,7 @@ createFrameworksInFile = function(frameworks, aFile, symlink, build, force)
                     installFramework(sourceDebugFramework, destinationDebugFrameworks.join(framework), force, symlink);
                     found = true;
                     break;
-                }
-            }
-            if (!found)
+                }            }            if (!found)
                 warn("Couldn't find the debug framework: " + logPath(framework));
         });
     }
@@ -394,7 +404,7 @@ createThemesInFile = function(themes, aFile, symlink, force)
         fail("$CAPP_BUILD must be defined to use the --theme or -T option.");
     var themesBuild = FILE.join(SYSTEM.env["CAPP_BUILD"], "Release"),
         sources = [];
-    themes.forEach(function(theme)
+    themes.forEach(    function(theme)
     {
         var themeFolder = theme + ".blend",
             path = FILE.join(themesBuild, themeFolder);
@@ -402,7 +412,7 @@ createThemesInFile = function(themes, aFile, symlink, force)
             fail("Cannot find theme " + themeFolder + " in " + themesBuild);
         sources.push([FILE.path(path), themeFolder]);
     });
-    sources.forEach(function(source)
+    sources.forEach(    function(source)
     {
         installTheme(source[0], (FILE.path(destinationThemes)).join(source[1]), force, symlink);
     });
@@ -455,7 +465,7 @@ toIdentifier = function(aString)
 }
 listTemplates = function()
 {
-    (FILE.list(templatesDirectory)).forEach(function(templateName)
+    (FILE.list(templatesDirectory)).forEach(    function(templateName)
     {
         stream.print(templateName);
     });
@@ -463,19 +473,19 @@ listTemplates = function()
 listFrameworks = function()
 {
     stream.print("Frameworks:");
-    OBJJ.objj_frameworks.forEach(function(frameworksDirectory)
+    OBJJ.objj_frameworks.forEach(    function(frameworksDirectory)
     {
         stream.print("  " + frameworksDirectory);
-        (FILE.list(frameworksDirectory)).forEach(function(templateName)
+        (FILE.list(frameworksDirectory)).forEach(        function(templateName)
         {
             stream.print("    + " + templateName);
         });
     });
     stream.print("Frameworks (Debug):");
-    OBJJ.objj_debug_frameworks.forEach(function(frameworksDirectory)
+    OBJJ.objj_debug_frameworks.forEach(    function(frameworksDirectory)
     {
         stream.print("  " + frameworksDirectory);
-        (FILE.list(frameworksDirectory)).forEach(function(frameworkName)
+        (FILE.list(frameworksDirectory)).forEach(        function(frameworkName)
         {
             stream.print("    + " + frameworkName);
         });
@@ -508,7 +518,7 @@ fail = function(message)
     stream.print(colorize(message, "red"));
     OS.exit(1);
 }
-p;6;main.jt;4303;@STATIC;1.0;I;23;Foundation/Foundation.ji;15;Configuration.ji;10;Generate.jt;4221;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("Configuration.j", YES);objj_executeFile("Generate.j", YES);main = function(args)
+p;6;main.jt;4347;@STATIC;1.0;I;23;Foundation/Foundation.ji;15;Configuration.ji;10;Generate.jt;4265;objj_executeFile("Foundation/Foundation.j", NO);objj_executeFile("Configuration.j", YES);objj_executeFile("Generate.j", YES);main = function(args)
 {
     args.shift();
     if (args.length < 1)
@@ -519,18 +529,18 @@ p;6;main.jt;4303;@STATIC;1.0;I;23;Foundation/Foundation.ji;15;Configuration.ji;1
     {
         var argument = args[index];
         switch(argument) {
-        case "version":
-        case "--version":
-            return print((require("cappuccino")).fullVersionString());
-        case "-h":
-        case "--help":
-            return printUsage();
-        case "config":
-            return config.apply(this, args.slice(index + 1));
-        case "gen":
-            return gen.apply(this, args.slice(index + 1));
+            case "version":
+            case "--version":
+                return print((require("cappuccino")).fullVersionString());
+            case "-h":
+            case "--help":
+                return printUsage();
+            case "config":
+                return config.apply(this, args.slice(index + 1));
+            case "gen":
+                return gen.apply(this, args.slice(index + 1));
 default:
-            print("unknown command " + argument);
+                print("unknown command " + argument);
         }
     }
 }

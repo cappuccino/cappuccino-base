@@ -929,7 +929,7 @@ BundleTask.prototype.defineSourceTasks = function()
                         basePath = absolutePath.substring(0, absolutePath.length - theTranslatedFilename.length);
 
 
-                    ObjectiveJ.setCurrentGccCompilerFlags(environmentCompilerFlags);
+                    ObjectiveJ.FileExecutable.setCurrentGccCompilerFlags(environmentCompilerFlags);
 
                     CFBundle.environments = function() {return [anEnvironment.name(), "ObjJ"]};
                     ObjectiveJ.make_narwhal_factory(absolutePath, basePath, translateFilenameToPath)(require, e, module, system, print);

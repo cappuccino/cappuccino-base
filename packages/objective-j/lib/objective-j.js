@@ -23,6 +23,7 @@
 
 var FILE = require("file");
 var sprintf = require("printf").sprintf;
+var OS = require("os");
 
 var window = exports.window = require("browser/window");
 
@@ -1275,7 +1276,7 @@ function FileRequest( aURL, onsuccess, onfailure, onprogress)
     {
         var aFilePath = aURL.toString().substring(5),
             OS = require("os"),
-            gccFlags = require("objective-j").currentGccCompilerFlags(),
+            gccFlags = require("objective-j").FileExecutable.currentGccCompilerFlags(),
             chunk,
             fileContents = "";
 
@@ -5640,15 +5641,18 @@ if (typeof exports != "undefined" && !exports.acorn) {
   exports.acorn.walk = {};
 }
 
-(function(exports) {
+(function(exports, walk) {
   "use strict";
 
-  exports.version = "0.1.01";
+  exports.version = "0.3.3-objj-3";
   var options, input, inputLen, sourceFile;
 
   exports.parse = function(inpt, opts) {
     input = String(inpt); inputLen = input.length;
     setOptions(opts);
+    initPreprocessorState();
+    if (options.macros)
+      defineMacros(options.macros);
     initTokenState();
     return parseTopLevel(options.program);
   };
@@ -5681,6 +5685,10 @@ if (typeof exports != "undefined" && !exports.acorn) {
 
 
 
+    trackCommentsIncludeLineBreak: false,
+
+
+
 
 
 
@@ -5690,6 +5698,7 @@ if (typeof exports != "undefined" && !exports.acorn) {
 
 
     locations: false,
+    onComment: null,
     ranges: false,
 
 
@@ -5717,18 +5726,34 @@ if (typeof exports != "undefined" && !exports.acorn) {
 
     preprocessUndefineMacro: defaultUndefineMacro,
 
-    preprocessIsMacro: defaultIsMacro
+    preprocessIsMacro: defaultIsMacro,
+
+
+
+
+    macros: null,
+
+
+    lineNoInErrorMessage: true
   };
 
   function setOptions(opts) {
     options = opts || {};
-    for (var opt in defaultOptions) if (!options.hasOwnProperty(opt))
+    for (var opt in defaultOptions) if (!Object.prototype.hasOwnProperty.call(options, opt))
       options[opt] = defaultOptions[opt];
     sourceFile = options.sourceFile || null;
   }
 
   var macros;
   var macrosIsPredicate;
+
+  var macrosMakeBuiltin = function(name, macro, endPos) {return new Macro(name, macro, null, endPos - name.length)}
+
+  var macrosBuiltinMacros = {
+                              __OBJJ__: function() {return macrosMakeBuiltin("__OBJJ__", options.objj ? "1" : null, tokPos)},
+                              __BROWSER__: function() {return macrosMakeBuiltin("__BROWSER__", typeof(window) !== "undefined" ? "1" : null, tokPos)},
+                              171: function() {return macrosMakeBuiltin("__LINE__", String(options.locations ? tokCurLine : getLineInfo(input, tokPos).line), tokPos)},
+                            }
 
   function defaultAddMacro(macro) {
     macros[macro.identifier] = macro;
@@ -5745,8 +5770,40 @@ if (typeof exports != "undefined" && !exports.acorn) {
   }
 
   function defaultIsMacro(macroIdentifier) {
-    var x = Object.keys(macros).join(" ");
-    return (macrosIsPredicate || (macrosIsPredicate = makePredicate(x)))(macroIdentifier);
+    return (macrosIsPredicate || (macrosIsPredicate = makePredicate(Object.keys(macros).concat(Object.keys(macrosBuiltinMacros).filter(function(key) {return this[key]().macro != null}, macrosBuiltinMacros)).join(" "))))(macroIdentifier);
+  }
+
+  function preprocessBuiltinMacro(macroIdentifier) {
+    var builtinMacro = macrosBuiltinMacros[macroIdentifier];
+    return builtinMacro ? builtinMacro() : null;
+  }
+
+  function defineMacros(macroArray) {
+    for (var i = 0, size = macroArray.length; i < size; i++) {
+      var savedInput = input;
+      var macroDefinition = macroArray[i].trim();
+      var pos = macroDefinition.indexOf("=");
+      if (pos === 0)
+        raise(0, "Invalid macro definition: '" + macroDefinition + "'");
+
+      var name, body;
+      if (pos > 0) {
+        name = macroDefinition.slice(0, pos);
+        body = macroDefinition.slice(pos + 1);
+      }
+      else {
+        name = macroDefinition;
+      }
+      if (macrosBuiltinMacros.hasOwnProperty(name))
+        raise(0, "'" + name + "' is a predefined macro name");
+
+      input = name + (body != null ? " " + body : "");
+      inputLen = input.length;
+      initTokenState();
+      preprocessParseDefine();
+      input = savedInput;
+      inputLen = input.length;
+    }
   }
 
 
@@ -5770,6 +5827,7 @@ if (typeof exports != "undefined" && !exports.acorn) {
     input = String(inpt); inputLen = input.length;
     setOptions(opts);
     initTokenState();
+    initPreprocessorState();
 
     var t = {};
     function getToken(forceRegexp) {
@@ -5782,14 +5840,14 @@ if (typeof exports != "undefined" && !exports.acorn) {
     getToken.jumpTo = function(pos, reAllowed) {
       tokPos = pos;
       if (options.locations) {
-        tokCurLine = tokLineStart = lineBreak.lastIndex = 0;
+        tokCurLine = 1;
+        tokLineStart = lineBreak.lastIndex = 0;
         var match;
         while ((match = lineBreak.exec(input)) && match.index < pos) {
           ++tokCurLine;
           tokLineStart = match.index + match[0].length;
         }
       }
-      var ch = input.charAt(pos - 1);
       tokRegexpAllowed = reAllowed;
       skipSpace();
     };
@@ -5802,10 +5860,7 @@ if (typeof exports != "undefined" && !exports.acorn) {
 
 
   var tokPos;
-
-
-
-  var tokStart, tokEnd;
+  var tokFirstStart, tokStart, tokEnd, tokMacroOffset, tokPosMacroOffset, lastTokMacroOffset;
 
 
 
@@ -5828,23 +5883,17 @@ if (typeof exports != "undefined" && !exports.acorn) {
 
 
 
-  var tokCurLine, tokLineStart, tokLineStartNext;
+  var tokCurLine, tokLineStart;
 
 
 
 
-  var tokInput, preTokInput;
+  var tokInput, preTokInput, tokFirstInput;
 
 
 
 
   var lastStart, lastEnd, lastEndLoc;
-
-
-
-
-
-  var tokAfterImport;
 
 
 
@@ -5863,8 +5912,24 @@ if (typeof exports != "undefined" && !exports.acorn) {
 
   var preTokPos, preTokType, preTokVal, preTokStart, preTokEnd;
   var preLastStart, preLastEnd;
-  var preprocessStack = [];
-  var preprocessMacroParamterListMode = false;
+  var preprocessStack;
+  var preprocessStackLastItem;
+  var preprocessOnlyTransformArgumentsForLastToken;
+  var preprocessMacroParameterListMode;
+  var preprocessIsParsingPreprocess;
+  var preprocessParameterScope;
+  var preTokParameterScope;
+  var preprocessOverrideTokEndLoc;
+
+
+
+
+  var preConcatenating;
+
+
+
+  var preNotSkipping;
+  var preIfLevel;
 
 
 
@@ -5874,15 +5939,21 @@ if (typeof exports != "undefined" && !exports.acorn) {
 
   function raise(pos, message) {
     if (typeof pos == "number") pos = getLineInfo(input, pos);
+    if (options.lineNoInErrorMessage)
+      message += " (" + pos.line + ":" + pos.column + ")";
     var syntaxError = new SyntaxError(message);
-    syntaxError.line = pos.line;
-    syntaxError.column = pos.column;
+    syntaxError.messageOnLine = pos.line;
+    syntaxError.messageOnColumn = pos.column;
     syntaxError.lineStart = pos.lineStart;
     syntaxError.lineEnd = pos.lineEnd;
     syntaxError.fileName = sourceFile;
 
     throw syntaxError;
   }
+
+
+
+  var empty = [];
   var _num = {type: "num"}, _regexp = {type: "regexp"}, _string = {type: "string"};
   var _name = {type: "name"}, _eof = {type: "eof"}, _eol = {type: "eol"};
   var _break = {keyword: "break"}, _case = {keyword: "case", beforeExpr: true}, _catch = {keyword: "catch"};
@@ -5909,7 +5980,7 @@ if (typeof exports != "undefined" && !exports.acorn) {
 
 
   var _implementation = {keyword: "implementation"}, _outlet = {keyword: "outlet"}, _accessors = {keyword: "accessors"};
-  var _end = {keyword: "end"}, _import = {keyword: "import", afterImport: true};
+  var _end = {keyword: "end"}, _import = {keyword: "import"};
   var _action = {keyword: "action"}, _selector = {keyword: "selector"}, _class = {keyword: "class"}, _global = {keyword: "global"};
   var _dictionaryLiteral = {keyword: "{"}, _arrayLiteral = {keyword: "["};
   var _ref = {keyword: "ref"}, _deref = {keyword: "deref"};
@@ -5936,11 +6007,15 @@ if (typeof exports != "undefined" && !exports.acorn) {
   var _preElse = {keyword: "else"};
   var _preEndif = {keyword: "endif"};
   var _preElseIf = {keyword: "elif"};
+  var _preElseIfTrue = {keyword: "elif (True)"};
+  var _preElseIfFalse = {keyword: "elif (false)"};
   var _prePragma = {keyword: "pragma"};
   var _preDefined = {keyword: "defined"};
   var _preBackslash = {keyword: "\\"}
-
+  var _preError = {keyword: "error"};
+  var _preWarning = {keyword: "warning"};
   var _preprocessParamItem = {type: "preprocessParamItem"}
+  var _preprocessSkipLine = {type: "skipLine"}
 
 
 
@@ -5970,9 +6045,9 @@ if (typeof exports != "undefined" && !exports.acorn) {
 
 
 
-  var keywordTypesPreprocess = {"define": _preDefine, "pragma": _prePragma, "ifdef": _preIfdef, "ifndef": _preIfndef,
+  var keywordTypesPreprocessor = {"define": _preDefine, "pragma": _prePragma, "ifdef": _preIfdef, "ifndef": _preIfndef,
                                 "undef": _preUndef, "if": _preIf, "endif": _preEndif, "else": _preElse, "elif": _preElseIf,
-                                "defined": _preDefined};
+                                "defined": _preDefined, "warning": _preWarning, "error": _preError};
 
 
 
@@ -5986,7 +6061,7 @@ if (typeof exports != "undefined" && !exports.acorn) {
   var _at = {type: "@"}, _dotdotdot = {type: "..."}, _numberSign = {type: "#"};
   var _slash = {binop: 10, beforeExpr: true, preprocess: true}, _eq = {isAssign: true, beforeExpr: true, preprocess: true};
   var _assign = {isAssign: true, beforeExpr: true}, _plusmin = {binop: 9, prefix: true, beforeExpr: true, preprocess: true};
-  var _incdec = {postfix: true, prefix: true, isUpdate: true}, _prefix = {prefix: true, beforeExpr: true};
+  var _incdec = {postfix: true, prefix: true, isUpdate: true}, _prefix = {prefix: true, beforeExpr: true, preprocess: true};
   var _bin1 = {binop: 1, beforeExpr: true, preprocess: true}, _bin2 = {binop: 2, beforeExpr: true, preprocess: true};
   var _bin3 = {binop: 3, beforeExpr: true, preprocess: true}, _bin4 = {binop: 4, beforeExpr: true, preprocess: true};
   var _bin5 = {binop: 5, beforeExpr: true, preprocess: true}, _bin6 = {binop: 6, beforeExpr: true, preprocess: true};
@@ -6000,7 +6075,7 @@ if (typeof exports != "undefined" && !exports.acorn) {
                       parenL: _parenL, parenR: _parenR, comma: _comma, semi: _semi, colon: _colon,
                       dot: _dot, question: _question, slash: _slash, eq: _eq, name: _name, eof: _eof,
                       num: _num, regexp: _regexp, string: _string};
-  for (var kw in keywordTypes) exports.tokTypes[kw] = keywordTypes[kw];
+  for (var kw in keywordTypes) exports.tokTypes["_" + kw] = keywordTypes[kw];
   function makePredicate(words) {
     words = words.split(" ");
     var f = "", cats = [];
@@ -6068,11 +6143,11 @@ if (typeof exports != "undefined" && !exports.acorn) {
 
 
 
-  var isKeywordPreprocess = makePredicate("define pragma if ifdef ifndef else elif endif defined");
+  var isKeywordPreprocessor = makePredicate("define undef pragma if ifdef ifndef else elif endif defined error warning");
   var nonASCIIwhitespace = /[\u1680\u180e\u2000-\u200a\u2028\u2029\u202f\u205f\u3000﻿]/;
   var nonASCIIwhitespaceNoNewLine = /[\u1680\u180e\u2000-\u200a\u202f\u205f\u3000﻿]/;
   var nonASCIIidentifierStartChars = "\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\u02ee\u0370-\u0374\u0376\u0377\u037a-\u037d\u0386\u0388-\u038a\u038c\u038e-\u03a1\u03a3-\u03f5\u03f7-\u0481\u048a-\u0527\u0531-\u0556\u0559\u0561-\u0587\u05d0-\u05ea\u05f0-\u05f2\u0620-\u064a\u066e\u066f\u0671-\u06d3\u06d5\u06e5\u06e6\u06ee\u06ef\u06fa-\u06fc\u06ff\u0710\u0712-\u072f\u074d-\u07a5\u07b1\u07ca-\u07ea\u07f4\u07f5\u07fa\u0800-\u0815\u081a\u0824\u0828\u0840-\u0858\u08a0\u08a2-\u08ac\u0904-\u0939\u093d\u0950\u0958-\u0961\u0971-\u0977\u0979-\u097f\u0985-\u098c\u098f\u0990\u0993-\u09a8\u09aa-\u09b0\u09b2\u09b6-\u09b9\u09bd\u09ce\u09dc\u09dd\u09df-\u09e1\u09f0\u09f1\u0a05-\u0a0a\u0a0f\u0a10\u0a13-\u0a28\u0a2a-\u0a30\u0a32\u0a33\u0a35\u0a36\u0a38\u0a39\u0a59-\u0a5c\u0a5e\u0a72-\u0a74\u0a85-\u0a8d\u0a8f-\u0a91\u0a93-\u0aa8\u0aaa-\u0ab0\u0ab2\u0ab3\u0ab5-\u0ab9\u0abd\u0ad0\u0ae0\u0ae1\u0b05-\u0b0c\u0b0f\u0b10\u0b13-\u0b28\u0b2a-\u0b30\u0b32\u0b33\u0b35-\u0b39\u0b3d\u0b5c\u0b5d\u0b5f-\u0b61\u0b71\u0b83\u0b85-\u0b8a\u0b8e-\u0b90\u0b92-\u0b95\u0b99\u0b9a\u0b9c\u0b9e\u0b9f\u0ba3\u0ba4\u0ba8-\u0baa\u0bae-\u0bb9\u0bd0\u0c05-\u0c0c\u0c0e-\u0c10\u0c12-\u0c28\u0c2a-\u0c33\u0c35-\u0c39\u0c3d\u0c58\u0c59\u0c60\u0c61\u0c85-\u0c8c\u0c8e-\u0c90\u0c92-\u0ca8\u0caa-\u0cb3\u0cb5-\u0cb9\u0cbd\u0cde\u0ce0\u0ce1\u0cf1\u0cf2\u0d05-\u0d0c\u0d0e-\u0d10\u0d12-\u0d3a\u0d3d\u0d4e\u0d60\u0d61\u0d7a-\u0d7f\u0d85-\u0d96\u0d9a-\u0db1\u0db3-\u0dbb\u0dbd\u0dc0-\u0dc6\u0e01-\u0e30\u0e32\u0e33\u0e40-\u0e46\u0e81\u0e82\u0e84\u0e87\u0e88\u0e8a\u0e8d\u0e94-\u0e97\u0e99-\u0e9f\u0ea1-\u0ea3\u0ea5\u0ea7\u0eaa\u0eab\u0ead-\u0eb0\u0eb2\u0eb3\u0ebd\u0ec0-\u0ec4\u0ec6\u0edc-\u0edf\u0f00\u0f40-\u0f47\u0f49-\u0f6c\u0f88-\u0f8c\u1000-\u102a\u103f\u1050-\u1055\u105a-\u105d\u1061\u1065\u1066\u106e-\u1070\u1075-\u1081\u108e\u10a0-\u10c5\u10c7\u10cd\u10d0-\u10fa\u10fc-\u1248\u124a-\u124d\u1250-\u1256\u1258\u125a-\u125d\u1260-\u1288\u128a-\u128d\u1290-\u12b0\u12b2-\u12b5\u12b8-\u12be\u12c0\u12c2-\u12c5\u12c8-\u12d6\u12d8-\u1310\u1312-\u1315\u1318-\u135a\u1380-\u138f\u13a0-\u13f4\u1401-\u166c\u166f-\u167f\u1681-\u169a\u16a0-\u16ea\u16ee-\u16f0\u1700-\u170c\u170e-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176c\u176e-\u1770\u1780-\u17b3\u17d7\u17dc\u1820-\u1877\u1880-\u18a8\u18aa\u18b0-\u18f5\u1900-\u191c\u1950-\u196d\u1970-\u1974\u1980-\u19ab\u19c1-\u19c7\u1a00-\u1a16\u1a20-\u1a54\u1aa7\u1b05-\u1b33\u1b45-\u1b4b\u1b83-\u1ba0\u1bae\u1baf\u1bba-\u1be5\u1c00-\u1c23\u1c4d-\u1c4f\u1c5a-\u1c7d\u1ce9-\u1cec\u1cee-\u1cf1\u1cf5\u1cf6\u1d00-\u1dbf\u1e00-\u1f15\u1f18-\u1f1d\u1f20-\u1f45\u1f48-\u1f4d\u1f50-\u1f57\u1f59\u1f5b\u1f5d\u1f5f-\u1f7d\u1f80-\u1fb4\u1fb6-\u1fbc\u1fbe\u1fc2-\u1fc4\u1fc6-\u1fcc\u1fd0-\u1fd3\u1fd6-\u1fdb\u1fe0-\u1fec\u1ff2-\u1ff4\u1ff6-\u1ffc\u2071\u207f\u2090-\u209c\u2102\u2107\u210a-\u2113\u2115\u2119-\u211d\u2124\u2126\u2128\u212a-\u212d\u212f-\u2139\u213c-\u213f\u2145-\u2149\u214e\u2160-\u2188\u2c00-\u2c2e\u2c30-\u2c5e\u2c60-\u2ce4\u2ceb-\u2cee\u2cf2\u2cf3\u2d00-\u2d25\u2d27\u2d2d\u2d30-\u2d67\u2d6f\u2d80-\u2d96\u2da0-\u2da6\u2da8-\u2dae\u2db0-\u2db6\u2db8-\u2dbe\u2dc0-\u2dc6\u2dc8-\u2dce\u2dd0-\u2dd6\u2dd8-\u2dde\u2e2f\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303c\u3041-\u3096\u309d-\u309f\u30a1-\u30fa\u30fc-\u30ff\u3105-\u312d\u3131-\u318e\u31a0-\u31ba\u31f0-\u31ff\u3400-\u4db5\u4e00-\u9fcc\ua000-\ua48c\ua4d0-\ua4fd\ua500-\ua60c\ua610-\ua61f\ua62a\ua62b\ua640-\ua66e\ua67f-\ua697\ua6a0-\ua6ef\ua717-\ua71f\ua722-\ua788\ua78b-\ua78e\ua790-\ua793\ua7a0-\ua7aa\ua7f8-\ua801\ua803-\ua805\ua807-\ua80a\ua80c-\ua822\ua840-\ua873\ua882-\ua8b3\ua8f2-\ua8f7\ua8fb\ua90a-\ua925\ua930-\ua946\ua960-\ua97c\ua984-\ua9b2\ua9cf\uaa00-\uaa28\uaa40-\uaa42\uaa44-\uaa4b\uaa60-\uaa76\uaa7a\uaa80-\uaaaf\uaab1\uaab5\uaab6\uaab9-\uaabd\uaac0\uaac2\uaadb-\uaadd\uaae0-\uaaea\uaaf2-\uaaf4\uab01-\uab06\uab09-\uab0e\uab11-\uab16\uab20-\uab26\uab28-\uab2e\uabc0-\uabe2\uac00-\ud7a3\ud7b0-\ud7c6\ud7cb-\ud7fb\uf900-\ufa6d\ufa70-\ufad9\ufb00-\ufb06\ufb13-\ufb17\ufb1d\ufb1f-\ufb28\ufb2a-\ufb36\ufb38-\ufb3c\ufb3e\ufb40\ufb41\ufb43\ufb44\ufb46-\ufbb1\ufbd3-\ufd3d\ufd50-\ufd8f\ufd92-\ufdc7\ufdf0-\ufdfb\ufe70-\ufe74\ufe76-\ufefc\uff21-\uff3a\uff41-\uff5a\uff66-\uffbe\uffc2-\uffc7\uffca-\uffcf\uffd2-\uffd7\uffda-\uffdc";
-  var nonASCIIidentifierChars = "\u0371-\u0374\u0483-\u0487\u0591-\u05bd\u05bf\u05c1\u05c2\u05c4\u05c5\u05c7\u0610-\u061a\u0620-\u0649\u0672-\u06d3\u06e7-\u06e8\u06fb-\u06fc\u0730-\u074a\u0800-\u0814\u081b-\u0823\u0825-\u0827\u0829-\u082d\u0840-\u0857\u08e4-\u08fe\u0900-\u0903\u093a-\u093c\u093e-\u094f\u0951-\u0957\u0962-\u0963\u0966-\u096f\u0981-\u0983\u09bc\u09be-\u09c4\u09c7\u09c8\u09d7\u09df-\u09e0\u0a01-\u0a03\u0a3c\u0a3e-\u0a42\u0a47\u0a48\u0a4b-\u0a4d\u0a51\u0a66-\u0a71\u0a75\u0a81-\u0a83\u0abc\u0abe-\u0ac5\u0ac7-\u0ac9\u0acb-\u0acd\u0ae2-\u0ae3\u0ae6-\u0aef\u0b01-\u0b03\u0b3c\u0b3e-\u0b44\u0b47\u0b48\u0b4b-\u0b4d\u0b56\u0b57\u0b5f-\u0b60\u0b66-\u0b6f\u0b82\u0bbe-\u0bc2\u0bc6-\u0bc8\u0bca-\u0bcd\u0bd7\u0be6-\u0bef\u0c01-\u0c03\u0c46-\u0c48\u0c4a-\u0c4d\u0c55\u0c56\u0c62-\u0c63\u0c66-\u0c6f\u0c82\u0c83\u0cbc\u0cbe-\u0cc4\u0cc6-\u0cc8\u0cca-\u0ccd\u0cd5\u0cd6\u0ce2-\u0ce3\u0ce6-\u0cef\u0d02\u0d03\u0d46-\u0d48\u0d57\u0d62-\u0d63\u0d66-\u0d6f\u0d82\u0d83\u0dca\u0dcf-\u0dd4\u0dd6\u0dd8-\u0ddf\u0df2\u0df3\u0e34-\u0e3a\u0e40-\u0e45\u0e50-\u0e59\u0eb4-\u0eb9\u0ec8-\u0ecd\u0ed0-\u0ed9\u0f18\u0f19\u0f20-\u0f29\u0f35\u0f37\u0f39\u0f41-\u0f47\u0f71-\u0f84\u0f86-\u0f87\u0f8d-\u0f97\u0f99-\u0fbc\u0fc6\u1000-\u1029\u1040-\u1049\u1067-\u106d\u1071-\u1074\u1082-\u108d\u108f-\u109d\u135d-\u135f\u170e-\u1710\u1720-\u1730\u1740-\u1750\u1772\u1773\u1780-\u17b2\u17dd\u17e0-\u17e9\u180b-\u180d\u1810-\u1819\u1920-\u192b\u1930-\u193b\u1951-\u196d\u19b0-\u19c0\u19c8-\u19c9\u19d0-\u19d9\u1a00-\u1a15\u1a20-\u1a53\u1a60-\u1a7c\u1a7f-\u1a89\u1a90-\u1a99\u1b46-\u1b4b\u1b50-\u1b59\u1b6b-\u1b73\u1bb0-\u1bb9\u1be6-\u1bf3\u1c00-\u1c22\u1c40-\u1c49\u1c5b-\u1c7d\u1cd0-\u1cd2\u1d00-\u1dbe\u1e01-\u1f15\u200c\u200d\u203f\u2040\u2054\u20d0-\u20dc\u20e1\u20e5-\u20f0\u2d81-\u2d96\u2de0-\u2dff\u3021-\u3028\u3099\u309a\ua640-\ua66d\ua674-\ua67d\ua69f\ua6f0-\ua6f1\ua7f8-\ua800\ua806\ua80b\ua823-\ua827\ua880-\ua881\ua8b4-\ua8c4\ua8d0-\ua8d9\ua8f3-\ua8f7\ua900-\ua909\ua926-\ua92d\ua930-\ua945\ua980-\ua983\ua9b3-\ua9c0\uaa00-\uaa27\uaa40-\uaa41\uaa4c-\uaa4d\uaa50-\uaa59\uaa7b\uaae0-\uaae9\uaaf2-\uaaf3\uabc0-\uabe1\uabec\uabed\uabf0-\uabf9\ufb20-\ufb28\ufe00-\ufe0f\ufe20-\ufe26\ufe33\ufe34\ufe4d-\ufe4f\uff10-\uff19\uff3f";
+  var nonASCIIidentifierChars = "\u0300-\u036f\u0483-\u0487\u0591-\u05bd\u05bf\u05c1\u05c2\u05c4\u05c5\u05c7\u0610-\u061a\u0620-\u0649\u0672-\u06d3\u06e7-\u06e8\u06fb-\u06fc\u0730-\u074a\u0800-\u0814\u081b-\u0823\u0825-\u0827\u0829-\u082d\u0840-\u0857\u08e4-\u08fe\u0900-\u0903\u093a-\u093c\u093e-\u094f\u0951-\u0957\u0962-\u0963\u0966-\u096f\u0981-\u0983\u09bc\u09be-\u09c4\u09c7\u09c8\u09d7\u09df-\u09e0\u0a01-\u0a03\u0a3c\u0a3e-\u0a42\u0a47\u0a48\u0a4b-\u0a4d\u0a51\u0a66-\u0a71\u0a75\u0a81-\u0a83\u0abc\u0abe-\u0ac5\u0ac7-\u0ac9\u0acb-\u0acd\u0ae2-\u0ae3\u0ae6-\u0aef\u0b01-\u0b03\u0b3c\u0b3e-\u0b44\u0b47\u0b48\u0b4b-\u0b4d\u0b56\u0b57\u0b5f-\u0b60\u0b66-\u0b6f\u0b82\u0bbe-\u0bc2\u0bc6-\u0bc8\u0bca-\u0bcd\u0bd7\u0be6-\u0bef\u0c01-\u0c03\u0c46-\u0c48\u0c4a-\u0c4d\u0c55\u0c56\u0c62-\u0c63\u0c66-\u0c6f\u0c82\u0c83\u0cbc\u0cbe-\u0cc4\u0cc6-\u0cc8\u0cca-\u0ccd\u0cd5\u0cd6\u0ce2-\u0ce3\u0ce6-\u0cef\u0d02\u0d03\u0d46-\u0d48\u0d57\u0d62-\u0d63\u0d66-\u0d6f\u0d82\u0d83\u0dca\u0dcf-\u0dd4\u0dd6\u0dd8-\u0ddf\u0df2\u0df3\u0e34-\u0e3a\u0e40-\u0e45\u0e50-\u0e59\u0eb4-\u0eb9\u0ec8-\u0ecd\u0ed0-\u0ed9\u0f18\u0f19\u0f20-\u0f29\u0f35\u0f37\u0f39\u0f41-\u0f47\u0f71-\u0f84\u0f86-\u0f87\u0f8d-\u0f97\u0f99-\u0fbc\u0fc6\u1000-\u1029\u1040-\u1049\u1067-\u106d\u1071-\u1074\u1082-\u108d\u108f-\u109d\u135d-\u135f\u170e-\u1710\u1720-\u1730\u1740-\u1750\u1772\u1773\u1780-\u17b2\u17dd\u17e0-\u17e9\u180b-\u180d\u1810-\u1819\u1920-\u192b\u1930-\u193b\u1951-\u196d\u19b0-\u19c0\u19c8-\u19c9\u19d0-\u19d9\u1a00-\u1a15\u1a20-\u1a53\u1a60-\u1a7c\u1a7f-\u1a89\u1a90-\u1a99\u1b46-\u1b4b\u1b50-\u1b59\u1b6b-\u1b73\u1bb0-\u1bb9\u1be6-\u1bf3\u1c00-\u1c22\u1c40-\u1c49\u1c5b-\u1c7d\u1cd0-\u1cd2\u1d00-\u1dbe\u1e01-\u1f15\u200c\u200d\u203f\u2040\u2054\u20d0-\u20dc\u20e1\u20e5-\u20f0\u2d81-\u2d96\u2de0-\u2dff\u3021-\u3028\u3099\u309a\ua640-\ua66d\ua674-\ua67d\ua69f\ua6f0-\ua6f1\ua7f8-\ua800\ua806\ua80b\ua823-\ua827\ua880-\ua881\ua8b4-\ua8c4\ua8d0-\ua8d9\ua8f3-\ua8f7\ua900-\ua909\ua926-\ua92d\ua930-\ua945\ua980-\ua983\ua9b3-\ua9c0\uaa00-\uaa27\uaa40-\uaa41\uaa4c-\uaa4d\uaa50-\uaa59\uaa7b\uaae0-\uaae9\uaaf2-\uaaf3\uabc0-\uabe1\uabec\uabed\uabf0-\uabf9\ufb20-\ufb28\ufe00-\ufe0f\ufe20-\ufe26\ufe33\ufe34\ufe4d-\ufe4f\uff10-\uff19\uff3f";
   var nonASCIIidentifierStart = new RegExp("[" + nonASCIIidentifierStartChars + "]");
   var nonASCIIidentifier = new RegExp("[" + nonASCIIidentifierStartChars + nonASCIIidentifierChars + "]");
 
@@ -6087,17 +6162,17 @@ if (typeof exports != "undefined" && !exports.acorn) {
 
 
 
-  function isIdentifierStart(code) {
+  var isIdentifierStart = exports.isIdentifierStart = function(code) {
     if (code < 65) return code === 36;
     if (code < 91) return true;
     if (code < 97) return code === 95;
     if (code < 123)return true;
     return code >= 0xaa && nonASCIIidentifierStart.test(String.fromCharCode(code));
-  }
+  };
 
 
 
-  function isIdentifierChar(code) {
+  var isIdentifierChar = exports.isIdentifierChar = function(code) {
     if (code < 48) return code === 36;
     if (code < 58) return true;
     if (code < 65) return false;
@@ -6105,7 +6180,7 @@ if (typeof exports != "undefined" && !exports.acorn) {
     if (code < 97) return code === 95;
     if (code < 123)return true;
     return code >= 0xaa && nonASCIIidentifier.test(String.fromCharCode(code));
-  }
+  };
 
 
 
@@ -6115,14 +6190,39 @@ if (typeof exports != "undefined" && !exports.acorn) {
   function line_loc_t() {
     this.line = tokCurLine;
     this.column = tokPos - tokLineStart;
+    if (preprocessStackLastItem) {
+      var macro = preprocessStackLastItem.macro;
+      var locationOffset = macro.locationOffset;
+      if (locationOffset) {
+        var macroCurrentLine = locationOffset.line;
+        if (macroCurrentLine) this.line += macroCurrentLine;
+        var macroCurrentLineStart = locationOffset.column;
+
+        if (macroCurrentLineStart) this.column += tokPosMacroOffset - (tokCurLine === 0 ? macroCurrentLineStart : 0);
+      }
+    }
+  }
+
+  function PositionOffset(line, column) {
+    this.line = line;
+    this.column = column;
+    if (preprocessStackLastItem) {
+      var macro = preprocessStackLastItem.macro;
+      var locationOffset = macro.locationOffset;
+      if (locationOffset) {
+        var macroCurrentLine = locationOffset.line;
+        if (macroCurrentLine) this.line += macroCurrentLine;
+        var macroCurrentLineStart = locationOffset.column;
+        if (macroCurrentLineStart) this.column += macroCurrentLineStart;
+      }
+    }
   }
 
 
 
   function initTokenState() {
-    macros = Object.create(null);
     tokCurLine = 1;
-    tokPos = tokLineStart = 0;
+    tokPos = tokLineStart = lastTokMacroOffset = tokMacroOffset = tokPosMacroOffset = 0;
     tokRegexpAllowed = true;
     tokComments = null;
     tokSpaces = null;
@@ -6131,57 +6231,78 @@ if (typeof exports != "undefined" && !exports.acorn) {
 
 
 
+  function initPreprocessorState() {
+    macros = Object.create(null);
+    macrosIsPredicate = null;
+    preprocessParameterScope = null;
+    preTokParameterScope = null;
+    preprocessMacroParameterListMode = false;
+    preprocessIsParsingPreprocess = false;
+    preprocessStack = [];
+    preprocessStackLastItem = null;
+    preprocessOnlyTransformArgumentsForLastToken = null;
+    preNotSkipping = true;
+    preConcatenating = false;
+    preIfLevel = [];
+  }
 
 
 
-var preprocessTokens = [_preIf, _preIfdef, _preIfndef, _preElse, _preElseIf, _preEndif];
 
-  function finishToken(type, val) {
 
-    if (type in preprocessTokens) return readToken();
-    tokEnd = tokPos;
-    if (options.locations) tokEndLoc = new line_loc_t;
+
+  function finishToken(type, val, overrideTokEnd) {
+    if (overrideTokEnd) {
+      tokEnd = overrideTokEnd;
+      if (options.locations) tokEndLoc = preprocessOverrideTokLoc;
+    } else {
+      tokEnd = tokPos;
+      if (options.locations) tokEndLoc = new line_loc_t;
+    }
     tokType = type;
     skipSpace();
     if (options.preprocess && input.charCodeAt(tokPos) === 35 && input.charCodeAt(tokPos + 1) === 35) {
-      var val1 = type === _name ? val : type.keyword;
+      var val1 = val != null ? val : type.keyword || type.type;
       tokPos += 2;
-      if (val1) {
+      if (val1 != null) {
+
+        var positionOffset = options.locations && new PositionOffset(tokCurLine, tokLineStart);
+
+        var saveTokInput = tokInput, saveTokEnd = tokEnd, saveTokStart = tokStart, start = tokStart + tokMacroOffset, variadicName = preprocessStackLastItem && preprocessStackLastItem.macro && preprocessStackLastItem.macro.variadicName;
         skipSpace();
-        readToken();
-        var val2 = tokType === _name ? tokVal : tokType.keyword;
-        if (val2) {
-          var concat = "" + val1 + val2,
-              code = concat.charCodeAt(0),
-              tok;
-          if (isIdentifierStart(code))
-            tok = readWord(concat) !== false;
+        if (variadicName && variadicName === input.slice(tokPos, tokPos + variadicName.length)) var isVariadic = true;
+        preConcatenating = true;
+        readToken(null, 2);
+        preConcatenating = false;
+        var val2 = tokVal != null ? tokVal : tokType.keyword || tokType.type;
+        if (val2 != null) {
 
+          if (isVariadic && val1 === "," && val2 === "") return readToken();
+          var concat = "" + val1 + val2, val2TokStart = tokStart + tokPosMacroOffset;
 
-          if (tok) return tok;
+          var concatMacro = new Macro(null, concat, null, start, false, null, false, positionOffset);
+          var r = readTokenFromMacro(concatMacro, tokPosMacroOffset, preprocessStackLastItem ? preprocessStackLastItem.parameterDict : null, null, tokPos, next, null);
 
-          tok = getTokenFromCode(code, finishToken);
-          if (tok === false) {
-            unexpected();
-          }
-
-          return tok;
-        } else {
-
+          if (preprocessStackLastItem && preprocessStackLastItem.macro === concatMacro) {
+            tokType = type;
+            tokStart = saveTokStart;
+            tokEnd = saveTokEnd;
+            tokInput = saveTokInput;
+            tokPosMacroOffset = val2TokStart - val1.length;
+            if (!isVariadic) console.log("Warning: pasting formed '" + concat + "', an invalid preprocessing token");
+          } else return r;
         }
       }
     }
-
     tokVal = val;
     lastTokCommentsAfter = tokCommentsAfter;
     lastTokSpacesAfter = tokSpacesAfter;
     tokCommentsAfter = tokComments;
     tokSpacesAfter = tokSpaces;
     tokRegexpAllowed = type.beforeExpr;
-    tokAfterImport = type.afterImport;
   }
 
-  function skipBlockComment() {
+  function skipBlockComment(lastIsNewlinePos, dontTrack) {
     var startLoc = options.onComment && options.locations && new line_loc_t;
     var start = tokPos, end = input.indexOf("*/", tokPos += 2);
     if (end === -1) raise(tokPos - 2, "Unterminated comment");
@@ -6194,26 +6315,30 @@ var preprocessTokens = [_preIf, _preIfdef, _preIfndef, _preElse, _preElseIf, _pr
         tokLineStart = match.index + match[0].length;
       }
     }
-    if (options.onComment)
-      options.onComment(true, input.slice(start + 2, end), start, tokPos,
-                        startLoc, options.locations && new line_loc_t);
-    if (options.trackComments)
-      (tokComments || (tokComments = [])).push(input.slice(start, end));
+    if (!dontTrack) {
+      if (options.onComment)
+        options.onComment(true, input.slice(start + 2, end), start, tokPos,
+                          startLoc, options.locations && new line_loc_t);
+      if (options.trackComments)
+        (tokComments || (tokComments = [])).push(input.slice(lastIsNewlinePos != null && options.trackCommentsIncludeLineBreak ? lastIsNewlinePos : start, tokPos));
+    }
   }
 
-  function skipLineComment() {
+  function skipLineComment(lastIsNewlinePos, dontTrack) {
     var start = tokPos;
     var startLoc = options.onComment && options.locations && new line_loc_t;
     var ch = input.charCodeAt(tokPos+=2);
-    while (tokPos < inputLen && ch !== 10 && ch !== 13 && ch !== 8232 && ch !== 8329) {
+    while (tokPos < inputLen && ch !== 10 && ch !== 13 && ch !== 8232 && ch !== 8233) {
       ++tokPos;
       ch = input.charCodeAt(tokPos);
     }
-    if (options.onComment)
-      options.onComment(false, input.slice(start + 2, tokPos), start, tokPos,
-                        startLoc, options.locations && new line_loc_t);
-    if (options.trackComments)
-      (tokComments || (tokComments = [])).push(input.slice(start, tokPos));
+    if (!dontTrack) {
+      if (options.onComment)
+        options.onComment(false, input.slice(start + 2, tokPos), start, tokPos,
+                          startLoc, options.locations && new line_loc_t);
+      if (options.trackComments)
+        (tokComments || (tokComments = [])).push(input.slice(lastIsNewlinePos != null && options.trackCommentsIncludeLineBreak ? lastIsNewlinePos : start, tokPos));
+    }
   }
 
   function preprocesSkipRestOfLine() {
@@ -6222,10 +6347,14 @@ var preprocessTokens = [_preIf, _preIfdef, _preIfndef, _preElse, _preElseIf, _pr
 
 
 
-    while (tokPos < inputLen && ((ch !== 10 && ch !== 13 && ch !== 8232 && ch !== 8329) || last === 92)) {
+    while (tokPos < inputLen && ((ch !== 10 && ch !== 13 && ch !== 8232 && ch !== 8233) || last === 92)) {
       if (ch != 32 && ch != 9 && ch != 160 && (ch < 5760 || !nonASCIIwhitespaceNoNewLine.test(String.fromCharCode(ch))))
         last = ch;
       ch = input.charCodeAt(++tokPos);
+    }
+    if (options.locations) {
+      ++tokCurLine;
+      tokLineStart = tokPos;
     }
   }
 
@@ -6238,53 +6367,90 @@ var preprocessTokens = [_preIf, _preIfdef, _preIfndef, _preElse, _preElseIf, _pr
   function skipSpace() {
     tokComments = null;
     tokSpaces = null;
-    var spaceStart = tokPos;
+    onlySkipSpace();
+  }
+
+  function onlySkipSpace(dontSkipEOL, dontSkipMacroBoundary, dontSkipComments) {
+    var spaceStart = tokPos,
+        lastIsNewlinePos;
     for(;;) {
       var ch = input.charCodeAt(tokPos);
       if (ch === 32) {
         ++tokPos;
-      } else if(ch === 13) {
+      } else if (ch === 13 && !dontSkipEOL) {
+        lastIsNewlinePos = tokPos;
         ++tokPos;
         var next = input.charCodeAt(tokPos);
-        if(next === 10) {
+        if (next === 10) {
           ++tokPos;
         }
-        if(options.locations) {
+        if (options.locations) {
           ++tokCurLine;
           tokLineStart = tokPos;
         }
-      } else if (ch === 10) {
+      } else if (ch === 10 && !dontSkipEOL) {
+        lastIsNewlinePos = tokPos;
         ++tokPos;
-        ++tokCurLine;
-        tokLineStart = tokPos;
-      } else if(ch < 14 && ch > 8) {
+        if (options.locations) {
+          ++tokCurLine;
+          tokLineStart = tokPos;
+        }
+      } else if (ch === 9) {
         ++tokPos;
-      } else if (ch === 47) {
+      } else if (ch === 47 && !dontSkipComments) {
         var next = input.charCodeAt(tokPos+1);
         if (next === 42) {
           if (options.trackSpaces)
             (tokSpaces || (tokSpaces = [])).push(input.slice(spaceStart, tokPos));
-          skipBlockComment();
+          skipBlockComment(lastIsNewlinePos);
           spaceStart = tokPos;
         } else if (next === 47) {
           if (options.trackSpaces)
             (tokSpaces || (tokSpaces = [])).push(input.slice(spaceStart, tokPos));
-          skipLineComment();
+          skipLineComment(lastIsNewlinePos);
           spaceStart = tokPos;
         } else break;
-      } else if (ch === 160) {
-        ++tokPos;
-      } else if (ch >= 5760 && nonASCIIwhitespace.test(String.fromCharCode(ch))) {
+      } else if (ch === 160 || ch === 11 || ch === 12 || (ch >= 5760 && nonASCIIwhitespace.test(String.fromCharCode(ch)))) {
         ++tokPos;
       } else if (tokPos >= inputLen) {
-        if (options.preprocess && preprocessStack.length) {
+        if (options.preprocess) {
+          if (dontSkipMacroBoundary) return true;
+          if (!preprocessStack.length) break;
 
           var lastItem = preprocessStack.pop();
           tokPos = lastItem.end;
           input = lastItem.input;
           inputLen = lastItem.inputLen;
-          lastEnd = lastItem.lastEnd;
-          lastStart = lastItem.lastStart;
+          tokCurLine = lastItem.currentLine;
+          tokLineStart = lastItem.currentLineStart;
+
+
+
+          preprocessOnlyTransformArgumentsForLastToken = lastItem.onlyTransformArgumentsForLastToken;
+          preprocessParameterScope = lastItem.parameterScope;
+          tokPosMacroOffset = lastItem.macroOffset;
+
+          var lastIndex = preprocessStack.length;
+          preprocessStackLastItem = lastIndex ? preprocessStack[lastIndex - 1] : null;
+          onlySkipSpace(dontSkipEOL);
+        } else {
+          break;
+        }
+      } else if (ch === 92 && options.preprocess) {
+
+
+        var pos = tokPos + 1;
+        ch = input.charCodeAt(pos);
+        while (pos < inputLen && (ch === 32 || ch === 9 || ch === 11 || ch === 12 || (ch >= 5760 && nonASCIIwhitespaceNoNewLine.test(String.fromCharCode(ch)))))
+          ch = input.charCodeAt(++pos);
+        lineBreak.lastIndex = 0;
+        var match = lineBreak.exec(input.slice(pos, pos + 2));
+        if (match && match.index === 0) {
+          tokPos = pos + match[0].length;
+          if (options.locations) {
+            ++tokCurLine;
+            tokLineStart = tokPos;
+          }
         } else {
           break;
         }
@@ -6293,202 +6459,216 @@ var preprocessTokens = [_preIf, _preIfdef, _preIfndef, _preElse, _preElseIf, _pr
       }
     }
   }
-  function readToken_dot(code, finishToken) {
+  function readToken_dot(code, finisher) {
     var next = input.charCodeAt(tokPos+1);
-    if (next >= 48 && next <= 57) return readNumber(String.fromCharCode(code), finishToken);
+    if (next >= 48 && next <= 57) return readNumber(String.fromCharCode(code), finisher);
     if (next === 46 && options.objj && input.charCodeAt(tokPos+2) === 46) {
       tokPos += 3;
-      return finishToken(_dotdotdot);
+      return finisher(_dotdotdot);
     }
     ++tokPos;
-    return finishToken(_dot);
+    return finisher(_dot);
   }
 
-  function readToken_slash(finishToken) {
+  function readToken_slash(finisher) {
     var next = input.charCodeAt(tokPos+1);
     if (tokRegexpAllowed) {++tokPos; return readRegexp();}
-    if (next === 61) return finishOp(_assign, 2, finishToken);
-    return finishOp(_slash, 1, finishToken);
+    if (next === 61) return finishOp(_assign, 2, finisher);
+    return finishOp(_slash, 1, finisher);
   }
 
-  function readToken_mult_modulo(finishToken) {
+  function readToken_mult_modulo(finisher) {
     var next = input.charCodeAt(tokPos+1);
-    if (next === 61) return finishOp(_assign, 2, finishToken);
-    return finishOp(_bin10, 1, finishToken);
+    if (next === 61) return finishOp(_assign, 2, finisher);
+    return finishOp(_bin10, 1, finisher);
   }
 
-  function readToken_pipe_amp(code, finishToken) {
+  function readToken_pipe_amp(code, finisher) {
     var next = input.charCodeAt(tokPos+1);
-    if (next === code) return finishOp(code === 124 ? _bin1 : _bin2, 2, finishToken);
-    if (next === 61) return finishOp(_assign, 2, finishToken);
-    return finishOp(code === 124 ? _bin3 : _bin5, 1, finishToken);
+    if (next === code) return finishOp(code === 124 ? _bin1 : _bin2, 2, finisher);
+    if (next === 61) return finishOp(_assign, 2, finisher);
+    return finishOp(code === 124 ? _bin3 : _bin5, 1, finisher);
   }
 
-  function readToken_caret(finishToken) {
+  function readToken_caret(finisher) {
     var next = input.charCodeAt(tokPos+1);
-    if (next === 61) return finishOp(_assign, 2, finishToken);
-    return finishOp(_bin4, 1, finishToken);
+    if (next === 61) return finishOp(_assign, 2, finisher);
+    return finishOp(_bin4, 1, finisher);
   }
 
-  function readToken_plus_min(code, finishToken) {
+  function readToken_plus_min(code, finisher) {
     var next = input.charCodeAt(tokPos+1);
-    if (next === code) return finishOp(_incdec, 2, finishToken);
-    if (next === 61) return finishOp(_assign, 2, finishToken);
-    return finishOp(_plusmin, 1, finishToken);
+    if (next === code) return finishOp(_incdec, 2, finisher);
+    if (next === 61) return finishOp(_assign, 2, finisher);
+    return finishOp(_plusmin, 1, finisher);
   }
 
-  function readToken_lt_gt(code, finishToken) {
-    if (tokAfterImport && options.objj && code === 60) {
-      var str = [];
-      for (;;) {
-        if (tokPos >= inputLen) raise(tokStart, "Unterminated import statement");
+  function readToken_lt_gt(code, finisher) {
+    if (tokType === _import && options.objj && code === 60) {
+      for (var start = tokPos + 1;;) {
         var ch = input.charCodeAt(++tokPos);
-        if (ch === 62) {
-          ++tokPos;
-          return finishToken(_filename, String.fromCharCode.apply(null, str));
-        }
-        str.push(ch);
+        if (ch === 62)
+          return finisher(_filename, input.slice(start, tokPos++));
+        if (tokPos >= inputLen || ch === 13 || ch === 10 || ch === 8232 || ch === 8233)
+          raise(tokStart, "Unterminated import statement");
       }
     }
     var next = input.charCodeAt(tokPos+1);
     var size = 1;
     if (next === code) {
       size = code === 62 && input.charCodeAt(tokPos+2) === 62 ? 3 : 2;
-      if (input.charCodeAt(tokPos + size) === 61) return finishOp(_assign, size + 1, finishToken);
-      return finishOp(_bin8, size, finishToken);
+      if (input.charCodeAt(tokPos + size) === 61) return finishOp(_assign, size + 1, finisher);
+      return finishOp(_bin8, size, finisher);
     }
     if (next === 61)
       size = input.charCodeAt(tokPos+2) === 61 ? 3 : 2;
-    return finishOp(_bin7, size, finishToken);
+    return finishOp(_bin7, size, finisher);
   }
 
-  function readToken_eq_excl(code, finishToken) {
+  function readToken_eq_excl(code, finisher) {
     var next = input.charCodeAt(tokPos+1);
-    if (next === 61) return finishOp(_bin6, input.charCodeAt(tokPos+2) === 61 ? 3 : 2, finishToken);
-    return finishOp(code === 61 ? _eq : _prefix, 1, finishToken);
+    if (next === 61) return finishOp(_bin6, input.charCodeAt(tokPos+2) === 61 ? 3 : 2, finisher);
+    return finishOp(code === 61 ? _eq : _prefix, 1, finisher);
   }
 
-  function readToken_at(code, finishToken) {
+  function readToken_at(code, finisher) {
     var next = input.charCodeAt(++tokPos);
     if (next === 34 || next === 39)
-      return readString(next, finishToken);
+      return readString(next, finisher);
     if (next === 123)
-      return finishToken(_dictionaryLiteral);
+      return finisher(_dictionaryLiteral);
     if (next === 91)
-      return finishToken(_arrayLiteral);
+      return finisher(_arrayLiteral);
 
     var word = readWord1(),
         token = objJAtKeywordTypes[word];
-    if (!token) raise(tokPos, "Unrecognized Objective-J keyword '@" + word + "'");
-    return finishToken(token);
+    if (!token) raise(tokStart, "Unrecognized Objective-J keyword '@" + word + "'");
+    return finisher(token);
   }
 
-
-
-var preNotSkipping = true;
-var preIfLevel = 0;
-
-  function readToken_preprocess(finishTokenFunction) {
+  function readToken_preprocess(finisher) {
     ++tokPos;
-    preprocessReadToken();
+    preprocessSkipSpace();
+    preprocessReadToken(false, true);
     switch (preTokType) {
       case _preDefine:
-        preprocessReadToken();
-        var macroIdentifierEnd = preTokEnd;
-        var macroIdentifier = preprocessGetIdent();
-
-        if (input.charCodeAt(macroIdentifierEnd) === 40) {
-          preprocessExpect(_parenL);
-          var parameters = [];
-          var first = true;
-          while (!preprocessEat(_parenR)) {
-            if (!first) preprocessExpect(_comma, "Expected ',' between macro parameters"); else first = false;
-            parameters.push(preprocessGetIdent());
-          }
+        if (preNotSkipping) {
+          preprocessParseDefine();
+        } else {
+          return finisher(_preDefine);
         }
-        var start = tokPos = preTokStart;
-        preprocesSkipRestOfLine();
-        var macroString = input.slice(start, tokPos);
-        macroString = macroString.replace(/\\/g, " ");
-        options.preprocessAddMacro(new Macro(macroIdentifier, macroString, parameters));
         break;
 
       case _preUndef:
         preprocessReadToken();
         options.preprocessUndefineMacro(preprocessGetIdent());
-        preprocesSkipRestOfLine();
         break;
 
       case _preIf:
         if (preNotSkipping) {
-          preIfLevel++;
-          preprocessReadToken();
-          var expr = preprocessParseExpression();
+
+          var saveTokRegexpAllowed = tokRegexpAllowed;
+          tokRegexpAllowed = false;
+          preIfLevel.push(_preIf);
+          preprocessReadToken(false, false, true);
+          var expr = preprocessParseExpression(true);
           var test = preprocessEvalExpression(expr);
-          if (!test)
-            preNotSkipping = false
-          preprocessSkipToElseOrEndif(!test);
+          if (!test) {
+            preNotSkipping = false;
+            preprocessSkipToElseOrEndif();
+          }
+          tokRegexpAllowed = saveTokRegexpAllowed;
         } else {
-          return finishTokenFunction(_preIf);
+          return finisher(_preIf);
         }
         break;
 
       case _preIfdef:
         if (preNotSkipping) {
-          preIfLevel++;
+          preIfLevel.push(_preIf);
           preprocessReadToken();
           var ident = preprocessGetIdent();
-          var test = options.preprocessGetMacro(ident);
-          if (!test)
+          var test = options.preprocessIsMacro(ident);
+          if (!test) {
             preNotSkipping = false
-
-          preprocessSkipToElseOrEndif(!test);
+            preprocessSkipToElseOrEndif();
+          }
         } else {
-
-          return finishTokenFunction(_preIfdef);
+          return finisher(_preIfdef);
         }
         break;
 
       case _preIfndef:
         if (preNotSkipping) {
-          preIfLevel++;
+          preIfLevel.push(_preIf);
           preprocessReadToken();
           var ident = preprocessGetIdent();
-          var test = options.preprocessGetMacro(ident);
-          if (test)
+          var test = options.preprocessIsMacro(ident);
+          if (test) {
             preNotSkipping = false
-
-          preprocessSkipToElseOrEndif(test);
+            preprocessSkipToElseOrEndif();
+          }
         } else {
 
-          return finishTokenFunction(_preIfndef);
+          return finisher(_preIfndef);
         }
         break;
 
       case _preElse:
-        if (preIfLevel) {
+        if (preIfLevel.length) {
           if (preNotSkipping) {
-            preNotSkipping = false;
-            finishTokenFunction(_preElse);
-            preprocessReadToken();
-            preprocessSkipToElseOrEndif(true, true);
+            if(preIfLevel[preIfLevel.length - 1] === _preIf) {
+              preIfLevel[preIfLevel.length - 1] = _preElse;
+              preNotSkipping = false;
+              finisher(_preElse);
+              preprocessReadToken();
+              preprocessSkipToElseOrEndif(true);
+            } else
+              raise(preTokStart, "#else after #else");
           } else {
-            return finishTokenFunction(_preElse);
+            preIfLevel[preIfLevel.length - 1] = _preElse;
+            return finisher(_preElse);
           }
         } else
           raise(preTokStart, "#else without #if");
         break;
 
-      case _preEndif:
-        if (preIfLevel) {
+      case _preElseIf:
+        if (preIfLevel.length) {
           if (preNotSkipping) {
-            preIfLevel--;
+            if(preIfLevel[preIfLevel.length - 1] === _preIf) {
+              preNotSkipping = false;
+              finisher(_preElseIf);
+              preprocessReadToken();
+              preprocessSkipToElseOrEndif(true);
+            } else
+              raise(preTokStart, "#elsif after #else");
+          } else {
+
+            var saveTokRegexpAllowed = tokRegexpAllowed;
+            tokRegexpAllowed = false;
+            preNotSkipping = true;
+            preprocessReadToken(false, false, true);
+            var expr = preprocessParseExpression(true);
+            preNotSkipping = false;
+            tokRegexpAllowed = saveTokRegexpAllowed;
+            var test = preprocessEvalExpression(expr);
+            return finisher(test ? _preElseIfTrue : _preElseIfFalse);
+          }
+        } else
+          raise(preTokStart, "#elif without #if");
+        break;
+
+      case _preEndif:
+        if (preIfLevel.length) {
+          if (preNotSkipping) {
+          preIfLevel.pop();
             break;
           }
         } else {
           raise(preTokStart, "#endif without #if");
         }
-        return finishTokenFunction(_preEndif);
+        return finisher(_preEndif);
         break;
 
       case _prePragma:
@@ -6499,20 +6679,88 @@ var preIfLevel = 0;
         preprocesSkipRestOfLine();
         break;
 
+      case _preWarning:
+        preprocessReadToken(false, false, true);
+        var expr = preprocessParseExpression();
+        console.log("Warning: " + String(preprocessEvalExpression(expr)));
+        break;
+
+      case _preError:
+        var start = preTokStart;
+        preprocessReadToken(false, false, true);
+        var expr = preprocessParseExpression();
+        raise(start, "Error: " + String(preprocessEvalExpression(expr)));
+        break;
+
       default:
+        if (preprocessStackLastItem) {
+
+          if (preprocessStackLastItem.parameterDict && preprocessStackLastItem.macro.isParameterFunction()(preTokVal)) {
+            var macro = preprocessStackLastItem.parameterDict[preTokVal];
+            if (macro) {
+              return finishToken(_string, macro.macro);
+            }
+          }
+        }
         raise(preTokStart, "Invalid preprocessing directive");
         preprocesSkipRestOfLine();
 
-        return finishTokenFunction(_preprocess);
+        return finisher(_preprocess);
 
     }
 
-    finishToken(_preprocess);
+
+    if (preTokType === _eol && options.trackSpaces) {
+      if (tokSpaces && tokSpaces.length)
+        tokSpaces.push("\n" + tokSpaces.pop());
+      else
+        tokSpaces = ["\n"];
+    }
+    preprocessFinishToken(_preprocess, null, null, true);
     return readToken();
   }
 
+  function preprocessParseDefine() {
+    preprocessIsParsingPreprocess = true;
+    preprocessReadToken();
+    var macroIdentifierEnd = preTokEnd;
+    var macroIdentifier = preprocessGetIdent();
+
+    if (input.charCodeAt(macroIdentifierEnd) === 40) {
+      preprocessExpect(_parenL);
+      var parameters = [];
+      var variadic = false;
+      var first = true;
+      while (!preprocessEat(_parenR)) {
+        if (variadic) raise(preTokStart, "Variadic parameter must be last");
+        if (!first) preprocessExpect(_comma, "Expected ',' between macro parameters"); else first = false;
+        parameters.push(preprocessEat(_dotdotdot) ? variadic = true && "__VA_ARGS__" : preprocessGetIdent());
+        if (preprocessEat(_dotdotdot)) variadic = true;
+      }
+    }
+    var start = preTokStart;
+    var positionOffset = options.locations && new PositionOffset(tokCurLine, tokLineStart);
+    while(preTokType !== _eol && preTokType !== _eof)
+      preprocessReadToken();
+
+    var macroString = input.slice(start, preTokStart);
+    macroString = macroString.replace(/\\/g, " ");
+
+    options.preprocessAddMacro(new Macro(macroIdentifier, macroString, parameters, start, false, null, variadic && parameters[parameters.length - 1], positionOffset));
+    preprocessIsParsingPreprocess = false;
+  }
+
   function preprocessEvalExpression(expr) {
-    return exports.walk.recursive(expr, {}, {
+    return walk.recursive(expr, {}, {
+      LogicalExpression: function(node, st, c) {
+        var left = node.left, right = node.right;
+        switch (node.operator) {
+          case "||":
+            return c(left, st) || c(right, st);
+          case "&&":
+            return c(left, st) && c(right, st);
+        }
+      },
       BinaryExpression: function(node, st, c) {
         var left = node.left, right = node.right;
         switch(node.operator) {
@@ -6530,65 +6778,97 @@ var preIfLevel = 0;
             return c(left, st) < c(right, st);
           case ">":
             return c(left, st) > c(right, st);
-          case "=":
+          case "^":
+            return c(left, st) ^ c(right, st);
+          case "&":
+            return c(left, st) & c(right, st);
+          case "|":
+            return c(left, st) | c(right, st);
           case "==":
+            return c(left, st) == c(right, st);
           case "===":
             return c(left, st) === c(right, st);
+          case "!=":
+            return c(left, st) != c(right, st);
+          case "!==":
+            return c(left, st) !== c(right, st);
           case "<=":
             return c(left, st) <= c(right, st);
           case ">=":
             return c(left, st) >= c(right, st);
-          case "&&":
-            return c(left, st) && c(right, st);
-          case "||":
-            return c(left, st) || c(right, st);
+          case ">>":
+            return c(left, st) >> c(right, st);
+          case ">>>":
+            return c(left, st) >>> c(right, st);
+          case "<<":
+            return c(left, st) << c(right, st);
+          }
+      },
+      UnaryExpression: function(node, st, c) {
+        var arg = node.argument;
+        switch (node.operator) {
+          case "-":
+            return -c(arg, st);
+          case "+":
+            return +c(arg, st);
+          case "!":
+            return !c(arg, st);
+          case "~":
+            return ~c(arg, st);
         }
       },
       Literal: function(node, st, c) {
         return node.value;
       },
       Identifier: function(node, st, c) {
-        var name = node.name,
-            macro = options.preprocessGetMacro(name);
-        return (macro && parseInt(macro.macro)) || 0;
+
+        return 0;
       },
       DefinedExpression: function(node, st, c) {
-        return !!options.preprocessGetMacro(node.id.name);
+        var objectNode = node.object;
+        if (objectNode.type === "Identifier") {
+
+          var name = objectNode.name,
+              macro = options.preprocessGetMacro(name) || preprocessBuiltinMacro(name);
+          return macro || 0;
+        } else {
+          return c(objectNode, st);
+        }
       }
     }, {});
   }
 
-  function getTokenFromCode(code, finishToken, allowEndOfLineToken) {
+  function getTokenFromCode(code, finisher, allowEndOfLineToken) {
     switch(code) {
 
 
     case 46:
-      return readToken_dot(code, finishToken);
+      return readToken_dot(code, finisher);
 
 
-    case 40: ++tokPos; return finishToken(_parenL);
-    case 41: ++tokPos; return finishToken(_parenR);
-    case 59: ++tokPos; return finishToken(_semi);
-    case 44: ++tokPos; return finishToken(_comma);
-    case 91: ++tokPos; return finishToken(_bracketL);
-    case 93: ++tokPos; return finishToken(_bracketR);
-    case 123: ++tokPos; return finishToken(_braceL);
-    case 125: ++tokPos; return finishToken(_braceR);
-    case 58: ++tokPos; return finishToken(_colon);
-    case 63: ++tokPos; return finishToken(_question);
+    case 40: ++tokPos; return finisher(_parenL);
+    case 41: ++tokPos; return finisher(_parenR);
+    case 59: ++tokPos; return finisher(_semi);
+    case 44: ++tokPos; return finisher(_comma);
+    case 91: ++tokPos; return finisher(_bracketL);
+    case 93: ++tokPos; return finisher(_bracketR);
+    case 123: ++tokPos; return finisher(_braceL);
+    case 125: ++tokPos; return finisher(_braceR);
+    case 58: ++tokPos; return finisher(_colon);
+    case 63: ++tokPos; return finisher(_question);
 
 
     case 48:
       var next = input.charCodeAt(tokPos+1);
-      if (next === 120 || next === 88) return readHexNumber(finishToken);
+      if (next === 120 || next === 88) return readHexNumber(finisher);
 
 
     case 49: case 50: case 51: case 52: case 53: case 54: case 55: case 56: case 57:
-      return readNumber(false, finishToken);
+      return readNumber(false, finisher);
 
 
     case 34: case 39:
-      return readString(code, finishToken);
+      return readString(code, finisher);
 
 
 
@@ -6596,116 +6876,203 @@ var preIfLevel = 0;
 
 
     case 47:
-      return readToken_slash(finishToken);
+      return readToken_slash(finisher);
 
     case 37: case 42:
-      return readToken_mult_modulo(finishToken);
+      return readToken_mult_modulo(finisher);
 
     case 124: case 38:
-      return readToken_pipe_amp(code, finishToken);
+      return readToken_pipe_amp(code, finisher);
 
     case 94:
-      return readToken_caret(finishToken);
+      return readToken_caret(finisher);
 
     case 43: case 45:
-      return readToken_plus_min(code, finishToken);
+      return readToken_plus_min(code, finisher);
 
     case 60: case 62:
-      return readToken_lt_gt(code, finishToken, finishToken);
+      return readToken_lt_gt(code, finisher);
 
     case 61: case 33:
-      return readToken_eq_excl(code, finishToken);
+      return readToken_eq_excl(code, finisher);
 
     case 126:
-      return finishOp(_prefix, 1, finishToken);
+      return finishOp(_prefix, 1, finisher);
 
     case 64:
       if (options.objj)
-        return readToken_at(code, finishToken);
+        return readToken_at(code, finisher);
       return false;
 
     case 35:
       if (options.preprocess) {
-        return readToken_preprocess(finishToken);
+        if (preprocessIsParsingPreprocess) {
+          ++tokPos;
+          return finisher(_preprocess);
+        }
+
+        lineBreak.lastIndex = 0;
+        var match = lineBreak.exec(input.slice(lastEnd, tokPos));
+        if (lastEnd !== 0 && lastEnd !== tokPos && !match) {
+          if (preprocessStackLastItem) {
+
+            return preprocessStringify();
+          } else {
+            raise(tokPos, "Preprocessor directives may only be used at the beginning of a line");
+          }
+        }
+
+        return readToken_preprocess(finisher);
       }
       return false;
 
     case 92:
       if (options.preprocess) {
-        return finishOp(_preBackslash, 1, finishToken);
+        return finishOp(_preBackslash, 1, finisher);
       }
       return false;
     }
 
-    if (allowEndOfLineToken && newline.test(String.fromCharCode(code))) {
-      return finishOp(_eol, 1, finishToken);
+    if (allowEndOfLineToken) {
+      var r;
+      if (code === 13) {
+        r = finishOp(_eol, input.charCodeAt(tokPos+1) === 10 ? 2 : 1, finisher);
+      } else if (code === 10 || code === 8232 || code === 8233) {
+        r = finishOp(_eol, 1, finisher);
+      } else {
+        return false;
+      }
+      if (options.locations) {
+        ++tokCurLine;
+        tokLineStart = tokPos;
+      }
+      return r;
     }
 
     return false;
-}
+  }
 
 
 
-  function preprocessSkipSpace() {
-    while (tokPos < inputLen) {
-      var ch = input.charCodeAt(tokPos);
-      if (ch === 32 || ch === 9 || ch === 160 || (ch >= 5760 && nonASCIIwhitespaceNoNewLine.test(String.fromCharCode(ch)))) {
-        ++tokPos;
-      } else if (ch === 92) {
+  function preprocessStringify() {
+    var saveStackLength = preprocessStack.length, saveLastItem = preprocessStackLastItem;
+    tokPos++;
+    preConcatenating = true;
+    next(false, 2);
+    preConcatenating = false;
+    var start = tokStart + tokMacroOffset;
+    var positionOffset = options.locations && new PositionOffset(tokCurLine, tokLineStart);
+    var string;
+    if (tokType === _string) {
+      var quote = tokInput.slice(tokStart, tokStart + 1);
+      var escapedQuote = quote === '"' ? '\\"' : "'";
+      string = escapedQuote;
+      string += preprocessStringifyEscape(tokVal);
+      string += escapedQuote;
+    } else {
+      string = tokVal != null ? tokVal : tokType.keyword || tokType.type;
+    }
+    while (preprocessStack.length > saveStackLength && saveLastItem === preprocessStack[saveStackLength - 1]) {
+      preConcatenating = true;
+      next(false, 2);
+      preConcatenating = false;
 
-
-        var pos = tokPos + 1;
-        ch = input.charCodeAt(pos);
-        while (pos < inputLen && (ch === 32 || ch === 9 || ch === 11 || ch === 12 || (ch >= 5760 && nonASCIIwhitespaceNoNewLine.test(String.fromCharCode(ch)))))
-          ch = input.charCodeAt(++pos);
-        lineBreak.lastIndex = 0;
-        var match = lineBreak.exec(input.slice(pos, pos + 2));
-        if (match && match.index === 0) {
-          tokPos = pos + match[0].length;
-        } else {
-          return false;
-        }
+      if (lastEnd !== tokStart) string += " ";
+      if (tokType === _string) {
+        var quote = tokInput.slice(tokStart, tokStart + 1);
+        var escapedQuote = quote === '"' ? '\\"' : "'";
+        string += escapedQuote;
+        string += preprocessStringifyEscape(tokVal);
+        string += escapedQuote;
       } else {
-        lineBreak.lastIndex = 0;
-        var match = lineBreak.exec(input.slice(tokPos, tokPos + 2));
-        return match && match.index === 0;
+        string += tokVal != null ? tokVal : tokType.keyword || tokType.type;
       }
     }
+    var stringifyMacro = new Macro(null, '"' + string + '"', null, start, false, null, false, positionOffset);
+    return readTokenFromMacro(stringifyMacro, tokPosMacroOffset, null, null, tokPos, next);
   }
 
-  function preprocessSkipToElseOrEndif(test, skipElse) {
-    if (test) {
-      var ifLevel = 0;
-      while (ifLevel > 0 || (preTokType != _preEndif && (preTokType != _preElse || skipElse))) {
-        switch (preTokType) {
-          case _preIf:
-          case _preIfdef:
-          case _preIfndef:
-            ifLevel++;
-            break;
 
-          case _preEndif:
-            ifLevel--;
-            break;
 
-          case _eof:
-            preNotSkipping = true;
-            raise(preTokStart, "Missing #endif");
-        }
-        preprocessReadToken();
+  function preprocessStringifyEscape(aString) {
+    for (var escaped = "", pos = 0, size = aString.length, ch = aString.charCodeAt(pos); pos < size; ch = aString.charCodeAt(++pos)) {
+      switch (ch) {
+        case 34: escaped += '\\\\\\"'; break;
+        case 10: escaped += "\\\\n"; break;
+        case 13: escaped += "\\\\r"; break;
+        case 9: escaped += "\\\\t"; break;
+        case 8: escaped += "\\\\b"; break;
+        case 11: escaped += "\\\\v"; break;
+        case 0x00A0: escaped += "\\\\u00A0"; break;
+        case 0x2028: escaped += "\\\\u2028"; break;
+        case 0x2029: escaped += "\\\\u2029"; break;
+        case 92: escaped += "\\\\"; break;
+        default: escaped += aString.charAt(pos); break;
       }
-      preNotSkipping = true;
-      if (preTokType === _preEndif)
-        preIfLevel--;
     }
+    return escaped;
   }
 
-  function preprocessReadToken() {
+
+
+
+  function preprocessSkipSpace(skipComments, skipEOL) {
+    onlySkipSpace(!skipEOL);
+    lineBreak.lastIndex = 0;
+    var match = lineBreak.exec(input.slice(tokPos, tokPos + 2));
+    return match && match.index === 0;
+  }
+
+  function preprocessSkipToElseOrEndif(skipElse) {
+    var ifLevel = [];
+    while (ifLevel.length > 0 || (preTokType !== _preEndif && ((preTokType !== _preElse && preTokType !== _preElseIfTrue) || skipElse))) {
+      switch (preTokType) {
+        case _preIf:
+        case _preIfdef:
+        case _preIfndef:
+          ifLevel.push(_preIf);
+          break;
+
+        case _preElse:
+          if (ifLevel[ifLevel.length - 1] !== _preIf)
+            raise(preTokStart, "#else after #else");
+          else
+            ifLevel[ifLevel.length - 1] = _preElse;
+          break;
+
+        case _preElseIf:
+          if (ifLevel[ifLevel.length - 1] !== _preIf)
+            raise(preTokStart, "#elif after #else");
+          break;
+
+        case _preEndif:
+          ifLevel.pop();
+          break;
+
+        case _eof:
+          preNotSkipping = true;
+          raise(preTokStart, "Missing #endif");
+      }
+      preprocessReadToken(true);
+    }
+    preNotSkipping = true;
+    if (preTokType === _preEndif)
+      preIfLevel.pop();
+  }
+
+
+
+  function preprocessReadToken(skipComments, preprocessToken, processMacros) {
     preTokStart = tokPos;
     preTokInput = input;
-    if (tokPos >= inputLen) return _eof;
+    preTokParameterScope = preprocessParameterScope;
+    if (tokPos >= inputLen) return preprocessFinishToken(_eof);
     var code = input.charCodeAt(tokPos);
-    if (preprocessMacroParamterListMode && code !== 41 && code !== 44) {
+    if (!preprocessToken && !preNotSkipping && code !== 35) {
+
+      preprocesSkipRestOfLine();
+      return preprocessFinishToken(_preprocessSkipLine, input.slice(preTokStart, tokPos++));
+    } else if (preprocessMacroParameterListMode && code !== 41 && code !== 44) {
       var parenLevel = 0;
 
       while(tokPos < inputLen && (parenLevel || (code !== 41 && code !== 44))) {
@@ -6713,47 +7080,76 @@ var preIfLevel = 0;
           parenLevel++;
         if (code === 41)
           parenLevel--;
+        if (code === 34 || code === 39) {
+          var quote = code;
+          code = input.charCodeAt(++tokPos);
+          while(tokPos < inputLen && code !== quote) {
+            if (code === 92) {
+              code = input.charCodeAt(++tokPos);
+              if (code !== quote) continue;
+            }
+            code = input.charCodeAt(++tokPos);
+          }
+        }
         code = input.charCodeAt(++tokPos);
       }
       return preprocessFinishToken(_preprocessParamItem, input.slice(preTokStart, tokPos));
     }
-    if (isIdentifierStart(code) || (code === 92 && input.charCodeAt(tokPos +1) === 117 )) return preprocessReadWord();
-    if (getTokenFromCode(code, preprocessFinishToken, true) === false) {
+    if (isIdentifierStart(code) || (code === 92 && input.charCodeAt(tokPos +1) === 117 )) return preprocessReadWord(processMacros);
+    if (getTokenFromCode(code, skipComments ? preprocessFinishTokenSkipComments : preprocessFinishToken, true) === false) {
 
 
       var ch = String.fromCharCode(code);
-      if (ch === "\\" || nonASCIIidentifierStart.test(ch)) return preprocessReadWord();
+      if (ch === "\\" || nonASCIIidentifierStart.test(ch)) return preprocessReadWord(processMacros);
       raise(tokPos, "Unexpected character '" + ch + "'");
     }
   }
 
-  function preprocessReadWord() {
+  function preprocessReadWord(processMacros) {
     var word = readWord1();
-    preprocessFinishToken(isKeywordPreprocess(word) ? keywordTypesPreprocess[word] : _name, word);
+    var type = _name;
+    if (processMacros && options.preprocess) {
+      var readMacroWordReturn = readMacroWord(word, preprocessNext);
+      if (readMacroWordReturn === true)
+        return true;
+    }
+
+    if (!containsEsc && isKeywordPreprocessor(word)) type = keywordTypesPreprocessor[word];
+    preprocessFinishToken(type, word, readMacroWordReturn);
   }
 
-  function preprocessFinishToken(type, val) {
+  function preprocessFinishToken(type, val, overrideTokEnd, skipEOL) {
+    preTokType = type;
+    preTokVal = val;
+    preTokEnd = overrideTokEnd || tokPos;
+
+    preprocessSkipSpace(false, skipEOL);
+  }
+
+
+  function preprocessFinishTokenSkipComments(type, val) {
     preTokType = type;
     preTokVal = val;
     preTokEnd = tokPos;
-    preprocessSkipSpace();
+    preprocessSkipSpace(true);
   }
 
 
 
-  function preprocessNext() {
-    preLastStart = tokStart;
-    preLastEnd = tokEnd;
-
-    return preprocessReadToken();
+  function preprocessNext(stealth, onlyTransformArguments, forceRegexp, processMacros) {
+    if (!stealth) {
+      preLastStart = tokStart;
+      preLastEnd = tokEnd;
+    }
+    return preprocessReadToken(false, false, processMacros);
   }
 
 
 
 
-  function preprocessEat(type) {
+  function preprocessEat(type, processMacros) {
     if (preTokType === type) {
-      preprocessNext();
+      preprocessNext(false, false, null, processMacros);
       return true;
     }
   }
@@ -6761,20 +7157,24 @@ var preIfLevel = 0;
 
 
 
-  function preprocessExpect(type, errorMessage) {
-    if (preTokType === type) preprocessReadToken();
+  function preprocessExpect(type, errorMessage, processMacros) {
+    if (preTokType === type) preprocessReadToken(processMacros);
     else raise(preTokStart, errorMessage || "Unexpected token");
   }
 
-  function preprocessGetIdent() {
-    var ident = preTokType === _name ? preTokVal : ((!options.forbidReserved || preTokType.okAsIdent) && preTokType.keyword) || raise(preTokStart, "Expected Macro identifier");
-    preprocessNext();
+  function debug() {
+
+  }
+  function preprocessGetIdent(processMacros) {
+    var ident = preTokType === _name ? preTokVal : ((!options.forbidReserved || preTokType.okAsIdent) && preTokType.keyword) || debug();
+
+    preprocessNext(false, false, null, processMacros);
     return ident;
   }
 
-  function preprocessParseIdent() {
+  function preprocessParseIdent(processMacros) {
     var node = startNode();
-    node.name = preprocessGetIdent();
+    node.name = preprocessGetIdent(processMacros);
     return preprocessFinishNode(node, "Identifier");
   }
 
@@ -6782,14 +7182,15 @@ var preIfLevel = 0;
 
 
 
-  function preprocessParseExpression() {
-    return preprocessParseExprOps();
+
+  function preprocessParseExpression(processMacros) {
+    return preprocessParseExprOps(processMacros);
   }
 
 
 
-  function preprocessParseExprOps() {
-    return preprocessParseExprOp(preprocessParseMaybeUnary(), -1);
+  function preprocessParseExprOps(processMacros) {
+    return preprocessParseExprOp(preprocessParseMaybeUnary(processMacros), -1, processMacros);
   }
 
 
@@ -6798,7 +7199,7 @@ var preIfLevel = 0;
 
 
 
-  function preprocessParseExprOp(left, minPrec) {
+  function preprocessParseExprOp(left, minPrec, processMacros) {
     var prec = preTokType.binop;
     if (prec) {
       if (!preTokType.preprocess) raise(preTokStart, "Unsupported macro operator");
@@ -6806,10 +7207,10 @@ var preIfLevel = 0;
         var node = startNodeFrom(left);
         node.left = left;
         node.operator = preTokVal;
-        preprocessNext();
-        node.right = preprocessParseExprOp(preprocessParseMaybeUnary(), prec);
-        var node = preprocessFinishNode(node, "BinaryExpression");
-        return preprocessParseExprOp(node, minPrec);
+        preprocessNext(false, false, null, processMacros);
+        node.right = preprocessParseExprOp(preprocessParseMaybeUnary(processMacros), prec, processMacros);
+        var node = preprocessFinishNode(node, /&&|\|\|/.test(node.operator) ? "LogicalExpression" : "BinaryExpression");
+        return preprocessParseExprOp(node, minPrec, processMacros);
       }
     }
     return left;
@@ -6817,43 +7218,43 @@ var preIfLevel = 0;
 
 
 
-  function preprocessParseMaybeUnary() {
+  function preprocessParseMaybeUnary(processMacros) {
     if (preTokType.preprocess && preTokType.prefix) {
       var node = startNode();
-      node.operator = tokVal;
+      node.operator = preTokVal;
       node.prefix = true;
-      preprocessNext();
-      node.argument = preprocessParseMaybeUnary();
+      preprocessNext(false, false, null, processMacros);
+      node.argument = preprocessParseMaybeUnary(processMacros);
       return preprocessFinishNode(node, "UnaryExpression");
     }
-    return preprocessParseExprAtom();
+    return preprocessParseExprAtom(processMacros);
   }
 
 
 
 
 
-  function preprocessParseExprAtom() {
+  function preprocessParseExprAtom(processMacros) {
     switch (preTokType) {
     case _name:
-      return preprocessParseIdent();
+      return preprocessParseIdent(processMacros);
 
     case _num: case _string:
-      return preprocessParseStringNumLiteral();
+      return preprocessParseStringNumLiteral(processMacros);
 
     case _parenL:
       var tokStart1 = preTokStart;
-      preprocessNext();
-      var val = preprocessParseExpression();
+      preprocessNext(false, false, null, processMacros);
+      var val = preprocessParseExpression(processMacros);
       val.start = tokStart1;
       val.end = preTokEnd;
-      preprocessExpect(_parenR, "Expected closing ')' in macro expression");
+      preprocessExpect(_parenR, "Expected closing ')' in macro expression", processMacros);
       return val;
 
     case _preDefined:
       var node = startNode();
-      preprocessNext();
-      node.id = preprocessParseIdent();
+      preprocessNext(false, false, null, processMacros);
+      node.object = preprocessParseDefinedExpression(processMacros);
       return preprocessFinishNode(node, "DefinedExpression");
 
     default:
@@ -6861,11 +7262,36 @@ var preIfLevel = 0;
     }
   }
 
-  function preprocessParseStringNumLiteral() {
+
+
+
+  function preprocessParseDefinedExpression(processMacros) {
+    switch (preTokType) {
+    case _name:
+      return preprocessParseIdent(processMacros);
+
+    case _num: case _string:
+      return preprocessParseStringNumLiteral(processMacros);
+
+    case _parenL:
+      var tokStart1 = preTokStart;
+      preprocessNext(false, false, null, processMacros);
+      var val = preprocessParseDefinedExpression(processMacros);
+      val.start = tokStart1;
+      val.end = preTokEnd;
+      preprocessExpect(_parenR, "Expected closing ')' in macro expression", processMacros);
+      return val;
+
+    default:
+      unexpected();
+    }
+  }
+
+  function preprocessParseStringNumLiteral(processMacros) {
     var node = startNode();
     node.value = preTokVal;
     node.raw = preTokInput.slice(preTokStart, preTokEnd);
-    preprocessNext();
+    preprocessNext(false, false, null, processMacros);
     return preprocessFinishNode(node, "Literal");
   }
 
@@ -6875,20 +7301,26 @@ var preIfLevel = 0;
     return node;
   }
 
-  function readToken(forceRegexp) {
-    tokStart = tokPos;
-    tokInput = input;
-    if (options.locations) tokStartLoc = new line_loc_t;
+  function readToken(forceRegexp, onlyTransformMacroArguments, stealth) {
     tokCommentsBefore = tokComments;
     tokSpacesBefore = tokSpaces;
+    if (!forceRegexp) tokStart = tokPos;
+    else tokPos = tokStart + 1;
+    if (!stealth) {
+      tokFirstStart = tokStart;
+      tokFirstInput = input;
+    }
+    tokInput = input;
+    tokMacroOffset = tokPosMacroOffset;
+    preTokParameterScope = preprocessParameterScope;
+    if (options.locations) tokStartLoc = new line_loc_t;
     if (forceRegexp) return readRegexp();
-    if (tokPos >= inputLen)
-      return finishToken(_eof);
+    if (tokPos >= inputLen) return finishToken(_eof);
 
     var code = input.charCodeAt(tokPos);
 
 
-    if (isIdentifierStart(code) || code === 92 ) return readWord();
+    if (isIdentifierStart(code) || code === 92 ) return readWord(null, onlyTransformMacroArguments, forceRegexp);
 
     var tok = getTokenFromCode(code, finishToken);
 
@@ -6896,16 +7328,16 @@ var preIfLevel = 0;
 
 
       var ch = String.fromCharCode(code);
-      if (ch === "\\" || nonASCIIidentifierStart.test(ch)) return readWord();
+      if (ch === "\\" || nonASCIIidentifierStart.test(ch)) return readWord(null, onlyTransformMacroArguments, forceRegexp);
       raise(tokPos, "Unexpected character '" + ch + "'");
     }
     return tok;
   }
 
-  function finishOp(type, size, finishToken) {
+  function finishOp(type, size, finisher) {
     var str = input.slice(tokPos, tokPos + size);
     tokPos += size;
-    finishToken(type, str);
+    finisher(type, str);
   }
 
 
@@ -6955,17 +7387,17 @@ var preIfLevel = 0;
     return total;
   }
 
-  function readHexNumber(finishToken) {
+  function readHexNumber(finisher) {
     tokPos += 2;
     var val = readInt(16);
     if (val == null) raise(tokStart + 2, "Expected hexadecimal number");
     if (isIdentifierStart(input.charCodeAt(tokPos))) raise(tokPos, "Identifier directly after number");
-    return finishToken(_num, val);
+    return finisher(_num, val);
   }
 
 
 
-  function readNumber(startsWithDot, finishToken) {
+  function readNumber(startsWithDot, finisher) {
     var start = tokPos, isFloat = false, octal = input.charCodeAt(tokPos) === 48;
     if (!startsWithDot && readInt(10) === null) raise(start, "Invalid number");
     if (input.charCodeAt(tokPos) === 46) {
@@ -6977,7 +7409,7 @@ var preIfLevel = 0;
     if (next === 69 || next === 101) {
       next = input.charCodeAt(++tokPos);
       if (next === 43 || next === 45) ++tokPos;
-      if (readInt(10) === null) raise(start, "Invalid number")
+      if (readInt(10) === null) raise(start, "Invalid number");
       isFloat = true;
     }
     if (isIdentifierStart(input.charCodeAt(tokPos))) raise(tokPos, "Identifier directly after number");
@@ -6987,22 +7419,20 @@ var preIfLevel = 0;
     else if (!octal || str.length === 1) val = parseInt(str, 10);
     else if (/[89]/.test(str) || strict) raise(start, "Invalid number");
     else val = parseInt(str, 8);
-    return finishToken(_num, val);
+    return finisher(_num, val);
   }
 
 
 
-  var rs_str = [];
-
-  function readString(quote, finishToken) {
+  function readString(quote, finisher) {
     tokPos++;
-    rs_str.length = 0;
+    var out = "";
     for (;;) {
       if (tokPos >= inputLen) raise(tokStart, "Unterminated string constant");
       var ch = input.charCodeAt(tokPos);
       if (ch === quote) {
         ++tokPos;
-        return finishToken(_string, String.fromCharCode.apply(null, rs_str));
+        return finisher(_string, out);
       }
       if (ch === 92) {
         ch = input.charCodeAt(++tokPos);
@@ -7013,30 +7443,30 @@ var preIfLevel = 0;
         ++tokPos;
         if (octal) {
           if (strict) raise(tokPos - 2, "Octal literal in strict mode");
-          rs_str.push(parseInt(octal, 8));
+          out += String.fromCharCode(parseInt(octal, 8));
           tokPos += octal.length - 1;
         } else {
           switch (ch) {
-          case 110: rs_str.push(10); break;
-          case 114: rs_str.push(13); break;
-          case 120: rs_str.push(readHexChar(2)); break;
-          case 117: rs_str.push(readHexChar(4)); break;
-          case 85: rs_str.push(readHexChar(8)); break;
-          case 116: rs_str.push(9); break;
-          case 98: rs_str.push(8); break;
-          case 118: rs_str.push(11); break;
-          case 102: rs_str.push(12); break;
-          case 48: rs_str.push(0); break;
+          case 110: out += "\n"; break;
+          case 114: out += "\r"; break;
+          case 120: out += String.fromCharCode(readHexChar(2)); break;
+          case 117: out += String.fromCharCode(readHexChar(4)); break;
+          case 85: out += String.fromCharCode(readHexChar(8)); break;
+          case 116: out += "\t"; break;
+          case 98: out += "\b"; break;
+          case 118: out += "\u000b"; break;
+          case 102: out += "\f"; break;
+          case 48: out += "\0"; break;
           case 13: if (input.charCodeAt(tokPos) === 10) ++tokPos;
           case 10:
             if (options.locations) { tokLineStart = tokPos; ++tokCurLine; }
             break;
-          default: rs_str.push(ch); break;
+          default: out += String.fromCharCode(ch); break;
           }
         }
       } else {
-        if (ch === 13 || ch === 10 || ch === 8232 || ch === 8329) raise(tokStart, "Unterminated string constant");
-        rs_str.push(ch);
+        if (ch === 13 || ch === 10 || ch === 8232 || ch === 8233) raise(tokStart, "Unterminated string constant");
+        out += String.fromCharCode(ch);
         ++tokPos;
       }
     }
@@ -7094,63 +7524,13 @@ var preIfLevel = 0;
 
 
 
-  function readWord(preReadWord) {
+  function readWord(preReadWord, onlyTransformMacroArguments, forceRegexp) {
     var word = preReadWord || readWord1();
     var type = _name;
-    var reservedError;
     if (options.preprocess) {
-      var macro;
-      var i = preprocessStack.length;
-      if (i > 0) {
-        var lastItem = preprocessStack[i - 1];
-
-        if (lastItem.parameterDict && lastItem.macro.isParameterFunction()(word)) {
-          macro = lastItem.parameterDict[word];
-        }
-      }
-
-      if (!macro && options.preprocessIsMacro(word))
-        macro = options.preprocessGetMacro(word);
-      if (macro) {
-        var macroStart = tokStart;
-        var parameters;
-        var hasParameters = macro.parameters;
-        var nextIsParenL;
-        if (hasParameters)
-          nextIsParenL = tokPos < inputLen && input.charCodeAt(tokPos) === 40;
-        if (!hasParameters || nextIsParenL) {
-
-          var macroString = macro.macro;
-          var lastTokPos = tokPos;
-          if (nextIsParenL) {
-            var first = true;
-            var noParams = 0;
-            parameters = Object.create(null);
-            preprocessReadToken();
-            preprocessMacroParamterListMode = true;
-            preprocessExpect(_parenL);
-            lastTokPos = tokPos;
-            while (!preprocessEat(_parenR)) {
-              if (!first) preprocessExpect(_comma, "Expected ',' between macro parameters"); else first = false;
-              var ident = hasParameters[noParams++];
-              var val = preTokVal;
-              preprocessExpect(_preprocessParamItem);
-              parameters[ident] = new Macro(ident, val);
-              lastTokPos = tokPos;
-            }
-            preprocessMacroParamterListMode = false;
-          }
-
-          if (macroString) {
-            preprocessStack.push({macro: macro, parameterDict: parameters, start: macroStart, end:lastTokPos, input: input, inputLen: inputLen, lastStart: tokStart, lastEnd: lastTokPos});
-            input = macroString;
-            inputLen = macroString.length;
-            tokPos = 0;
-          }
-
-          return next();
-        }
-      }
+      var readMacroWordReturn = readMacroWord(word, next, onlyTransformMacroArguments, forceRegexp);
+      if (readMacroWordReturn === true)
+        return true;
     }
 
     if (!containsEsc) {
@@ -7161,25 +7541,274 @@ var preIfLevel = 0;
                strict && isStrictReservedWord(word))
         raise(tokStart, "The keyword '" + word + "' is reserved");
     }
-    return finishToken(type, word);
+    return finishToken(type, word, readMacroWordReturn);
   }
 
-  function Macro(ident, macro, parameters) {
+
+
+  function readMacroWord(word, nextFinisher, onlyTransformArguments, forceRegexp) {
+    var macro,
+        lastStackItem = preprocessStackLastItem,
+        oldParameterScope = preprocessParameterScope;
+    if (lastStackItem) {
+      var scope = preTokParameterScope || preprocessStackLastItem;
+
+      if (scope.parameterDict && scope.macro.isParameterFunction()(word)) {
+        macro = scope.parameterDict[word];
+
+        if (!macro && scope.macro.variadicName === word) {
+
+          if (preConcatenating) {
+            finishToken(_name, "");
+            return true;
+          } else {
+            onlySkipSpace();
+            nextFinisher(true, onlyTransformArguments, forceRegexp, true);
+          }
+          return true;
+        }
+
+
+
+        if (onlySkipSpace(true, true)) {
+          if (preprocessPrescanFor(35, 35))
+            onlyTransformArguments = 2;
+        } else if (input.charCodeAt(tokPos) === 35 && input.charCodeAt(tokPos + 1) === 35) {
+          onlyTransformArguments = 2;
+        }
+        preprocessParameterScope = macro && macro.parameterScope;
+        onlyTransformArguments--;
+      }
+    }
+
+
+
+
+    if (!macro && (!onlyTransformArguments && !preprocessOnlyTransformArgumentsForLastToken || tokPos < inputLen) && options.preprocessIsMacro(word)) {
+      preprocessParameterScope = null;
+      macro = options.preprocessGetMacro(word);
+      if (macro) {
+
+
+        if (!preprocessStackLastItem || !preprocessStackLastItem.macro.isArgument) {
+          var i = preprocessStack.length,
+                  lastMacroItem;
+          while (i > 0) {
+            var item = preprocessStack[--i],
+                macroItem = item.macro;
+            if (macroItem.identifier === word && !(lastMacroItem && lastMacroItem.isArgument)) {
+              macro = null;
+            }
+            lastMacroItem = macroItem;
+          }
+        }
+      } else {
+        macro = preprocessBuiltinMacro(word);
+      }
+    }
+    if (macro) {
+      var macroStart = tokStart;
+      var parameters;
+      var hasParameters = macro.parameters;
+      var nextIsParenL;
+      if (hasParameters) {
+
+
+        var pos = tokPos;
+        var loc;
+        if (options.locations) loc = new line_loc_t;
+        if ((onlySkipSpace(true, true) && preprocessPrescanFor(40)) || input.charCodeAt(tokPos) === 40) {
+          nextIsParenL = true;
+        } else {
+
+          preprocessOverrideTokEndLoc = loc;
+          return pos;
+        }
+      }
+      if (!hasParameters || nextIsParenL) {
+
+        var macroString = macro.macro;
+
+        if (nextIsParenL) {
+          var variadicName = macro.variadicName;
+          var first = true;
+          var noParams = 0;
+          parameters = Object.create(null);
+          onlySkipSpace(true);
+
+
+
+
+          if (input.charCodeAt(tokPos++) !== 40) raise(tokPos - 1, "Expected '(' before macro prarameters");
+          onlySkipSpace(true, true, true);
+          var code = input.charCodeAt(tokPos++);
+          while (tokPos < inputLen && code !== 41) {
+            if (first)
+              first = false;
+            else
+              if (code === 44) {
+                onlySkipSpace(true, true, true);
+                code = input.charCodeAt(tokPos++);
+              } else
+                raise(tokPos - 1, "Expected ',' between macro parameters");
+            var ident = hasParameters[noParams++];
+            var variadicAndLastParameter = variadicName && hasParameters.length === noParams;
+            var paramStart = tokPos - 1, parenLevel = 0;
+
+            var positionOffset = options.locations && new PositionOffset(tokCurLine, tokLineStart);
+
+
+            while(tokPos < inputLen && (parenLevel || (code !== 41 && (code !== 44 || variadicAndLastParameter)))) {
+              if (code === 40)
+                parenLevel++;
+              if (code === 41)
+                parenLevel--;
+              if (code === 34 || code === 39) {
+                var quote = code;
+                code = input.charCodeAt(tokPos++);
+                while(tokPos < inputLen && code !== quote) {
+                  if (code === 92) {
+                    code = input.charCodeAt(tokPos++);
+                    if (code !== quote) continue;
+                  }
+                  code = input.charCodeAt(tokPos++);
+                }
+              }
+              code = input.charCodeAt(tokPos++);
+            }
+            var val = input.slice(paramStart, tokPos - 1);
+
+            parameters[ident] = new Macro(ident, val, null, paramStart + tokMacroOffset, true, preTokParameterScope || preprocessStackLastItem, false, positionOffset);
+          }
+          if (code !== 41) raise(tokPos, "Expected ')' after macro prarameters");
+          onlySkipSpace(true, true);
+
+
+        }
+
+        return readTokenFromMacro(macro, tokPosMacroOffset, parameters, oldParameterScope, tokPos, nextFinisher, onlyTransformArguments, forceRegexp);
+      }
+    }
+  }
+
+
+
+
+
+
+  function preprocessPrescanFor(first, second) {
+    var i = preprocessStack.length;
+    stackloop:
+    while (i-- > 0) {
+      var stackItem = preprocessStack[i],
+          scanPos = stackItem.end,
+          scanInput = stackItem.input,
+          scanInputLen = stackItem.inputLen;
+
+      for(;;) {
+        var ch = scanInput.charCodeAt(scanPos);
+        if (ch === 32) {
+          ++scanPos;
+        } else if (ch === 13) {
+          ++scanPos;
+          var next = scanInput.charCodeAt(scanPos);
+          if (next === 10) {
+            ++scanPos;
+          }
+        } else if (ch === 10) {
+          ++scanPos;
+        } else if (ch === 9) {
+          ++scanPos;
+        } else if (ch === 47) {
+          var next = scanInput.charCodeAt(scanPos+1);
+          if (next === 42) {
+            var end = scanInput.indexOf("*/", scanPos += 2);
+            if (end === -1) raise(scanPos - 2, "Unterminated comment");
+            scanPos = end + 2;
+          } else if (next === 47) {
+            ch = scanInput.charCodeAt(scanPos += 2);
+            while (scanPos < inputLen && ch !== 10 && ch !== 13 && ch !== 8232 && ch !== 8233) {
+              ++scanPos;
+              ch = scanInput.charCodeAt(scanPos);
+            }
+          } else break stackloop;
+        } else if (ch === 160 || ch === 11 || ch === 12 || (ch >= 5760 && nonASCIIwhitespace.test(String.fromCharCode(ch)))) {
+          ++scanPos;
+        } else if (scanPos >= scanInputLen) {
+          continue stackloop;
+        } else if (ch === 92) {
+
+
+          var pos = scanPos + 1;
+          ch = scanInput.charCodeAt(pos);
+          while (pos < scanInputLen && (ch === 32 || ch === 9 || ch === 11 || ch === 12 || (ch >= 5760 && nonASCIIwhitespaceNoNewLine.test(String.fromCharCode(ch)))))
+            ch = scanInput.charCodeAt(++pos);
+          lineBreak.lastIndex = 0;
+          var match = lineBreak.exec(scanInput.slice(pos, pos + 2));
+          if (match && match.index === 0) {
+            scanPos = pos + match[0].length;
+          } else {
+            break stackloop;
+          }
+        } else {
+          break stackloop;
+        }
+      }
+    }
+    return scanInput.charCodeAt(scanPos) === first && (second == null || scanInput.charCodeAt(scanPos + 1) === second);
+  }
+
+
+
+  function readTokenFromMacro(macro, macroOffset, parameters, parameterScope, end, nextFinisher, onlyTransformArguments, forceRegexp) {
+    var macroString = macro.macro;
+
+    if(!macroString && nextFinisher === preprocessNext) macroString = "1";
+    if (macroString) {
+      preprocessStackLastItem = {macro: macro, macroOffset: macroOffset, parameterDict: parameters, end:end, inputLen: inputLen, tokStart: tokStart, onlyTransformArgumentsForLastToken: preprocessOnlyTransformArgumentsForLastToken, currentLine: tokCurLine, currentLineStart: tokLineStart };
+      if (parameterScope) preprocessStackLastItem.parameterScope = parameterScope;
+      preprocessStackLastItem.input = input;
+      preprocessStack.push(preprocessStackLastItem);
+      preprocessOnlyTransformArgumentsForLastToken = onlyTransformArguments;
+      input = macroString;
+      inputLen = macroString.length;
+      tokPosMacroOffset = macro.start;
+      tokPos = 0;
+      tokCurLine = 0;
+      tokLineStart = 0;
+    } else if (preConcatenating) {
+
+      finishToken(_name, "");
+      return true;
+    }
+
+    onlySkipSpace();
+    nextFinisher(true, onlyTransformArguments, forceRegexp, true);
+    return true;
+  }
+  var Macro = exports.Macro = function Macro(ident, macro, parameters, start, isArgument, parameterScope, variadicName, locationOffset) {
     this.identifier = ident;
-    if (macro) this.macro = macro;
+    if (macro != null) this.macro = macro;
     if (parameters) this.parameters = parameters;
+    if (start != null) this.start = start;
+    if (isArgument) this.isArgument = true;
+    if (parameterScope) this.parameterScope = parameterScope;
+    if (variadicName) this.variadicName = variadicName;
+    if (locationOffset) this.locationOffset = locationOffset;
   }
 
   Macro.prototype.isParameterFunction = function() {
-    var y = (this.parameters || []).join(" ");
-    return this.isParameterFunctionVar || (this.isParameterFunctionVar = makePredicate(y));
+    return this.isParameterFunctionVar || (this.isParameterFunctionVar = makePredicate((this.parameters || []).join(" ")));
   }
-  function next() {
-    lastStart = tokStart;
-    lastEnd = tokEnd;
-    lastEndLoc = tokEndLoc;
+  function next(stealth, onlyTransformArguments, forceRegexp) {
+    if (!stealth) {
+      lastStart = tokStart;
+      lastEnd = tokEnd;
+      lastEndLoc = tokEndLoc;
+      lastTokMacroOffset = tokMacroOffset;
+    }
     nodeMessageSendObjectExpression = null;
-    return readToken();
+    readToken(forceRegexp, onlyTransformArguments, stealth);
   }
 
 
@@ -7188,6 +7817,10 @@ var preIfLevel = 0;
   function setStrict(strct) {
     strict = strct;
     tokPos = lastEnd;
+    while (tokPos < tokLineStart) {
+      tokLineStart = input.lastIndexOf("\n", tokLineStart - 2) + 1;
+      --tokCurLine;
+    }
     skipSpace();
     readToken();
   }
@@ -7197,7 +7830,7 @@ var preIfLevel = 0;
 
   function node_t() {
     this.type = null;
-    this.start = tokStart;
+    this.start = tokStart + tokMacroOffset;
     this.end = null;
   }
 
@@ -7252,12 +7885,13 @@ var preIfLevel = 0;
   var lastFinishedNode;
 
   function finishNode(node, type) {
+    var nodeEnd = lastEnd + lastTokMacroOffset;
     node.type = type;
-    node.end = lastEnd;
+    node.end = nodeEnd;
     if (options.trackComments) {
       if (lastTokCommentsAfter) {
         node.commentsAfter = lastTokCommentsAfter;
-        tokCommentsAfter = null;
+        lastTokCommentsAfter = null;
       } else if (lastFinishedNode && lastFinishedNode.end === lastEnd &&
                  lastFinishedNode.commentsAfter) {
         node.commentsAfter = lastFinishedNode.commentsAfter;
@@ -7280,7 +7914,7 @@ var preIfLevel = 0;
     if (options.locations)
       node.loc.end = lastEndLoc;
     if (options.ranges)
-      node.range[1] = lastEnd;
+      node.range[1] = nodeEnd;
     return node;
   }
 
@@ -7305,7 +7939,7 @@ var preIfLevel = 0;
 
   function canInsertSemicolon() {
     return !options.strictSemicolons &&
-      (tokType === _eof || tokType === _braceR || newline.test(tokInput.slice(lastEnd, tokStart)) ||
+      (tokType === _eof || tokType === _braceR || newline.test(tokFirstInput.slice(lastEnd, tokFirstStart)) ||
         (nodeMessageSendObjectExpression && options.objj));
   }
 
@@ -7359,7 +7993,7 @@ var preIfLevel = 0;
 
   var loopLabel = {kind: "loop"}, switchLabel = {kind: "switch"};
   function parseStatement() {
-    if (tokType === _slash)
+    if (tokType === _slash || tokType === _assign && tokVal == "/=")
       readToken(true);
 
     var starttype = tokType, node = startNode();
@@ -7497,8 +8131,8 @@ var preIfLevel = 0;
     case _try:
       next();
       node.block = parseBlock();
-      node.handlers = [];
-      while (tokType === _catch) {
+      node.handler = null;
+      if (tokType === _catch) {
         var clause = startNode();
         next();
         expect(_parenL, "Expected '(' after 'catch'");
@@ -7508,10 +8142,11 @@ var preIfLevel = 0;
         expect(_parenR, "Expected closing ')' after catch");
         clause.guard = null;
         clause.body = parseBlock();
-        node.handlers.push(finishNode(clause, "CatchClause"));
+        node.handler = finishNode(clause, "CatchClause");
       }
+      node.guardedHandlers = empty;
       node.finalizer = eat(_finally) ? parseBlock() : null;
-      if (!node.handlers.length && !node.finalizer)
+      if (!node.handler && !node.finalizer)
         raise(node.start, "Missing catch or finally clause");
       return finishNode(node, "TryStatement");
 
@@ -7594,19 +8229,6 @@ var preIfLevel = 0;
         else if (eat(_parenL)) {
           node.categoryname = parseIdent(true);
           expect(_parenR, "Expected closing ')' after category name");
-        }
-        if (tokVal === '<') {
-          next();
-          var protocols = [],
-              first = true;
-          node.protocols = protocols;
-          while (tokVal !== '>') {
-            if (!first)
-              expect(_comma, "Expected ',' between protocol names");
-            else first = false;
-            protocols.push(parseIdent(true));
-          }
-          next();
         }
         if (tokVal === '<') {
           next();
@@ -7722,7 +8344,6 @@ var preIfLevel = 0;
         return finishNode(node, "TypeDefStatement");
       }
       break;
-
     }
       var maybeName = tokVal, expr = parseExpression();
       if (starttype === _name && expr.type === "Identifier" && eat(_colon)) {
@@ -7753,7 +8374,6 @@ var preIfLevel = 0;
       if (outlet)
         decl.outlet = outlet;
       decl.ivartype = type;
-
       decl.id = parseIdent();
       if (strict && isStrictBadIdWord(decl.id.name))
         raise(decl.id.start, "Binding " + decl.id.name + " in strict mode");
@@ -7892,11 +8512,11 @@ var preIfLevel = 0;
     while (!eat(_braceR)) {
       var stmt = parseStatement();
       node.body.push(stmt);
-      if (first && isUseStrict(stmt)) {
+      if (first && allowStrict && isUseStrict(stmt)) {
         oldStrict = strict;
         setStrict(strict = true);
       }
-      first = false
+      first = false;
     }
     if (strict && !oldStrict) setStrict(false);
     return finishNode(node, "BlockStatement");
@@ -7991,7 +8611,7 @@ var preIfLevel = 0;
 
 
   function parseExprOps(noIn) {
-    return parseExprOp(parseMaybeUnary(noIn), -1, noIn);
+    return parseExprOp(parseMaybeUnary(), -1, noIn);
   }
 
 
@@ -8008,7 +8628,7 @@ var preIfLevel = 0;
         node.left = left;
         node.operator = tokVal;
         next();
-        node.right = parseExprOp(parseMaybeUnary(noIn), prec, noIn);
+        node.right = parseExprOp(parseMaybeUnary(), prec, noIn);
         var node = finishNode(node, /&&|\|\|/.test(node.operator) ? "LogicalExpression" : "BinaryExpression");
         return parseExprOp(node, minPrec, noIn);
       }
@@ -8018,13 +8638,14 @@ var preIfLevel = 0;
 
 
 
-  function parseMaybeUnary(noIn) {
+  function parseMaybeUnary() {
     if (tokType.prefix) {
       var node = startNode(), update = tokType.isUpdate;
       node.operator = tokVal;
       node.prefix = true;
+      tokRegexpAllowed = true;
       next();
-      node.argument = parseMaybeUnary(noIn);
+      node.argument = parseMaybeUnary();
       if (update) checkLVal(node.argument);
       else if (strict && node.operator === "delete" &&
                node.argument.type === "Identifier")
@@ -8106,17 +8727,17 @@ var preIfLevel = 0;
       return finishNode(node, "Literal");
 
     case _parenL:
-      var tokStartLoc1 = tokStartLoc, tokStart1 = tokStart;
+      var tokStartLoc1 = tokStartLoc, macroOffset = tokMacroOffset, tokStart1 = tokStart + macroOffset;
       next();
       var val = parseExpression();
       val.start = tokStart1;
-      val.end = tokEnd;
+      val.end = tokEnd + macroOffset;
       if (options.locations) {
         val.loc.start = tokStartLoc1;
         val.loc.end = tokEndLoc;
       }
       if (options.ranges)
-        val.range = [tokStart1, tokEnd];
+        val.range = [tokStart1, tokEnd + lastTokMacroOffset];
       expect(_parenR, "Expected closing ')' in expression");
       return val;
 
@@ -8198,7 +8819,7 @@ var preIfLevel = 0;
       return finishNode(node, "Dereference");
 
     default:
-      if(tokType.okAsIdent)
+      if (tokType.okAsIdent)
         return parseIdent();
 
       unexpected();
@@ -8271,7 +8892,7 @@ var preIfLevel = 0;
     node.callee = parseSubscripts(parseExprAtom(false), true);
     if (eat(_parenL))
       node.arguments = parseExprList(_parenR, tokType === _parenR ? null : parseExpression(true), false);
-    else node.arguments = [];
+    else node.arguments = empty;
     return finishNode(node, "NewExpression");
   }
 
@@ -8408,6 +9029,7 @@ var preIfLevel = 0;
   function parseIdent(liberal) {
     var node = startNode();
     node.name = tokType === _name ? tokVal : (((liberal && !options.forbidReserved) || tokType.okAsIdent) && tokType.keyword) || unexpected();
+    tokRegexpAllowed = false;
     next();
     return finishNode(node, "Identifier");
   }
@@ -8420,11 +9042,12 @@ var preIfLevel = 0;
     return finishNode(node, "Literal");
   }
   function parseObjectiveJType(startFrom) {
-    var node = startFrom ? startNodeFrom(startFrom) : startNode();
+    var node = startFrom ? startNodeFrom(startFrom) : startNode(), allowProtocol = false;
     if (tokType === _name) {
 
       node.name = tokVal;
       node.typeisclass = true;
+      allowProtocol = true;
       next();
     } else {
       node.typeisclass = false;
@@ -8432,62 +9055,68 @@ var preIfLevel = 0;
 
       if (!eat(_void)) {
         if (eat(_id)) {
-
-          if (tokVal === '<') {
-            var first = true,
-                protocols = [];
-            node.protocols = protocols;
-            do {
-              next();
-              if (first)
-                first = false;
-              else
-                eat(_comma);
-              protocols.push(parseIdent(true));
-            } while (tokVal !== '>');
-            next();
-          }
+          allowProtocol = true;
         } else {
 
           var nextKeyWord;
           if (eat(_float) || eat(_boolean) || eat(_SEL) || eat(_double))
-              nextKeyWord = tokType.keyword;
+          {
+            nextKeyWord = tokType.keyword;
+          }
           else {
-             if (eat(_signed) || eat(_unsigned))
-               nextKeyWord = tokType.keyword || true;
-             if (eat(_char) || eat(_byte) || eat(_short)) {
-               if (nextKeyWord)
-                 node.name += " " + nextKeyWord;
-               nextKeyWord = tokType.keyword || true;
-             } else {
-               if (eat(_int)) {
-                 if (nextKeyWord)
-                   node.name += " " + nextKeyWord;
-                 nextKeyWord = tokType.keyword || true;
-               }
-               if (eat(_long)) {
-                 if (nextKeyWord)
-                   node.name += " " + nextKeyWord;
-                 nextKeyWord = tokType.keyword || true;
-                 if (eat(_long)) {
-                   node.name += " " + nextKeyWord;
-                 }
-               }
-             }
-             if (!nextKeyWord) {
+            if (eat(_signed) || eat(_unsigned))
+              nextKeyWord = tokType.keyword || true;
+            if (eat(_char) || eat(_byte) || eat(_short)) {
+              if (nextKeyWord)
+                node.name += " " + nextKeyWord;
+              nextKeyWord = tokType.keyword || true;
+            } else {
+              if (eat(_int)) {
+                if (nextKeyWord)
+                  node.name += " " + nextKeyWord;
+                nextKeyWord = tokType.keyword || true;
+              }
+              if (eat(_long)) {
+                if (nextKeyWord)
+                  node.name += " " + nextKeyWord;
+                nextKeyWord = tokType.keyword || true;
+                if (eat(_long)) {
+                  node.name += " " + nextKeyWord;
+                }
+              }
+            }
+            if (!nextKeyWord) {
 
-               node.name = (!options.forbidReserved && tokType.keyword) || unexpected();
-               node.typeisclass = true;
-               next();
-             }
+              node.name = (!options.forbidReserved && tokType.keyword) || unexpected();
+              node.typeisclass = true;
+              allowProtocol = true;
+              next();
+            }
           }
         }
       }
     }
-   return finishNode(node, "ObjectiveJType");
+    if (allowProtocol) {
+
+      if (tokVal === '<') {
+        var first = true,
+            protocols = [];
+        node.protocols = protocols;
+        do {
+          next();
+          if (first)
+            first = false;
+          else
+            eat(_comma);
+          protocols.push(parseIdent(true));
+        } while (tokVal !== '>');
+        next();
+      }
+    }
+    return finishNode(node, "ObjectiveJType");
   }
 
-})(typeof exports === "undefined" ? (self.acorn = {}) : exports.acorn);
+})(exports.acorn, exports.acorn.walk);
 
 
 if (!exports.acorn) {
@@ -8575,8 +9204,7 @@ if (!exports.acorn) {
   };
   exports.TryStatement = function(node, st, c) {
     c(node.block, st, "Statement");
-    for (var i = 0; i < node.handlers.length; ++i)
-      c(node.handlers[i].body, st, "ScopeBody");
+    if (node.handler) c(node.handler.body, st, "ScopeBody");
     if (node.finalizer) c(node.finalizer, st, "Statement");
   };
   exports.WhileStatement = function(node, st, c) {
@@ -8741,10 +9369,10 @@ if (!exports.acorn) {
     },
     TryStatement: function(node, scope, c) {
       c(node.block, scope, "Statement");
-      for (var i = 0; i < node.handlers.length; ++i) {
-        var handler = node.handlers[i], inner = makeScope(scope);
-        inner.vars[handler.param.name] = {type: "catch clause", node: handler.param};
-        c(handler.body, inner, "ScopeBody");
+      if (node.handler) {
+        var inner = makeScope(scope);
+        inner.vars[node.handler.param.name] = {type: "catch clause", node: node.handler.param};
+        c(node.handler.body, inner, "ScopeBody");
       }
       if (node.finalizer) c(node.finalizer, scope, "Statement");
     },
@@ -8758,12 +9386,42 @@ if (!exports.acorn) {
   });
 
 })(typeof exports == "undefined" ? acorn.walk = {} : exports.acorn.walk);
+(function(mod)
+{
+
+    mod(exports.ObjJCompiler || (exports.ObjJCompiler = {}), exports.acorn, exports.acorn.walk );
+})(function(exports, acorn, walk, sourceMap)
+{
+"use strict";
+
+exports.version = "0.3.7";
+
+
 var Scope = function(prev, base)
 {
     this.vars = Object.create(null);
+
     if (base) for (var key in base) this[key] = base[key];
     this.prev = prev;
-    if (prev) this.compiler = prev.compiler;
+
+    if (prev)
+    {
+        this.compiler = prev.compiler;
+        this.nodeStack = prev.nodeStack.slice(0);
+        this.nodePriorStack = prev.nodePriorStack.slice(0);
+        this.nodeStackOverrideType = prev.nodeStackOverrideType.slice(0);
+    }
+    else
+    {
+        this.nodeStack = [];
+        this.nodePriorStack = [];
+        this.nodeStackOverrideType = [];
+    }
+}
+
+Scope.prototype.toString = function()
+{
+    return this.ivars ? "ivars: " + JSON.stringify(this.ivars) : "<No ivars>";
 }
 
 Scope.prototype.compiler = function()
@@ -8845,14 +9503,132 @@ Scope.prototype.copyAddedSelfToIvarsToParent = function()
 
 Scope.prototype.addMaybeWarning = function(warning)
 {
-    var rootScope = this.rootScope();
+    var rootScope = this.rootScope(),
+        maybeWarnings = rootScope._maybeWarnings;
 
-    (rootScope._maybeWarnings || (rootScope._maybeWarnings = [])).push(warning);
+    if (!maybeWarnings)
+        rootScope._maybeWarnings = maybeWarnings = [warning];
+    else
+    {
+        var lastWarning = maybeWarnings[maybeWarnings.length - 1];
+
+
+
+        if (!lastWarning.isEqualTo(warning))
+            maybeWarnings.push(warning);
+    }
 }
 
 Scope.prototype.maybeWarnings = function()
 {
     return this.rootScope()._maybeWarnings;
+}
+
+Scope.prototype.pushNode = function(node, overrideType)
+{
+
+
+
+
+    var nodePriorStack = this.nodePriorStack,
+        length = nodePriorStack.length,
+        lastPriorList = length ? nodePriorStack[length - 1] : null,
+        lastNode = length ? this.nodeStack[length - 1] : null;
+
+    if (lastPriorList) {
+        if (lastNode !== node) {
+
+            lastPriorList.push(node);
+        }
+    }
+
+    nodePriorStack.push(lastNode === node ? lastPriorList : []);
+    this.nodeStack.push(node);
+    this.nodeStackOverrideType.push(overrideType);
+}
+
+Scope.prototype.popNode = function()
+{
+    this.nodeStackOverrideType.pop();
+    this.nodePriorStack.pop();
+    return this.nodeStack.pop();
+}
+
+Scope.prototype.currentNode = function()
+{
+    var nodeStack = this.nodeStack;
+    return nodeStack[nodeStack.length - 1];
+}
+
+Scope.prototype.currentOverrideType = function()
+{
+    var nodeStackOverrideType = this.nodeStackOverrideType;
+    return nodeStackOverrideType[nodeStackOverrideType.length - 1];
+}
+
+Scope.prototype.priorNode = function()
+{
+    var nodePriorStack = this.nodePriorStack,
+        length = nodePriorStack.length;
+
+    if (length > 1) {
+        var parent = nodePriorStack[length - 2],
+            l = parent.length;
+        return parent[l - 2] || null;
+    }
+    return null;
+}
+
+Scope.prototype.formatDescription = function(index, formatDescription, useOverrideForNode)
+{
+    var nodeStack = this.nodeStack,
+        length = nodeStack.length;
+
+    index = index || 0;
+    if (index >= length)
+        return null;
+
+
+    var i = length - index - 1;
+    var currentNode = nodeStack[i];
+    var currentFormatDescription = formatDescription || this.compiler.formatDescription;
+
+    var parentFormatDescriptions = formatDescription ? formatDescription.parent : currentFormatDescription;
+
+    var nextFormatDescription;
+    if (parentFormatDescriptions) {
+        var nodeType = useOverrideForNode === currentNode ? this.nodeStackOverrideType[i] : currentNode.type;
+
+        nextFormatDescription = parentFormatDescriptions[nodeType];
+        if (useOverrideForNode === currentNode && !nextFormatDescription) {
+
+            return null;
+        }
+    }
+
+
+
+    if (nextFormatDescription) {
+
+        return this.formatDescription(index + 1, nextFormatDescription);
+    } else {
+
+        nextFormatDescription = this.formatDescription(index + 1, formatDescription, currentNode);
+        if (nextFormatDescription)
+            return nextFormatDescription;
+        else {
+
+
+            var priorFormatDescriptions = currentFormatDescription.prior;
+            if (priorFormatDescriptions) {
+                var priorNode = this.priorNode(),
+                    priorFormatDescription = priorFormatDescriptions[priorNode ? priorNode.type : "None"];
+                if (priorFormatDescription)
+                    return priorFormatDescription;
+            }
+            return currentFormatDescription;
+        }
+    }
 }
 
 var GlobalVariableMaybeWarning = function( aMessage, node, code)
@@ -8864,27 +9640,127 @@ var GlobalVariableMaybeWarning = function( aMessage, node, code)
 GlobalVariableMaybeWarning.prototype.checkIfWarning = function( st)
 {
     var identifier = this.node.name;
-    return !st.getLvar(identifier) && typeof global[identifier] === "undefined" && typeof window[identifier] === "undefined" && !st.compiler.getClassDef(identifier);
+    return !st.getLvar(identifier) && typeof global[identifier] === "undefined" && (typeof window === 'undefined' || typeof window[identifier] === "undefined") && !st.compiler.getClassDef(identifier);
 }
 
-function StringBuffer()
+GlobalVariableMaybeWarning.prototype.isEqualTo = function( aWarning)
 {
-    this.atoms = [];
+    if (this.message.message !== aWarning.message.message) return false;
+    if (this.node.start !== aWarning.node.start) return false;
+    if (this.node.end !== aWarning.node.end) return false;
+
+    return true;
 }
 
-StringBuffer.prototype.toString = function()
+function StringBuffer(useSourceNode, file)
+{
+    if (useSourceNode) {
+        this.rootNode = new sourceMap.SourceNode();
+        this.concat = this.concatSourceNode;
+        this.toString = this.toStringSourceNode;
+        this.isEmpty = this.isEmptySourceNode;
+        this.appendStringBuffer = this.appendStringBufferSourceNode;
+        this.length = this.lengthSourceNode;
+        if (file)
+            this.file = file.toString();
+    } else {
+        this.atoms = [];
+        this.concat = this.concatString;
+        this.toString = this.toStringString;
+        this.isEmpty = this.isEmptyString;
+        this.appendStringBuffer = this.appendStringBufferString;
+        this.length = this.lengthString;
+    }
+}
+
+StringBuffer.prototype.toStringString = function()
 {
     return this.atoms.join("");
 }
 
-StringBuffer.prototype.concat = function(aString)
+StringBuffer.prototype.toStringSourceNode = function()
+{
+    return this.rootNode.toStringWithSourceMap({file: this.file});
+}
+
+StringBuffer.prototype.concatString = function(aString)
 {
     this.atoms.push(aString);
 }
 
-StringBuffer.prototype.isEmpty = function()
+StringBuffer.prototype.concatSourceNode = function(aString, node)
+{
+    if (node) {
+
+        this.rootNode.add(new sourceMap.SourceNode(node.loc.start.line, node.loc.start.column, node.loc.source, aString));
+    } else
+        this.rootNode.add(aString);
+    if (!this.notEmpty)
+        this.notEmpty = true;
+}
+
+
+
+StringBuffer.prototype.concatFormat = function(aString)
+{
+    if (!aString) return;
+    var lines = aString.split("\n"),
+        size = lines.length;
+    if (size > 1) {
+        this.concat(lines[0]);
+        for (var i = 1; i < size; i++) {
+            var line = lines[i];
+            this.concat("\n");
+            if (line.slice(0, 1) === "\\") {
+                var numberLength = 1;
+                var indent = line.slice(1, 1 + numberLength);
+                if (indent === '-') {
+                    numberLength = 2;
+                    indent = line.slice(1, 1 + numberLength);
+                }
+                var indentationNumber = parseInt(indent);
+                if (indentationNumber) {
+                    this.concat(indentationNumber > 0 ? indentation + Array(indentationNumber * indentationSpaces + 1).join(indentType) : indentation.substring(indentationSize * -indentationNumber));
+                }
+                line = line.slice(1 + numberLength);
+            } else if (line || i === size - 1) {
+
+                this.concat(indentation);
+            }
+            if (line) this.concat(line);
+        }
+    } else
+        this.concat(aString);
+}
+
+StringBuffer.prototype.isEmptyString = function()
 {
     return this.atoms.length !== 0;
+}
+
+StringBuffer.prototype.isEmptySourceNode = function()
+{
+    return this.notEmpty;
+}
+
+StringBuffer.prototype.appendStringBufferString = function(stringBuffer)
+{
+    this.atoms.push.apply(this.atoms, stringBuffer.atoms);
+}
+
+StringBuffer.prototype.appendStringBufferSourceNode = function(stringBuffer)
+{
+    this.rootNode.add(stringBuffer.rootNode);
+}
+
+StringBuffer.prototype.lengthString = function()
+{
+    return this.atoms.length;
+}
+
+StringBuffer.prototype.lengthSourceNode = function()
+{
+    return this.rootNode.children.length;
 }
 
 
@@ -8926,21 +9802,19 @@ ClassDef.prototype.listOfNotImplementedMethodsForProtocols = function(protocolDe
             protocolClassMethods = protocolDef.requiredClassMethods,
             inheritFromProtocols = protocolDef.protocols;
 
-        if (protocolInstanceMethods)
-            for (var methodName in protocolInstanceMethods) {
-                var methodDef = protocolInstanceMethods[methodName];
+        if (protocolInstanceMethods) for (var methodName in protocolInstanceMethods) {
+            var methodDef = protocolInstanceMethods[methodName];
 
-                if (!instanceMethods[methodName])
-                    resultList.push({"methodDef": methodDef, "protocolDef": protocolDef});
-            }
+            if (!instanceMethods[methodName])
+                resultList.push({"methodDef": methodDef, "protocolDef": protocolDef});
+        }
 
-        if (protocolClassMethods)
-            for (var methodName in protocolClassMethods) {
-                var methodDef = protocolClassMethods[methodName];
+        if (protocolClassMethods) for (var methodName in protocolClassMethods) {
+            var methodDef = protocolClassMethods[methodName];
 
-                if (!classMethods[methodName])
-                    resultList.push({"methodDef": methodDef, "protocolDef": protocolDef});
-            }
+            if (!classMethods[methodName])
+                resultList.push({"methodDef": methodDef, "protocolDef": protocolDef});
+        }
 
         if (inheritFromProtocols)
             resultList = resultList.concat(this.listOfNotImplementedMethodsForProtocols(inheritFromProtocols));
@@ -9082,7 +9956,7 @@ ProtocolDef.prototype.getClassMethod = function(name) {
 
     for (var i = 0, size = protocols.length; i < size; i++) {
         var protocol = protocols[i],
-            method = protocol.getInstanceMethod(name);
+            method = protocol.getClassMethod(name);
 
         if (method)
             return method;
@@ -9103,184 +9977,227 @@ var MethodDef = function(name, types)
     this.types = types;
 }
 
-var reservedIdentifiers = exports.acorn.makePredicate("self _cmd undefined localStorage arguments");
+var reservedIdentifiers = acorn.makePredicate("self _cmd undefined localStorage arguments");
 
-var wordPrefixOperators = exports.acorn.makePredicate("delete in instanceof new typeof void");
+var wordPrefixOperators = acorn.makePredicate("delete in instanceof new typeof void");
 
-var isLogicalBinary = exports.acorn.makePredicate("LogicalExpression BinaryExpression");
-var isInInstanceof = exports.acorn.makePredicate("in instanceof");
+var isLogicalBinary = acorn.makePredicate("LogicalExpression BinaryExpression");
+var isInInstanceof = acorn.makePredicate("in instanceof");
 
-var ObjJAcornCompiler = function( aString, aURL, flags, pass, classDefs, protocolDefs, typeDefs)
+
+
+
+  var defaultOptions = {
+
+
+
+    acornOptions: function() { return Object.create(null) },
+
+
+    sourceMap: false,
+
+
+
+
+
+    pass: 2,
+
+
+    classDefs: function() { return Object.create(null) },
+
+
+    protocolDefs: function() { return Object.create(null) },
+
+
+    typeDefs: function() { return Object.create(null) },
+
+
+
+
+    generate: true,
+
+
+
+    generateObjJ: false,
+
+
+    formatDescription: null,
+
+
+    indentationSpaces: 4,
+
+
+    indentationType: " ",
+
+
+    includeComments: false,
+
+
+
+
+
+
+    transformNamedFunctionDeclarationToAssignment: false,
+
+
+    includeMethodFunctionNames: true,
+
+
+    includeMethodArgumentTypeSignatures: true,
+
+
+    includeIvarTypeSignatures: true,
+
+
+    inlineMsgSendFunctions: true,
+  };
+
+
+  function setupOptions(opts) {
+    var options = Object.create(null);
+    for (var opt in defaultOptions) {
+        if (opts && Object.prototype.hasOwnProperty.call(opts, opt)) {
+            var incomingOpt = opts[opt];
+            options[opt] = typeof incomingOpt === 'function' ? incomingOpt() : incomingOpt;
+        } else if (defaultOptions.hasOwnProperty(opt)) {
+            var defaultOpt = defaultOptions[opt];
+            options[opt] = typeof defaultOpt === 'function' ? defaultOpt() : defaultOpt;
+        }
+    }
+    return options;
+  }
+
+var ObjJAcornCompiler = function( aString, aURL, options)
 {
     this.source = aString;
-    this.URL = new CFURL(aURL);
-    this.pass = pass;
-    this.jsBuffer = new StringBuffer();
+    this.URL = aURL && aURL.toString();
+    options = setupOptions(options);
+    this.options = options;
+    this.pass = options.pass;
+    this.classDefs = options.classDefs;
+    this.protocolDefs = options.protocolDefs;
+    this.typeDefs = options.typeDefs;
+    this.generate = options.generate;
+    this.createSourceMap = options.sourceMap;
+    this.formatDescription = options.formatDescription;
+    this.includeComments = options.includeComments;
+    this.transformNamedFunctionDeclarationToAssignment = options.transformNamedFunctionDeclarationToAssignment;
+    this.jsBuffer = new StringBuffer(this.createSourceMap, aURL);
     this.imBuffer = null;
     this.cmBuffer = null;
-    this.warnings = [];
+    this.dependencies = [];
+    this.warningsAndErrors = [];
+    this.lastPos = 0;
+
+
+
+
+
+
+
+    var acornOptions = options.acornOptions;
+
+    if (acornOptions)
+    {
+        if (!acornOptions.sourceFile && this.URL)
+            acornOptions.sourceFile = this.URL.substr(this.URL.lastIndexOf('/') + 1);
+        if (options.sourceMap && !acornOptions.locations)
+            acornOptions.locations = true;
+    }
+    else
+    {
+        acornOptions = options.acornOptions = this.URL && {sourceFile: this.URL.substr(this.URL.lastIndexOf('/') + 1)};
+        if (options.sourceMap)
+            acornOptions.locations = true;
+    }
 
     try {
-        this.tokens = exports.acorn.parse(aString);
+        this.tokens = acorn.parse(aString, options.acornOptions);
+        (this.pass === 2 && (options.includeComments || options.formatDescription) ? compileWithFormat : compile)(this.tokens, new Scope(null ,{ compiler: this }), this.pass === 2 ? pass2 : pass1);
     }
     catch (e) {
         if (e.lineStart != null)
         {
-            var message = this.prettifyMessage(e, "ERROR");
-
-
-
-            if (exports.outputFormatInXML)
-            {
-                var dict = new CFMutableDictionary();
-                dict.addValueForKey('line', e.line);
-                dict.addValueForKey('sourcePath', this.URL.path());
-                dict.addValueForKey('message', message);
-
-                print(CFPropertyListCreateXMLData([dict], kCFPropertyListXMLFormat_v1_0).rawString());
-            }
-            else
-            {
-                print(message);
-            }
-
+            e.messageForLine = aString.substring(e.lineStart, e.lineEnd);
         }
-
-        throw e;
+        this.addWarning(e);
+        return;
     }
 
-    this.dependencies = [];
-    this.flags = flags & (ObjJAcornCompiler.Flags.IncludeDebugSymbols | ObjJAcornCompiler.Flags.InlineMsgSend | ObjJAcornCompiler.Flags.IncludeTypeSignatures);
-    this.classDefs = classDefs ? classDefs : Object.create(null);
-    this.protocolDefs = protocolDefs ? protocolDefs : Object.create(null);
-    this.typeDefs = typeDefs ? typeDefs : Object.create(null);
-    this.lastPos = 0;
-    this.generate = true;
-
-    compile(this.tokens, new Scope(null ,{ compiler: this }), pass === 2 ? pass2 : pass1);
+    this.setCompiledCode(this.jsBuffer);
 }
 
-ObjJAcornCompiler.Flags = { };
-
-ObjJAcornCompiler.Flags.IncludeDebugSymbols = 1 << 0;
-ObjJAcornCompiler.Flags.IncludeTypeSignatures = 1 << 1;
-ObjJAcornCompiler.Flags.Generate = 1 << 2;
-ObjJAcornCompiler.Flags.InlineMsgSend = 1 << 3;
-
-var currentCompilerFlags = ObjJAcornCompiler.Flags.IncludeTypeSignatures;
-var currentGccCompilerFlags = "";
-
-exports.ObjJAcornCompiler = ObjJAcornCompiler;
-
-exports.ObjJAcornCompiler.compileToExecutable = function( aString, aURL, flags)
+ObjJAcornCompiler.prototype.setCompiledCode = function(stringBuffer)
 {
-    ObjJAcornCompiler.currentCompileFile = aURL;
-    return new ObjJAcornCompiler(aString, aURL, flags, 2).executable();
+    if (this.createSourceMap)
+    {
+         var s = stringBuffer.toString();
+         this.compiledCode = s.code;
+         this.sourceMap = s.map;
+     }
+     else
+     {
+         this.compiledCode = stringBuffer.toString();
+     }
 }
 
-exports.ObjJAcornCompiler.compileToIMBuffer = function( aString, aURL, flags, classDefs, protocolDefs, typeDefs)
+
+exports.compileToExecutable = function( aString, aURL, options)
 {
-    return new ObjJAcornCompiler(aString, aURL, flags, 2, classDefs, protocolDefs, typeDefs).IMBuffer();
+    exports.currentCompileFile = aURL;
+    return new ObjJAcornCompiler(aString, aURL, options).executable();
 }
 
-exports.ObjJAcornCompiler.compileFileDependencies = function( aString, aURL, flags)
+exports.compileToIMBuffer = function( aString, aURL, options)
 {
-    ObjJAcornCompiler.currentCompileFile = aURL;
-    return new ObjJAcornCompiler(aString, aURL, flags, 1).executable();
+    return new ObjJAcornCompiler(aString, aURL, options).IMBuffer();
+}
+
+exports.compile = function( aString, aURL, options)
+{
+    return new ObjJAcornCompiler(aString, aURL, options);
+}
+
+exports.compileFileDependencies = function( aString, aURL, options)
+{
+    exports.currentCompileFile = aURL;
+    (options || (options = {})).pass = 1;
+    return new ObjJAcornCompiler(aString, aURL, options);
 }
 
 ObjJAcornCompiler.prototype.compilePass2 = function()
 {
-    var warnings = [];
-
-    ObjJAcornCompiler.currentCompileFile = this.URL;
-    this.pass = 2;
-    this.jsBuffer = new StringBuffer();
-    this.warnings = [];
-
-    compile(this.tokens, new Scope(null ,{ compiler: this }), pass2);
-    for (var i = 0; i < this.warnings.length; i++)
-    {
-        var warning = this.warnings[i],
-            type = "WARNING";
-
-        var message = this.prettifyMessage(warning, type);
+    exports.currentCompileFile = this.URL;
+    this.pass = this.options.pass = 2;
+    this.jsBuffer = new StringBuffer(this.createSourceMap, this.URL);
 
 
 
-        if (exports.outputFormatInXML)
-        {
-            var dict = new CFMutableDictionary();
-            dict.addValueForKey('line', warning.line)
-            dict.addValueForKey('sourcePath', this.URL.path())
-            dict.addValueForKey('message', message)
+    if (this.createSourceMap)
+        this.jsBuffer.concat("\n");
 
-            warnings.push(dict);
-        }
-        else
-        {
-            print(message);
-        }
-
+    this.warningsAndErrors = [];
+    try {
+        compile(this.tokens, new Scope(null ,{ compiler: this }), pass2);
+    } catch (e) {
+        this.addWarning(e);
+        return null;
     }
 
-    if (warnings.length && exports.outputFormatInXML)
-        print(CFPropertyListCreateXMLData(warnings, kCFPropertyListXMLFormat_v1_0).rawString());
+    this.setCompiledCode(this.jsBuffer);
 
-
-    return this.jsBuffer.toString();
+    return this.compiledCode;
 }
 
-exports.setCurrentGccCompilerFlags = function( compilerFlags)
-{
-    if (currentGccCompilerFlags === compilerFlags) return;
-
-    currentGccCompilerFlags = compilerFlags;
-
-    var args = compilerFlags.split(" "),
-        count = args.length,
-        objjcFlags = ObjJAcornCompiler.Flags.IncludeTypeSignatures;
-
-    for (var index = 0; index < count; ++index)
-    {
-        var argument = args[index];
-
-        if (argument.indexOf("-g") === 0)
-            objjcFlags |= ObjJAcornCompiler.Flags.IncludeDebugSymbols;
-        else if (argument.indexOf("-O") === 0) {
-            objjcFlags |= ObjJAcornCompiler.Flags.Compress;
 
 
-            if (argument.length > 2)
-                objjcFlags |= ObjJAcornCompiler.Flags.InlineMsgSend;
-        }
-        else if (argument.indexOf("-G") === 0)
-            objjcFlags |= ObjJAcornCompiler.Flags.Generate;
-        else if (argument.indexOf("-T") === 0)
-            objjcFlags &= ~ObjJAcornCompiler.Flags.IncludeTypeSignatures;
-    }
-
-    currentCompilerFlags = objjcFlags;
-}
-
-exports.currentGccCompilerFlags = function( compilerFlags)
-{
-    return currentGccCompilerFlags;
-}
-
-exports.setCurrentCompilerFlags = function( compilerFlags)
-{
-    currentCompilerFlags = compilerFlags;
-}
-
-exports.currentCompilerFlags = function( compilerFlags)
-{
-    return currentCompilerFlags;
-}
 
 ObjJAcornCompiler.prototype.addWarning = function( aWarning)
 {
-    this.warnings.push(aWarning);
+    if (aWarning.path == null)
+        aWarning.path = this.URL;
+
+    this.warningsAndErrors.push(aWarning);
 }
 
 ObjJAcornCompiler.prototype.getIvarForClass = function( ivarName, scope)
@@ -9307,13 +10224,11 @@ ObjJAcornCompiler.prototype.getIvarForClass = function( ivarName, scope)
 
 ObjJAcornCompiler.prototype.getClassDef = function( aClassName)
 {
-    if (!aClassName)
-        return null;
+    if (!aClassName) return null;
 
     var c = this.classDefs[aClassName];
 
-    if (c)
-        return c;
+    if (c) return c;
 
     if (typeof objj_getClass === 'function')
     {
@@ -9357,13 +10272,11 @@ ObjJAcornCompiler.prototype.getClassDef = function( aClassName)
 
 ObjJAcornCompiler.prototype.getProtocolDef = function( aProtocolName)
 {
-    if (!aProtocolName)
-        return null;
+    if (!aProtocolName) return null;
 
     var p = this.protocolDefs[aProtocolName];
 
-    if (p)
-        return p;
+    if (p) return p;
 
     if (typeof objj_getProtocol === 'function')
     {
@@ -9434,6 +10347,7 @@ ObjJAcornCompiler.methodDefsFromMethodList = function( methodList)
     return myMethods;
 }
 
+
 ObjJAcornCompiler.prototype.executable = function()
 {
     if (!this._executable)
@@ -9446,31 +10360,44 @@ ObjJAcornCompiler.prototype.IMBuffer = function()
     return this.imBuffer;
 }
 
-ObjJAcornCompiler.prototype.JSBuffer = function()
+ObjJAcornCompiler.prototype.code = function()
 {
-    return this.jsBuffer;
+    return this.compiledCode;
 }
 
-ObjJAcornCompiler.prototype.prettifyMessage = function( aMessage, messageType)
+ObjJAcornCompiler.prototype.ast = function()
 {
-    var line = this.source.substring(aMessage.lineStart, aMessage.lineEnd),
+    return JSON.stringify(this.tokens, null, indentationSpaces);
+}
+
+ObjJAcornCompiler.prototype.map = function()
+{
+    return JSON.stringify(this.sourceMap);
+}
+
+ObjJAcornCompiler.prototype.prettifyMessage = function( aMessage)
+{
+    var line = aMessage.messageForLine,
         message = "\n" + line;
 
-    message += (new Array(aMessage.column + 1)).join(" ");
+    message += (new Array(aMessage.messageOnColumn + 1)).join(" ");
     message += (new Array(Math.min(1, line.length) + 1)).join("^") + "\n";
-    message += messageType + " line " + aMessage.line + " in " + this.URL + ": " + aMessage.message;
+    message += aMessage.messageType + " line " + aMessage.messageOnLine + " in " + this.URL + ": " + aMessage.message;
 
     return message;
 }
 
 ObjJAcornCompiler.prototype.error_message = function(errorMessage, node)
 {
-    var pos = exports.acorn.getLineInfo(this.source, node.start),
-        syntaxErrorData = {message: errorMessage, line: pos.line, column: pos.column, lineStart: pos.lineStart, lineEnd: pos.lineEnd},
-        syntaxError = new SyntaxError(this.prettifyMessage(syntaxErrorData, "ERROR"));
+    var pos = acorn.getLineInfo(this.source, node.start),
+        syntaxError = new SyntaxError(errorMessage);
 
-    syntaxError.line = pos.line;
-    syntaxError.path = this.URL.path();
+    syntaxError.messageOnLine = pos.line;
+    syntaxError.messageOnColumn = pos.column;
+    syntaxError.path = this.URL;
+    syntaxError.messageForNode = node;
+    syntaxError.messageType = "ERROR";
+    syntaxError.messageForLine = this.source.substring(pos.lineStart, pos.lineEnd);
 
     return syntaxError;
 }
@@ -9489,21 +10416,59 @@ ObjJAcornCompiler.prototype.popImport = function()
 
 function createMessage( aMessage, node, code)
 {
-    var message = exports.acorn.getLineInfo(code, node.start);
+    var message = acorn.getLineInfo(code, node.start);
 
     message.message = aMessage;
+
+    message.messageOnLine = message.line;
+    message.messageOnColumn = message.column;
+    message.messageForNode = node;
+    message.messageType = "WARNING";
+    message.messageForLine = code.substring(message.lineStart, message.lineEnd);
 
     return message;
 }
 
 function compile(node, state, visitor) {
     function c(node, st, override) {
-
         visitor[override || node.type](node, st, c);
-
     }
     c(node, state);
-};
+}
+
+function compileWithFormat(node, state, visitor) {
+    var lastNode, lastComment;
+    function c(node, st, override) {
+        var compiler = st.compiler,
+            includeComments = compiler.includeComments,
+            parentNode = st.currentNode(),
+            localLastNode = lastNode,
+            sameNode = localLastNode === node;
+
+        lastNode = node;
+        if (includeComments && !sameNode && node.commentsBefore && node.commentsBefore !== lastComment) {
+            for (var i = 0; i < node.commentsBefore.length; i++)
+                compiler.jsBuffer.concat(node.commentsBefore[i]);
+        }
+        st.pushNode(node, override);
+        var formatDescription = st.formatDescription();
+
+        if (!sameNode && formatDescription && formatDescription.before)
+            compiler.jsBuffer.concatFormat(formatDescription.before);
+        visitor[override || node.type](node, st, c, formatDescription);
+        if (!sameNode && formatDescription && formatDescription.after)
+            compiler.jsBuffer.concatFormat(formatDescription.after);
+        st.popNode();
+        if (includeComments && !sameNode && node.commentsAfter) {
+            for (var i = 0; i < node.commentsAfter.length; i++)
+                compiler.jsBuffer.concat(node.commentsAfter[i]);
+            lastComment = node.commentsAfter;
+        } else {
+            lastComment = null;
+        }
+    }
+    c(node, state);
+}
 
 function isIdempotentExpression(node) {
     switch (node.type) {
@@ -9581,9 +10546,9 @@ function checkCanDereference(st, node) {
 
 
 function surroundExpression(c) {
-    return function(node, st, override) {
+    return function(node, st, override, format) {
       st.compiler.jsBuffer.concat("(");
-      c(node, st, override);
+      c(node, st, override, format);
       st.compiler.jsBuffer.concat(")");
     }
 }
@@ -9627,23 +10592,32 @@ function nodePrecedence(node, subNode, right) {
     return nodePrecedence < subNodePrecedence || (nodePrecedence === subNodePrecedence && isLogicalBinary(nodeType) && ((nodeOperatorPrecedence = operatorPrecedence[node.operator]) < (subNodeOperatorPrecedence = operatorPrecedence[subNode.operator]) || (right && nodeOperatorPrecedence === subNodeOperatorPrecedence)));
 }
 
-var pass1 = exports.acorn.walk.make({
+var pass1 = walk.make({
 ImportStatement: function(node, st, c) {
     var urlString = node.filename.value;
 
-    st.compiler.dependencies.push(new FileDependency(new CFURL(urlString), node.localfilepath));
+    st.compiler.dependencies.push({url: urlString, isLocal: node.localfilepath});
+
 }
 });
 
+var indentType = " ";
 var indentationSpaces = 4;
-var indentStep = Array(indentationSpaces + 1).join(" ");
+var indentationSize = indentationSpaces * indentType.length;
+var indentStep = Array(indentationSpaces + 1).join(indentType);
 var indentation = "";
 
-var pass2 = exports.acorn.walk.make({
+var pass2 = walk.make({
 Program: function(node, st, c) {
     var compiler = st.compiler,
         generate = compiler.generate;
+
+    indentType = compiler.options.indentationType;
+    indentationSpaces = compiler.options.indentationSpaces;
+    indentationSize = indentationSpaces * indentType.length;
+    indentStep = Array(indentationSpaces + 1).join(indentType);
     indentation = "";
+
     for (var i = 0; i < node.body.length; ++i) {
       c(node.body[i], st, "Statement");
     }
@@ -9658,7 +10632,7 @@ Program: function(node, st, c) {
         }
     }
 },
-BlockStatement: function(node, st, c) {
+BlockStatement: function(node, st, c, format) {
     var compiler = st.compiler,
         generate = compiler.generate,
         endOfScopeBody = st.endOfScopeBody,
@@ -9668,10 +10642,18 @@ BlockStatement: function(node, st, c) {
         delete st.endOfScopeBody;
 
     if (generate) {
-      st.indentBlockLevel = typeof st.indentBlockLevel === "undefined" ? 0 : st.indentBlockLevel + 1;
+      var skipIndentation = st.skipIndentation;
       buffer = compiler.jsBuffer;
-      buffer.concat(indentation.substring(indentationSpaces));
-      buffer.concat("{\n");
+      if (format) {
+        buffer.concat("{", node);
+        buffer.concatFormat(format.afterLeftBrace);
+      } else {
+        if (skipIndentation)
+          delete st.skipIndentation;
+        else
+          buffer.concat(indentation.substring(indentationSize));
+        buffer.concat("{\n", node);
+      }
     }
     for (var i = 0; i < node.body.length; ++i) {
       c(node.body[i], st, "Statement");
@@ -9689,46 +10671,73 @@ BlockStatement: function(node, st, c) {
         buffer.concat(";\n");
       }
 
-      buffer.concat(indentation.substring(indentationSpaces));
-      buffer.concat("}");
-      if (st.isDecl || st.indentBlockLevel > 0)
-        buffer.concat("\n");
-      st.indentBlockLevel--;
+
+      var endNode = node.loc && { loc: { start: { line : node.loc.end.line, column: node.loc.end.column-1}}, source: node.loc.source};
+      if (format) {
+        buffer.concatFormat(format.beforeRightBrace);
+        buffer.concat("}", endNode);
+      } else {
+        buffer.concat(indentation.substring(indentationSize));
+        buffer.concat("}", endNode);
+        if (!skipIndentation && st.isDecl !== false)
+            buffer.concat("\n");
+        st.indentBlockLevel--;
+      }
     }
 },
-ExpressionStatement: function(node, st, c) {
+ExpressionStatement: function(node, st, c, format) {
     var compiler = st.compiler,
-        generate = compiler.generate;
+        generate = compiler.generate && !format;
     if (generate) compiler.jsBuffer.concat(indentation);
     c(node.expression, st, "Expression");
     if (generate) compiler.jsBuffer.concat(";\n");
 },
-IfStatement: function(node, st, c) {
+IfStatement: function(node, st, c, format) {
     var compiler = st.compiler,
         generate = compiler.generate,
         buffer;
     if (generate) {
       buffer = compiler.jsBuffer;
-      if (!st.superNodeIsElse)
-        buffer.concat(indentation);
-      else
-        delete st.superNodeIsElse;
-      buffer.concat("if (");
+      if (format) {
+        buffer.concat("if", node);
+        buffer.concatFormat(format.beforeLeftParenthesis);
+        buffer.concat("(");
+      } else {
+
+        if (!st.superNodeIsElse)
+          buffer.concat(indentation);
+        else
+          delete st.superNodeIsElse;
+        buffer.concat("if (", node);
+      }
     }
     c(node.test, st, "Expression");
+    if (generate) {
+        if (format) {
+            buffer.concat(")");
+            buffer.concatFormat(format.afterRightParenthesis);
+        } else {
 
-    if (generate) buffer.concat(node.consequent.type === "EmptyStatement" ? ");\n" : ")\n");
+            buffer.concat(node.consequent.type === "EmptyStatement" ? ");\n" : ")\n");
+        }
+    }
     indentation += indentStep;
     c(node.consequent, st, "Statement");
-    indentation = indentation.substring(indentationSpaces);
+    indentation = indentation.substring(indentationSize);
     var alternate = node.alternate;
     if (alternate) {
       var alternateNotIf = alternate.type !== "IfStatement";
       if (generate) {
-        var emptyStatement = alternate.type === "EmptyStatement";
-        buffer.concat(indentation);
+        if (format) {
+          buffer.concatFormat(format.beforeElse);
+          buffer.concat("else");
+          buffer.concatFormat(format.afterElse);
+        } else {
+          var emptyStatement = alternate.type === "EmptyStatement";
+          buffer.concat(indentation);
 
-        buffer.concat(alternateNotIf ? emptyStatement ? "else;\n" : "else\n" : "else ");
+          buffer.concat(alternateNotIf ? emptyStatement ? "else;\n" : "else\n" : "else ");
+        }
       }
       if (alternateNotIf)
         indentation += indentStep;
@@ -9736,229 +10745,384 @@ IfStatement: function(node, st, c) {
         st.superNodeIsElse = true;
 
       c(alternate, st, "Statement");
-      if (alternateNotIf) indentation = indentation.substring(indentationSpaces);
+      if (alternateNotIf) indentation = indentation.substring(indentationSize);
     }
 },
-LabeledStatement: function(node, st, c) {
+LabeledStatement: function(node, st, c, format) {
     var compiler = st.compiler;
     if (compiler.generate) {
       var buffer = compiler.jsBuffer;
-      buffer.concat(indentation);
-      buffer.concat(node.label.name);
-      buffer.concat(": ");
+      if (!format) buffer.concat(indentation);
+      c(node.label, st, "IdentifierName");
+      if (format) {
+        buffer.concat(":");
+        buffer.concatFormat(format.afterColon);
+      } else {
+        buffer.concat(": ");
+      }
     }
     c(node.body, st, "Statement");
 },
-BreakStatement: function(node, st, c) {
+BreakStatement: function(node, st, c, format) {
     var compiler = st.compiler;
     if (compiler.generate) {
-      compiler.jsBuffer.concat(indentation);
-      if (node.label) {
-        compiler.jsBuffer.concat("break ");
-        compiler.jsBuffer.concat(node.label.name);
-        compiler.jsBuffer.concat(";\n");
+      var label = node.label,
+          buffer = compiler.jsBuffer;
+      if (!format) buffer.concat(indentation);
+      if (label) {
+        if (format) {
+          buffer.concat("break", node);
+          buffer.concatFormat(format.beforeLabel);
+        } else {
+          buffer.concat("break ", node);
+        }
+        c(label, st, "IdentifierName");
+        if (!format) buffer.concat(";\n");
       } else
-        compiler.jsBuffer.concat("break;\n");
+        buffer.concat(format ? "break" : "break;\n", node);
     }
 },
-ContinueStatement: function(node, st, c) {
+ContinueStatement: function(node, st, c, format) {
     var compiler = st.compiler;
     if (compiler.generate) {
-      var buffer = compiler.jsBuffer;
-      buffer.concat(indentation);
-      if (node.label) {
-        buffer.concat("continue ");
-        buffer.concat(node.label.name);
-        buffer.concat(";\n");
+      var label = node.label,
+          buffer = compiler.jsBuffer;
+      if (!format) buffer.concat(indentation);
+      if (label) {
+        if (format) {
+          buffer.concat("continue", node);
+          buffer.concatFormat(format.beforeLabel);
+        } else {
+          buffer.concat("continue ", node);
+        }
+        c(label, st, "IdentifierName");
+        if (!format) buffer.concat(";\n");
       } else
-        buffer.concat("continue;\n");
+        buffer.concat(format ? "continue" : "continue;\n", node);
     }
 },
-WithStatement: function(node, st, c) {
+WithStatement: function(node, st, c, format) {
     var compiler = st.compiler,
         generate = compiler.generate,
         buffer;
     if (generate) {
       buffer = compiler.jsBuffer;
-      buffer.concat(indentation);
-      buffer.concat("with(");
+      if (format) {
+        buffer.concat("with", node);
+        buffer.concatFormat(format.beforeLeftParenthesis);
+        buffer.concat("(");
+      } else {
+        buffer.concat(indentation);
+        buffer.concat("with(", node);
+      }
     }
     c(node.object, st, "Expression");
-    if (generate) buffer.concat(")\n");
+    if (generate)
+      if (format) {
+        buffer.concat(")");
+        buffer.concatFormat(format.afterRightParenthesis);
+      } else {
+        buffer.concat(")\n");
+      }
     indentation += indentStep;
     c(node.body, st, "Statement");
-    indentation = indentation.substring(indentationSpaces);
+    indentation = indentation.substring(indentationSize);
 },
-SwitchStatement: function(node, st, c) {
+SwitchStatement: function(node, st, c, format) {
     var compiler = st.compiler,
         generate = compiler.generate,
         buffer;
     if (generate) {
       buffer = compiler.jsBuffer;
-      buffer.concat(indentation);
-      buffer.concat("switch(");
+      if (format) {
+        buffer.concat("switch", node);
+        buffer.concatFormat(format.beforeLeftParenthesis);
+        buffer.concat("(", node);
+      } else {
+        buffer.concat(indentation);
+        buffer.concat("switch(", node);
+      }
     }
     c(node.discriminant, st, "Expression");
-    if (generate) buffer.concat(") {\n");
+    if (generate)
+      if (format) {
+        buffer.concat(")");
+        buffer.concatFormat(format.afterRightParenthesis);
+        buffer.concat("{");
+        buffer.concatFormat(format.afterLeftBrace);
+      } else {
+        buffer.concat(") {\n");
+      }
+    indentation += indentStep;
     for (var i = 0; i < node.cases.length; ++i) {
       var cs = node.cases[i];
       if (cs.test) {
         if (generate) {
-          buffer.concat(indentation);
-          buffer.concat("case ");
+          if (format) {
+            buffer.concatFormat(format.beforeCase);
+            buffer.concat("case", node);
+            buffer.concatFormat(format.afterCase);
+          } else {
+            buffer.concat(indentation);
+            buffer.concat("case ");
+          }
         }
         c(cs.test, st, "Expression");
-        if (generate) buffer.concat(":\n");
+        if (generate)
+          if (format) {
+            buffer.concat(":");
+            buffer.concatFormat(format.afterColon);
+          } else {
+            buffer.concat(":\n");
+          }
       } else
-        if (generate) buffer.concat("default:\n");
+        if (generate)
+          if (format) {
+            buffer.concatFormat(format.beforeCase);
+            buffer.concat("default");
+            buffer.concatFormat(format.afterCase);
+            buffer.concat(":");
+            buffer.concatFormat(format.afterColon);
+          } else {
+            buffer.concat("default:\n");
+          }
       indentation += indentStep;
       for (var j = 0; j < cs.consequent.length; ++j)
         c(cs.consequent[j], st, "Statement");
-      indentation = indentation.substring(indentationSpaces);
+      indentation = indentation.substring(indentationSize);
     }
+    indentation = indentation.substring(indentationSize);
     if (generate) {
-      buffer.concat(indentation);
-      buffer.concat("}\n");
+      if (format) {
+        buffer.concatFormat(format.beforeRightBrace);
+        buffer.concat("}");
+      } else {
+        buffer.concat(indentation);
+        buffer.concat("}\n");
+      }
     }
 },
-ReturnStatement: function(node, st, c) {
+ReturnStatement: function(node, st, c, format) {
     var compiler = st.compiler,
         generate = compiler.generate,
         buffer;
     if (generate) {
       buffer = compiler.jsBuffer;
-      buffer.concat(indentation);
-      buffer.concat("return");
+      if (!format) buffer.concat(indentation);
+      buffer.concat("return", node);
     }
     if (node.argument) {
-      if (generate) buffer.concat(" ");
+      if (generate) buffer.concatFormat(format ? format.beforeExpression : " ");
       c(node.argument, st, "Expression");
     }
-    if (generate) buffer.concat(";\n");
+    if (generate && !format) buffer.concat(";\n");
 },
-ThrowStatement: function(node, st, c) {
+ThrowStatement: function(node, st, c, format) {
     var compiler = st.compiler,
         generate = compiler.generate,
         buffer;
     if (generate) {
       buffer = compiler.jsBuffer;
-      buffer.concat(indentation);
-      buffer.concat("throw ");
+      if (!format) buffer.concat(indentation);
+      buffer.concat("throw", node);
+      buffer.concatFormat(format ? format.beforeExpression : " ");
     }
     c(node.argument, st, "Expression");
-    if (generate) buffer.concat(";\n");
+    if (generate && !format) buffer.concat(";\n");
 },
-TryStatement: function(node, st, c) {
+TryStatement: function(node, st, c, format) {
     var compiler = st.compiler,
         generate = compiler.generate,
         buffer;
     if (generate) {
       buffer = compiler.jsBuffer;
-      buffer.concat(indentation);
-      buffer.concat("try");
+      if (!format) buffer.concat(indentation);
+      buffer.concat("try", node);
+      buffer.concatFormat(format ? format.beforeStatement : " ");
     }
     indentation += indentStep;
+    if (!format) st.skipIndentation = true;
     c(node.block, st, "Statement");
-    indentation = indentation.substring(indentationSpaces);
-    for (var i = 0; i < node.handlers.length; ++i) {
-      var handler = node.handlers[i], inner = new Scope(st),
+    indentation = indentation.substring(indentationSize);
+    if (node.handler) {
+      var handler = node.handler,
+          inner = new Scope(st),
           param = handler.param,
           name = param.name;
       inner.vars[name] = {type: "catch clause", node: param};
       if (generate) {
-        buffer.concat(indentation);
-        buffer.concat("catch(");
-        buffer.concat(name);
-        buffer.concat(") ");
+        if (format) {
+          buffer.concatFormat(format.beforeCatch);
+          buffer.concat("catch");
+          buffer.concatFormat(format.afterCatch);
+          buffer.concat("(");
+          c(param, st, "IdentifierName");
+          buffer.concat(")");
+          buffer.concatFormat(format.beforeCatchStatement);
+        } else {
+          buffer.concat("\n");
+          buffer.concat(indentation);
+          buffer.concat("catch(");
+          buffer.concat(name);
+          buffer.concat(") ");
+        }
       }
       indentation += indentStep;
+      inner.skipIndentation = true;
       inner.endOfScopeBody = true;
       c(handler.body, inner, "ScopeBody");
-      indentation = indentation.substring(indentationSpaces);
+      indentation = indentation.substring(indentationSize);
       inner.copyAddedSelfToIvarsToParent();
     }
     if (node.finalizer) {
       if (generate) {
-        buffer.concat(indentation);
-        buffer.concat("finally ");
+        if (format) {
+          buffer.concatFormat(format.beforeCatch);
+          buffer.concat("finally");
+          buffer.concatFormat(format.beforeCatchStatement);
+        } else {
+          buffer.concat("\n");
+          buffer.concat(indentation);
+          buffer.concat("finally ");
+        }
       }
       indentation += indentStep;
+      st.skipIndentation = true;
       c(node.finalizer, st, "Statement");
-      indentation = indentation.substring(indentationSpaces);
+      indentation = indentation.substring(indentationSize);
     }
+    if (generate && !format)
+        buffer.concat("\n");
 },
-WhileStatement: function(node, st, c) {
+WhileStatement: function(node, st, c, format) {
     var compiler = st.compiler,
         generate = compiler.generate,
         body = node.body,
         buffer;
     if (generate) {
       buffer = compiler.jsBuffer;
-      buffer.concat(indentation);
-      buffer.concat("while (");
+      if (format) {
+        buffer.concat("while", node);
+        buffer.concatFormat(format.beforeLeftParenthesis);
+        buffer.concat("(");
+      } else {
+        buffer.concat(indentation);
+        buffer.concat("while (", node);
+      }
     }
     c(node.test, st, "Expression");
-    if (generate) buffer.concat(body.type === "EmptyStatement" ? ");\n" : ")\n");
+    if (generate)
+      if (format) {
+        buffer.concat(")");
+        buffer.concatFormat(format.afterRightParenthesis);
+      } else {
+
+        buffer.concat(body.type === "EmptyStatement" ? ");\n" : ")\n");
+      }
     indentation += indentStep;
     c(body, st, "Statement");
-    indentation = indentation.substring(indentationSpaces);
+    indentation = indentation.substring(indentationSize);
 },
-DoWhileStatement: function(node, st, c) {
+DoWhileStatement: function(node, st, c, format) {
     var compiler = st.compiler,
         generate = compiler.generate,
         buffer;
     if (generate) {
       buffer = compiler.jsBuffer;
-      buffer.concat(indentation);
-      buffer.concat("do\n");
+      if (format) {
+        buffer.concat("do", node);
+        buffer.concatFormat(format.beforeStatement);
+      } else {
+        buffer.concat(indentation);
+        buffer.concat("do\n", node);
+      }
     }
     indentation += indentStep;
     c(node.body, st, "Statement");
-    indentation = indentation.substring(indentationSpaces);
+    indentation = indentation.substring(indentationSize);
     if (generate) {
-      buffer.concat(indentation);
-      buffer.concat("while (");
+      if (format) {
+        buffer.concat("while");
+        buffer.concatFormat(format.beforeLeftParenthesis);
+        buffer.concat("(");
+      } else {
+        buffer.concat(indentation);
+        buffer.concat("while (");
+      }
     }
     c(node.test, st, "Expression");
-    if (generate) buffer.concat(");\n");
+    if (generate) buffer.concatFormat(format ? ")" : ");\n");
 },
-ForStatement: function(node, st, c) {
+ForStatement: function(node, st, c, format) {
     var compiler = st.compiler,
         generate = compiler.generate,
         body = node.body,
         buffer;
     if (generate) {
       buffer = compiler.jsBuffer;
-      buffer.concat(indentation);
-      buffer.concat("for (");
+      if (format) {
+        buffer.concat("for", node);
+        buffer.concatFormat(format.beforeLeftParenthesis);
+        buffer.concat("(");
+      } else {
+        buffer.concat(indentation);
+        buffer.concat("for (", node);
+      }
     }
     if (node.init) c(node.init, st, "ForInit");
-    if (generate) buffer.concat("; ");
+    if (generate) buffer.concat(format ? ";" : "; ");
     if (node.test) c(node.test, st, "Expression");
-    if (generate) buffer.concat("; ");
+    if (generate) buffer.concat(format ? ";" : "; ");
     if (node.update) c(node.update, st, "Expression");
-    if (generate) buffer.concat(body.type === "EmptyStatement" ? ");\n" : ")\n");
+    if (generate)
+      if (format) {
+        buffer.concat(")");
+        buffer.concatFormat(format.afterRightParenthesis);
+      } else {
+
+        buffer.concat(body.type === "EmptyStatement" ? ");\n" : ")\n");
+      }
     indentation += indentStep;
     c(body, st, "Statement");
-    indentation = indentation.substring(indentationSpaces);
+    indentation = indentation.substring(indentationSize);
 },
-ForInStatement: function(node, st, c) {
+ForInStatement: function(node, st, c, format) {
     var compiler = st.compiler,
         generate = compiler.generate,
         body = node.body,
         buffer;
     if (generate) {
       buffer = compiler.jsBuffer;
-      buffer.concat(indentation);
-      buffer.concat("for (");
+      if (format) {
+        buffer.concat("for", node);
+        buffer.concatFormat(format.beforeLeftParenthesis);
+        buffer.concat("(");
+      } else {
+        buffer.concat(indentation);
+        buffer.concat("for (", node);
+      }
     }
     c(node.left, st, "ForInit");
-    if (generate) buffer.concat(" in ");
+    if (generate)
+        if (format) {
+            buffer.concatFormat(format.beforeIn);
+            buffer.concat("in");
+            buffer.concatFormat(format.afterIn);
+        } else {
+            buffer.concat(" in ");
+        }
     c(node.right, st, "Expression");
-    if (generate) buffer.concat(body.type === "EmptyStatement" ? ");\n" : ")\n");
+    if (generate)
+      if (format) {
+        buffer.concat(")");
+        buffer.concatFormat(format.afterRightParenthesis);
+      } else {
+
+        buffer.concat(body.type === "EmptyStatement" ? ");\n" : ")\n");
+      }
     indentation += indentStep;
     c(body, st, "Statement");
-    indentation = indentation.substring(indentationSpaces);
+    indentation = indentation.substring(indentationSize);
 },
 ForInit: function(node, st, c) {
     var compiler = st.compiler,
@@ -9970,160 +11134,231 @@ ForInit: function(node, st, c) {
     } else
       c(node, st, "Expression");
 },
-DebuggerStatement: function(node, st, c) {
+DebuggerStatement: function(node, st, c, format) {
     var compiler = st.compiler;
     if (compiler.generate) {
       var buffer = compiler.jsBuffer;
-      buffer.concat(indentation);
-      buffer.concat("debugger;\n");
+      if (format) {
+        buffer.concat("debugger", node);
+      } else {
+        buffer.concat(indentation);
+        buffer.concat("debugger;\n", node);
+      }
     }
 },
-Function: function(node, st, c) {
+Function: function(node, st, c, format) {
   var compiler = st.compiler,
       generate = compiler.generate,
-      buffer = compiler.jsBuffer;
+      buffer = compiler.jsBuffer,
       inner = new Scope(st),
-      decl = node.type == "FunctionDeclaration";
+      decl = node.type == "FunctionDeclaration",
+      id = node.id;
 
-      inner.isDecl = decl;
+  inner.isDecl = decl;
   for (var i = 0; i < node.params.length; ++i)
     inner.vars[node.params[i].name] = {type: "argument", node: node.params[i]};
-  if (node.id) {
-    (decl ? st : inner).vars[node.id.name] =
-      {type: decl ? "function" : "function name", node: node.id};
-    if (generate) {
-      buffer.concat(node.id.name);
-      buffer.concat(" = ");
-    } else {
-      buffer.concat(compiler.source.substring(compiler.lastPos, node.start));
-      buffer.concat(node.id.name);
-      buffer.concat(" = function");
-      compiler.lastPos = node.id.end;
+  if (generate && !format)
+    buffer.concat(indentation);
+  if (id) {
+    var name = id.name;
+    (decl ? st : inner).vars[name] = {type: decl ? "function" : "function name", node: id};
+    if (compiler.transformNamedFunctionDeclarationToAssignment) {
+      if (generate) {
+        buffer.concat(name);
+        buffer.concat(" = ");
+      } else {
+        buffer.concat(compiler.source.substring(compiler.lastPos, node.start));
+        buffer.concat(name);
+        buffer.concat(" = function");
+        compiler.lastPos = id.end;
+      }
     }
   }
   if (generate) {
-    buffer.concat("function(");
+    buffer.concat("function", node);
+    if (!compiler.transformNamedFunctionDeclarationToAssignment && id)
+    {
+        if (!format) buffer.concat(" ");
+        c(id, st, "IdentifierName");
+    }
+    if (format) buffer.concatFormat(format.beforeLeftParenthesis);
+    buffer.concat("(");
     for (var i = 0; i < node.params.length; ++i) {
       if (i)
-        buffer.concat(", ");
-      buffer.concat(node.params[i].name);
+        buffer.concat(format ? "," : ", ");
+      c(node.params[i], st, "IdentifierName");
     }
-    buffer.concat(")\n");
+    if (format) {
+      buffer.concat(")");
+      buffer.concatFormat(format.afterRightParenthesis);
+    } else {
+      buffer.concat(")\n");
+    }
   }
   indentation += indentStep;
   inner.endOfScopeBody = true;
   c(node.body, inner, "ScopeBody");
-  indentation = indentation.substring(indentationSpaces);
+  indentation = indentation.substring(indentationSize);
   inner.copyAddedSelfToIvarsToParent();
 },
-VariableDeclaration: function(node, st, c) {
+VariableDeclaration: function(node, st, c, format) {
   var compiler = st.compiler,
       generate = compiler.generate,
       buffer;
   if (generate) {
     buffer = compiler.jsBuffer;
-    if (!st.isFor) buffer.concat(indentation);
-    buffer.concat("var ");
+    if (!st.isFor && !format) buffer.concat(indentation);
+    buffer.concat(format ? "var" : "var ", node);
   }
   for (var i = 0; i < node.declarations.length; ++i) {
     var decl = node.declarations[i],
         identifier = decl.id.name;
     if (i)
       if (generate) {
-        if (st.isFor)
-          buffer.concat(", ");
-        else {
-          buffer.concat(",\n");
-          buffer.concat(indentation);
-          buffer.concat("    ");
+        if (format) {
+          buffer.concat(",");
+        } else {
+          if (st.isFor)
+            buffer.concat(", ");
+          else {
+            buffer.concat(",\n");
+            buffer.concat(indentation);
+            buffer.concat("    ");
+          }
         }
       }
     st.vars[identifier] = {type: "var", node: decl.id};
-    if (generate) buffer.concat(identifier);
+    c(decl.id, st, "IdentifierName");
     if (decl.init) {
-      if (generate) buffer.concat(" = ");
+      if (generate) {
+        if (format) {
+          buffer.concatFormat(format.beforeEqual);
+          buffer.concat("=");
+          buffer.concatFormat(format.afterEqual);
+        } else {
+          buffer.concat(" = ");
+        }
+      }
       c(decl.init, st, "Expression");
     }
+
+
 
     if (st.addedSelfToIvars) {
       var addedSelfToIvar = st.addedSelfToIvars[identifier];
       if (addedSelfToIvar) {
-        var buffer = st.compiler.jsBuffer.atoms;
-        for (var i = 0; i < addedSelfToIvar.length; i++) {
+        var atoms = st.compiler.jsBuffer.atoms;
+        for (var i = 0, size = addedSelfToIvar.length; i < size; i++) {
           var dict = addedSelfToIvar[i];
-          buffer[dict.index] = "";
+          atoms[dict.index] = "";
           compiler.addWarning(createMessage("Local declaration of '" + identifier + "' hides instance variable", dict.node, compiler.source));
         }
         st.addedSelfToIvars[identifier] = [];
       }
     }
   }
-  if (generate && !st.isFor) compiler.jsBuffer.concat(";\n");
+  if (generate && !format && !st.isFor) buffer.concat(";\n");
 },
 ThisExpression: function(node, st, c) {
     var compiler = st.compiler;
-    if (compiler.generate) compiler.jsBuffer.concat("this");
-},
-ArrayExpression: function(node, st, c) {
-  var compiler = st.compiler,
-      generate = compiler.generate;
-  if (generate) compiler.jsBuffer.concat("[");
-    for (var i = 0; i < node.elements.length; ++i) {
-      var elt = node.elements[i];
-      if (i !== 0)
-          if (generate) compiler.jsBuffer.concat(", ");
 
-      if (elt) c(elt, st, "Expression");
-    }
-  if (generate) compiler.jsBuffer.concat("]");
+    if (compiler.generate) compiler.jsBuffer.concat("this", node);
 },
-ObjectExpression: function(node, st, c) {
+ArrayExpression: function(node, st, c, format) {
     var compiler = st.compiler,
-        generate = compiler.generate;
-    if (generate) compiler.jsBuffer.concat("{");
-    for (var i = 0; i < node.properties.length; ++i)
+        generate = compiler.generate,
+        buffer;
+
+        if (generate) {
+            buffer = compiler.jsBuffer;
+            buffer.concat("[", node);
+        }
+
+        for (var i = 0; i < node.elements.length; ++i) {
+            var elt = node.elements[i];
+
+            if (generate && i !== 0)
+                if (format) {
+                    buffer.concatFormat(format.beforeComma);
+                    buffer.concat(",");
+                    buffer.concatFormat(format.afterComma);
+                } else
+                    buffer.concat(", ");
+
+            if (elt) c(elt, st, "Expression");
+        }
+        if (generate) buffer.concat("]");
+},
+ObjectExpression: function(node, st, c, format) {
+    var compiler = st.compiler,
+        generate = compiler.generate,
+        properties = node.properties,
+        buffer = compiler.jsBuffer;
+    if (generate) buffer.concat("{", node);
+    for (var i = 0, size = properties.length; i < size; ++i)
     {
-        var prop = node.properties[i];
+        var prop = properties[i];
         if (generate) {
           if (i)
-            compiler.jsBuffer.concat(", ");
+            if (format) {
+                buffer.concatFormat(format.beforeComma);
+                buffer.concat(",");
+                buffer.concatFormat(format.afterComma);
+            } else
+                buffer.concat(", ");
           st.isPropertyKey = true;
           c(prop.key, st, "Expression");
           delete st.isPropertyKey;
-          compiler.jsBuffer.concat(": ");
+          if (format) {
+            buffer.concatFormat(format.beforeColon);
+            buffer.concat(":");
+            buffer.concatFormat(format.afterColon);
+          } else {
+            buffer.concat(": ");
+          }
         } else if (prop.key.raw && prop.key.raw.charAt(0) === "@") {
-          compiler.jsBuffer.concat(compiler.source.substring(compiler.lastPos, prop.key.start));
+          buffer.concat(compiler.source.substring(compiler.lastPos, prop.key.start));
           compiler.lastPos = prop.key.start + 1;
         }
 
         c(prop.value, st, "Expression");
     }
-    if (generate) compiler.jsBuffer.concat("}");
+    if (generate) buffer.concat("}");
 },
-SequenceExpression: function(node, st, c) {
+SequenceExpression: function(node, st, c, format) {
     var compiler = st.compiler,
-        generate = compiler.generate;
-    if (generate) compiler.jsBuffer.concat("(");
+        generate = compiler.generate,
+        buffer;
+    if (generate) {
+        buffer = compiler.jsBuffer;
+        buffer.concat("(");
+    }
     for (var i = 0; i < node.expressions.length; ++i) {
       if (generate && i !== 0)
-        compiler.jsBuffer.concat(", ");
+        if (format) {
+            buffer.concatFormat(format.beforeComma);
+            buffer.concat(",");
+            buffer.concatFormat(format.afterComma);
+        } else
+            buffer.concat(", ");
       c(node.expressions[i], st, "Expression");
     }
-    if (generate) compiler.jsBuffer.concat(")");
+    if (generate) buffer.concat(")");
 },
 UnaryExpression: function(node, st, c) {
     var compiler = st.compiler,
         generate = compiler.generate,
         argument = node.argument;
     if (generate) {
+      var buffer = compiler.jsBuffer;
       if (node.prefix) {
-        compiler.jsBuffer.concat(node.operator);
+        buffer.concat(node.operator, node);
         if (wordPrefixOperators(node.operator))
-          compiler.jsBuffer.concat(" ");
+          buffer.concat(" ");
         (nodePrecedence(node, argument) ? surroundExpression(c) : c)(argument, st, "Expression");
       } else {
         (nodePrecedence(node, argument) ? surroundExpression(c) : c)(argument, st, "Expression");
-        compiler.jsBuffer.concat(node.operator);
+        buffer.concat(node.operator);
       }
     } else {
       c(argument, st, "Expression");
@@ -10131,26 +11366,27 @@ UnaryExpression: function(node, st, c) {
 },
 UpdateExpression: function(node, st, c) {
     var compiler = st.compiler,
-        generate = compiler.generate;
+        generate = compiler.generate,
+        buffer = compiler.jsBuffer;
     if (node.argument.type === "Dereference") {
         checkCanDereference(st, node.argument);
 
 
-        if (!generate) compiler.jsBuffer.concat(compiler.source.substring(compiler.lastPos, node.start));
+        if (!generate) buffer.concat(compiler.source.substring(compiler.lastPos, node.start));
 
 
-        compiler.jsBuffer.concat((node.prefix ? "" : "(") + "(");
+        buffer.concat((node.prefix ? "" : "(") + "(");
 
 
         if (!generate) compiler.lastPos = node.argument.expr.start;
         c(node.argument.expr, st, "Expression");
-        if (!generate) compiler.jsBuffer.concat(compiler.source.substring(compiler.lastPos, node.argument.expr.end));
-        compiler.jsBuffer.concat(")(");
+        if (!generate) buffer.concat(compiler.source.substring(compiler.lastPos, node.argument.expr.end));
+        buffer.concat(")(");
 
         if (!generate) compiler.lastPos = node.argument.start;
         c(node.argument, st, "Expression");
-        if (!generate) compiler.jsBuffer.concat(compiler.source.substring(compiler.lastPos, node.argument.end));
-        compiler.jsBuffer.concat(" " + node.operator.substring(0, 1) + " 1)" + (node.prefix ? "" : node.operator == '++' ? " - 1)" : " + 1)"));
+        if (!generate) buffer.concat(compiler.source.substring(compiler.lastPos, node.argument.end));
+        buffer.concat(" " + node.operator.substring(0, 1) + " 1)" + (node.prefix ? "" : node.operator == '++' ? " - 1)" : " + 1)"));
 
         if (!generate) compiler.lastPos = node.end;
         return;
@@ -10158,42 +11394,42 @@ UpdateExpression: function(node, st, c) {
 
     if (node.prefix) {
       if (generate) {
-        compiler.jsBuffer.concat(node.operator);
+        buffer.concat(node.operator, node);
         if (wordPrefixOperators(node.operator))
-          compiler.jsBuffer.concat(" ");
+          buffer.concat(" ");
       }
       (generate && nodePrecedence(node, node.argument) ? surroundExpression(c) : c)(node.argument, st, "Expression");
     } else {
       (generate && nodePrecedence(node, node.argument) ? surroundExpression(c) : c)(node.argument, st, "Expression");
-      if (generate) compiler.jsBuffer.concat(node.operator);
+      if (generate) buffer.concat(node.operator);
     }
 },
-BinaryExpression: function(node, st, c) {
+BinaryExpression: function(node, st, c, format) {
     var compiler = st.compiler,
         generate = compiler.generate,
         operatorType = isInInstanceof(node.operator);
     (generate && nodePrecedence(node, node.left) ? surroundExpression(c) : c)(node.left, st, "Expression");
     if (generate) {
         var buffer = compiler.jsBuffer;
-        buffer.concat(" ");
+        buffer.concatFormat(format ? format.beforeOperator : " ");
         buffer.concat(node.operator);
-        buffer.concat(" ");
+        buffer.concatFormat(format ? format.afterOperator : " ");
     }
     (generate && nodePrecedence(node, node.right, true) ? surroundExpression(c) : c)(node.right, st, "Expression");
 },
-LogicalExpression: function(node, st, c) {
+LogicalExpression: function(node, st, c, format) {
     var compiler = st.compiler,
         generate = compiler.generate;
     (generate && nodePrecedence(node, node.left) ? surroundExpression(c) : c)(node.left, st, "Expression");
     if (generate) {
         var buffer = compiler.jsBuffer;
-        buffer.concat(" ");
+        buffer.concatFormat(format ? format.beforeOperator : " ");
         buffer.concat(node.operator);
-        buffer.concat(" ");
+        buffer.concatFormat(format ? format.afterOperator : " ");
     }
     (generate && nodePrecedence(node, node.right, true) ? surroundExpression(c) : c)(node.right, st, "Expression");
 },
-AssignmentExpression: function(node, st, c) {
+AssignmentExpression: function(node, st, c, format) {
     var compiler = st.compiler,
         generate = compiler.generate,
         saveAssignment = st.assignment,
@@ -10234,6 +11470,7 @@ AssignmentExpression: function(node, st, c) {
 
     var saveAssignment = st.assignment,
         nodeLeft = node.left;
+
     st.assignment = true;
     if (nodeLeft.type === "Identifier" && nodeLeft.name === "self") {
         var lVar = st.getLvar("self", true);
@@ -10245,44 +11482,67 @@ AssignmentExpression: function(node, st, c) {
     }
     (generate && nodePrecedence(node, nodeLeft) ? surroundExpression(c) : c)(nodeLeft, st, "Expression");
     if (generate) {
-        buffer.concat(" ");
+        buffer.concatFormat(format ? format.beforeOperator : " ");
         buffer.concat(node.operator);
-        buffer.concat(" ");
+        buffer.concatFormat(format ? format.afterOperator : " ");
     }
     st.assignment = saveAssignment;
     (generate && nodePrecedence(node, node.right, true) ? surroundExpression(c) : c)(node.right, st, "Expression");
     if (st.isRootScope() && nodeLeft.type === "Identifier" && !st.getLvar(nodeLeft.name))
         st.vars[nodeLeft.name] = {type: "global", node: nodeLeft};
 },
-ConditionalExpression: function(node, st, c) {
-    var compiler = st.compiler,
-        generate = compiler.generate;
-    (generate && nodePrecedence(node, node.test) ? surroundExpression(c) : c)(node.test, st, "Expression");
-    if (generate)
-      compiler.jsBuffer.concat(" ? ");
-    c(node.consequent, st, "Expression");
-    if (generate) compiler.jsBuffer.concat(" : ");
-    c(node.alternate, st, "Expression");
-},
-NewExpression: function(node, st, c) {
-    var compiler = st.compiler,
-        generate = compiler.generate;
-    if (generate) compiler.jsBuffer.concat("new ");
-    (generate && nodePrecedence(node, node.callee) ? surroundExpression(c) : c)(node.callee, st, "Expression");
-    if (generate) compiler.jsBuffer.concat("(");
-    if (node.arguments) {
-      for (var i = 0; i < node.arguments.length; ++i) {
-        if (generate && i)
-          compiler.jsBuffer.concat(", ");
-        c(node.arguments[i], st, "Expression");
-      }
-    }
-    if (generate) compiler.jsBuffer.concat(")");
-},
-CallExpression: function(node, st, c) {
+ConditionalExpression: function(node, st, c, format) {
     var compiler = st.compiler,
         generate = compiler.generate,
-        callee = node.callee;
+        buffer;
+    (generate && nodePrecedence(node, node.test) ? surroundExpression(c) : c)(node.test, st, "Expression");
+    if (generate) {
+      buffer = compiler.jsBuffer;
+      if (format) {
+        buffer.concatFormat(format.beforeOperator);
+        buffer.concat("?");
+        buffer.concatFormat(format.afterOperator);
+      } else {
+        buffer.concat(" ? ");
+      }
+    }
+    c(node.consequent, st, "Expression");
+    if (generate)
+      if (format) {
+        buffer.concatFormat(format.beforeOperator);
+        buffer.concat(":");
+        buffer.concatFormat(format.afterOperator);
+      } else {
+        buffer.concat(" : ");
+      }
+    c(node.alternate, st, "Expression");
+},
+NewExpression: function(node, st, c, format) {
+    var compiler = st.compiler,
+        nodeArguments = node.arguments,
+        generate = compiler.generate,
+        buffer;
+    if (generate) {
+        buffer = compiler.jsBuffer;
+        buffer.concat("new ", node);
+    }
+    (generate && nodePrecedence(node, node.callee) ? surroundExpression(c) : c)(node.callee, st, "Expression");
+    if (generate) buffer.concat("(");
+    if (nodeArguments) {
+      for (var i = 0, size = nodeArguments.length; i < size; ++i) {
+        if (i && generate)
+          buffer.concatFormat(format ? "," : ", ");
+        c(nodeArguments[i], st, "Expression");
+      }
+    }
+    if (generate) buffer.concat(")");
+},
+CallExpression: function(node, st, c, format) {
+    var compiler = st.compiler,
+        nodeArguments = node.arguments,
+        generate = compiler.generate,
+        callee = node.callee,
+        buffer;
 
 
 
@@ -10297,27 +11557,26 @@ CallExpression: function(node, st, c) {
     }
 
     (generate && nodePrecedence(node, callee) ? surroundExpression(c) : c)(callee, st, "Expression");
-    if (generate) compiler.jsBuffer.concat("(");
-    if (node.arguments) {
-      for (var i = 0; i < node.arguments.length; ++i) {
-        if (generate && i)
-          compiler.jsBuffer.concat(", ");
-        c(node.arguments[i], st, "Expression");
+    if (generate) {
+        buffer = compiler.jsBuffer;
+        buffer.concat("(");
+    }
+    if (nodeArguments) {
+      for (var i = 0, size = nodeArguments.length; i < size; ++i) {
+        if (i && generate)
+          buffer.concat(format ? "," : ", ");
+        c(nodeArguments[i], st, "Expression");
       }
     }
-    if (generate) compiler.jsBuffer.concat(")");
+    if (generate) buffer.concat(")");
 },
 MemberExpression: function(node, st, c) {
     var compiler = st.compiler,
         generate = compiler.generate,
         computed = node.computed;
     (generate && nodePrecedence(node, node.object) ? surroundExpression(c) : c)(node.object, st, "Expression");
-    if (generate) {
-      if (computed)
-        compiler.jsBuffer.concat("[");
-      else
-        compiler.jsBuffer.concat(".");
-    }
+    if (generate)
+        compiler.jsBuffer.concat(computed ? "[" : ".", node);
     st.secondMemberExpression = !computed;
 
     (generate && !computed && nodePrecedence(node, node.property) ? surroundExpression(c) : c)(node.property, st, "Expression");
@@ -10348,12 +11607,12 @@ Identifier: function(node, st, c) {
                 } while (compiler.source.substr(nodeStart++, 1) === "(")
 
 
-                ((st.addedSelfToIvars || (st.addedSelfToIvars = Object.create(null)))[identifier] || (st.addedSelfToIvars[identifier] = [])).push({node: node, index: compiler.jsBuffer.atoms.length});
-                compiler.jsBuffer.concat("self.");
+                ((st.addedSelfToIvars || (st.addedSelfToIvars = Object.create(null)))[identifier] || (st.addedSelfToIvars[identifier] = [])).push({node: node, index: compiler.jsBuffer.length()});
+                compiler.jsBuffer.concat("self.", node);
             }
         } else if (!reservedIdentifiers(identifier)) {
             var message,
-                classOrGlobal = typeof global[identifier] !== "undefined" || typeof window[identifier] !== "undefined" || compiler.getClassDef(identifier),
+                classOrGlobal = typeof global[identifier] !== "undefined" || (typeof window !== 'undefined' && typeof window[identifier] !== "undefined") || compiler.getClassDef(identifier),
                 globalVar = st.getLvar(identifier);
             if (classOrGlobal && (!globalVar || globalVar.type !== "class")) {
 
@@ -10373,16 +11632,31 @@ Identifier: function(node, st, c) {
                 st.addMaybeWarning(message);
         }
     }
-    if (generate) compiler.jsBuffer.concat(identifier);
+    if (generate) compiler.jsBuffer.concat(identifier, node);
+},
+
+IdentifierName: function(node, st, c) {
+    var compiler = st.compiler;
+    if (compiler.generate)
+        compiler.jsBuffer.concat(node.name, node);
 },
 Literal: function(node, st, c) {
     var compiler = st.compiler,
         generate = compiler.generate;
     if (generate) {
-      if (node.raw && node.raw.charAt(0) === "@")
-        compiler.jsBuffer.concat(node.raw.substring(1));
-      else
-        compiler.jsBuffer.concat(node.raw);
+      if (node.raw)
+        if (node.raw.charAt(0) === "@")
+          compiler.jsBuffer.concat(node.raw.substring(1), node);
+        else
+          compiler.jsBuffer.concat(node.raw, node);
+      else {
+        var value = node.value,
+            doubleQuote = value.indexOf('"') !== -1;
+        compiler.jsBuffer.concat(doubleQuote ? "'" : '"', node);
+        compiler.jsBuffer.concat(value);
+        compiler.jsBuffer.concat(doubleQuote ? "'" : '"');
+      }
+
     } else if (node.raw.charAt(0) === "@") {
         compiler.jsBuffer.concat(compiler.source.substring(compiler.lastPos, node.start));
         compiler.lastPos = node.start + 1;
@@ -10391,8 +11665,9 @@ Literal: function(node, st, c) {
 ArrayLiteral: function(node, st, c) {
     var compiler = st.compiler,
         generate = compiler.generate,
-        buffer = compiler.jsBuffer;
-
+        buffer = compiler.jsBuffer,
+        generateObjJ = compiler.options.generateObjJ,
+        elementLength = node.elements.length;
     if (!generate) {
         buffer.concat(compiler.source.substring(compiler.lastPos, node.start));
         compiler.lastPos = node.start;
@@ -10400,8 +11675,10 @@ ArrayLiteral: function(node, st, c) {
 
     if (!generate) buffer.concat(" ");
     if (!st.receiverLevel) st.receiverLevel = 0;
-    if (!node.elements.length) {
-        if (compiler.flags & ObjJAcornCompiler.Flags.InlineMsgSend) {
+    if (generateObjJ) {
+        buffer.concat("@[");
+    } else if (!elementLength) {
+        if (compiler.options.inlineMsgSendFunctions) {
             buffer.concat("(___r");
             buffer.concat(++st.receiverLevel + "");
             buffer.concat(" = (CPArray.isa.method_msgSend[\"alloc\"] || _objj_forward)(CPArray, \"alloc\"), ___r");
@@ -10426,7 +11703,7 @@ ArrayLiteral: function(node, st, c) {
         if (!(st.maxReceiverLevel >= st.receiverLevel))
             st.maxReceiverLevel = st.receiverLevel;
     } else {
-        if (compiler.flags & ObjJAcornCompiler.Flags.InlineMsgSend) {
+        if (compiler.options.inlineMsgSendFunctions) {
             buffer.concat("(___r");
             buffer.concat(++st.receiverLevel + "");
             buffer.concat(" = (CPArray.isa.method_msgSend[\"alloc\"] || _objj_forward)(CPArray, \"alloc\"), ___r");
@@ -10450,8 +11727,9 @@ ArrayLiteral: function(node, st, c) {
 
         if (!(st.maxReceiverLevel >= st.receiverLevel))
             st.maxReceiverLevel = st.receiverLevel;
-
-        for (var i = 0; i < node.elements.length; i++) {
+    }
+    if (elementLength) {
+        for (var i = 0; i < elementLength; i++) {
             var elt = node.elements[i];
 
             if (i)
@@ -10461,18 +11739,22 @@ ArrayLiteral: function(node, st, c) {
             c(elt, st, "Expression");
             if (!generate) buffer.concat(compiler.source.substring(compiler.lastPos, elt.end));
         }
-        buffer.concat("], " + node.elements.length + "))");
+        if (!generateObjJ) buffer.concat("], " + elementLength + "))");
     }
 
-    st.receiverLevel--;
+    if (generateObjJ)
+        buffer.concat("]");
+    else
+        st.receiverLevel--;
+
     if (!generate) compiler.lastPos = node.end;
 },
 DictionaryLiteral: function(node, st, c) {
     var compiler = st.compiler,
         generate = compiler.generate,
         buffer = compiler.jsBuffer,
-        noOfKeys = node.keys.length;
-
+        generateObjJ = compiler.options.generateObjJ,
+        keyLength = node.keys.length;
     if (!generate) {
         buffer.concat(compiler.source.substring(compiler.lastPos, node.start));
         compiler.lastPos = node.start;
@@ -10480,8 +11762,17 @@ DictionaryLiteral: function(node, st, c) {
 
     if (!generate) buffer.concat(" ");
     if (!st.receiverLevel) st.receiverLevel = 0;
-    if (!noOfKeys) {
-        if (compiler.flags & ObjJAcornCompiler.Flags.InlineMsgSend) {
+    if (generateObjJ) {
+        buffer.concat("@{");
+        for (var i = 0; i < keyLength; i++) {
+            if (i !== 0) buffer.concat(",");
+            c(node.keys[i], st, "Expression");
+            buffer.concat(":");
+            c(node.values[i], st, "Expression");
+        }
+        buffer.concat("}");
+    } else if (!keyLength) {
+        if (compiler.options.inlineMsgSendFunctions) {
             buffer.concat("(___r");
             buffer.concat(++st.receiverLevel + "");
             buffer.concat(" = (CPDictionary.isa.method_msgSend[\"alloc\"] || _objj_forward)(CPDictionary, \"alloc\"), ___r");
@@ -10506,7 +11797,7 @@ DictionaryLiteral: function(node, st, c) {
         if (!(st.maxReceiverLevel >= st.receiverLevel))
             st.maxReceiverLevel = st.receiverLevel;
     } else {
-        if (compiler.flags & ObjJAcornCompiler.Flags.InlineMsgSend) {
+        if (compiler.options.inlineMsgSendFunctions) {
             buffer.concat("(___r");
             buffer.concat(++st.receiverLevel + "");
             buffer.concat(" = (CPDictionary.isa.method_msgSend[\"alloc\"] || _objj_forward)(CPDictionary, \"alloc\"), ___r");
@@ -10531,7 +11822,7 @@ DictionaryLiteral: function(node, st, c) {
         if (!(st.maxReceiverLevel >= st.receiverLevel))
             st.maxReceiverLevel = st.receiverLevel;
 
-        for (var i = 0; i < noOfKeys; i++) {
+        for (var i = 0; i < keyLength; i++) {
             var value = node.values[i];
 
             if (i) buffer.concat(", ");
@@ -10542,10 +11833,11 @@ DictionaryLiteral: function(node, st, c) {
 
         buffer.concat("], [");
 
-        for (var i = 0; i < noOfKeys; i++) {
+        for (var i = 0; i < keyLength; i++) {
             var key = node.keys[i];
 
             if (i) buffer.concat(", ");
+
             if (!generate) compiler.lastPos = key.start;
             c(key, st, "Expression");
             if (!generate) buffer.concat(compiler.source.substring(compiler.lastPos, key.end));
@@ -10553,21 +11845,31 @@ DictionaryLiteral: function(node, st, c) {
         buffer.concat("]))");
     }
 
-    st.receiverLevel--;
+    if (!generateObjJ)
+        st.receiverLevel--;
     if (!generate) compiler.lastPos = node.end;
 },
 ImportStatement: function(node, st, c) {
     var compiler = st.compiler,
         generate = compiler.generate,
-        buffer = compiler.jsBuffer;
+        buffer = compiler.jsBuffer,
+        localfilepath = node.localfilepath,
+        generateObjJ = compiler.options.generateObjJ;
 
     if (!generate) buffer.concat(compiler.source.substring(compiler.lastPos, node.start));
-    buffer.concat("objj_executeFile(\"");
-    buffer.concat(node.filename.value);
-    buffer.concat(node.localfilepath ? "\", YES);" : "\", NO);");
+    if (generateObjJ) {
+        buffer.concat("@import ");
+        buffer.concat(localfilepath ? "\"" : "<");
+        buffer.concat(node.filename.value);
+        buffer.concat(localfilepath ? "\"" : ">");
+    } else {
+        buffer.concat("objj_executeFile(\"", node);
+        buffer.concat(node.filename.value);
+        buffer.concat(localfilepath ? "\", YES);" : "\", NO);");
+    }
     if (!generate) compiler.lastPos = node.end;
 },
-ClassDeclarationStatement: function(node, st, c) {
+ClassDeclarationStatement: function(node, st, c, format) {
     var compiler = st.compiler,
         generate = compiler.generate,
         saveJSBuffer = compiler.jsBuffer,
@@ -10575,14 +11877,16 @@ ClassDeclarationStatement: function(node, st, c) {
         classDef = compiler.getClassDef(className),
         classScope = new Scope(st),
         isInterfaceDeclaration = node.type === "InterfaceDeclarationStatement",
-        protocols = node.protocols;
+        protocols = node.protocols,
+        generateObjJ = compiler.options.generateObjJ;
 
-    compiler.imBuffer = new StringBuffer();
-    compiler.cmBuffer = new StringBuffer();
-    compiler.classBodyBuffer = new StringBuffer();
+    compiler.imBuffer = new StringBuffer(compiler.createSourceMap, compiler.URL);
+    compiler.cmBuffer = new StringBuffer(compiler.createSourceMap), compiler.URL;
+    compiler.classBodyBuffer = new StringBuffer(compiler.createSourceMap, compiler.URL);
 
     if (compiler.getTypeDef(className))
         throw compiler.error_message(className + " is already declared as a type", node.classname);
+
 
     if (!generate) saveJSBuffer.concat(compiler.source.substring(compiler.lastPos, node.start));
 
@@ -10604,14 +11908,14 @@ ClassDeclarationStatement: function(node, st, c) {
         if (!superClassDef)
         {
             var errorMessage = "Can't find superclass " + node.superclassname.name;
-            for (var i = ObjJAcornCompiler.importStack.length; --i >= 0;)
+            if (ObjJAcornCompiler.importStack) for (var i = ObjJAcornCompiler.importStack.length; --i >= 0;)
                 errorMessage += "\n" + Array((ObjJAcornCompiler.importStack.length - i) * 2 + 1).join(" ") + "Imported by: " + ObjJAcornCompiler.importStack[i];
             throw compiler.error_message(errorMessage, node.superclassname);
         }
 
         classDef = new ClassDef(!isInterfaceDeclaration, className, superClassDef, Object.create(null));
 
-        saveJSBuffer.concat("{var the_class = objj_allocateClassPair(" + node.superclassname.name + ", \"" + className + "\"),\nmeta_class = the_class.isa;");
+        if (!generateObjJ) saveJSBuffer.concat("\n{var the_class = objj_allocateClassPair(" + node.superclassname.name + ", \"" + className + "\"),\nmeta_class = the_class.isa;", node);
     }
     else if (node.categoryname)
     {
@@ -10619,24 +11923,49 @@ ClassDeclarationStatement: function(node, st, c) {
         if (!classDef)
             throw compiler.error_message("Class " + className + " not found ", node.classname);
 
-        saveJSBuffer.concat("{\nvar the_class = objj_getClass(\"" + className + "\")\n");
-        saveJSBuffer.concat("if(!the_class) throw new SyntaxError(\"*** Could not find definition for class \\\"" + className + "\\\"\");\n");
-        saveJSBuffer.concat("var meta_class = the_class.isa;");
+        if (!generateObjJ) {
+            saveJSBuffer.concat("{\nvar the_class = objj_getClass(\"" + className + "\")\n", node);
+            saveJSBuffer.concat("if(!the_class) throw new SyntaxError(\"*** Could not find definition for class \\\"" + className + "\\\"\");\n");
+            saveJSBuffer.concat("var meta_class = the_class.isa;");
+        }
     }
     else
     {
         classDef = new ClassDef(!isInterfaceDeclaration, className, null, Object.create(null));
 
-        saveJSBuffer.concat("{var the_class = objj_allocateClassPair(Nil, \"" + className + "\"),\nmeta_class = the_class.isa;");
+        if (!generateObjJ)
+            saveJSBuffer.concat("{var the_class = objj_allocateClassPair(Nil, \"" + className + "\"),\nmeta_class = the_class.isa;", node);
     }
 
-    if (protocols)
-        for (var i = 0, size = protocols.length; i < size; i++)
-        {
-            saveJSBuffer.concat("\nvar aProtocol = objj_getProtocol(\"" + protocols[i].name + "\");");
+    if (generateObjJ) {
+        saveJSBuffer.concat(isInterfaceDeclaration ? "@interface " : "@implementation ");
+        saveJSBuffer.concat(className);
+        if (node.superclassname) {
+            saveJSBuffer.concat(" : ");
+            c(node.superclassname, st, "IdentifierName");
+        } else if (node.categoryname) {
+            saveJSBuffer.concat(" (");
+            c(node.categoryname, st, "IdentifierName");
+            saveJSBuffer.concat(")");
+        }
+    }
+
+    if (protocols) for (var i = 0, size = protocols.length; i < size; i++)
+    {
+        if (generateObjJ) {
+            if (i)
+                saveJSBuffer.concat(", ");
+            else
+                saveJSBuffer.concat(" <");
+            c(protocols[i], st, "IdentifierName");
+            if (i === size - 1)
+                saveJSBuffer.concat(">");
+        } else {
+            saveJSBuffer.concat("\nvar aProtocol = objj_getProtocol(\"" + protocols[i].name + "\");", protocols[i]);
             saveJSBuffer.concat("\nif (!aProtocol) throw new SyntaxError(\"*** Could not find definition for protocol \\\"" + protocols[i].name + "\\\"\");");
             saveJSBuffer.concat("\nclass_addProtocol(the_class, aProtocol);");
         }
+    }
 
 
 
@@ -10651,13 +11980,19 @@ ClassDeclarationStatement: function(node, st, c) {
         hasAccessors = false;
 
 
-    if (node.ivardeclarations)
+    if (node.ivardeclarations) {
+        if (generateObjJ) {
+            saveJSBuffer.concat("{");
+            indentation += indentStep;
+        }
+
         for (var i = 0; i < node.ivardeclarations.length; ++i)
         {
             var ivarDecl = node.ivardeclarations[i],
                 ivarType = ivarDecl.ivartype ? ivarDecl.ivartype.name : null,
                 ivarTypeIsClass = ivarDecl.ivartype ? ivarDecl.ivartype.typeisclass : false,
-                ivarName = ivarDecl.id.name,
+                ivarIdentifier = ivarDecl.id,
+                ivarName = ivarIdentifier.name,
                 ivar = {"type": ivarType, "name": ivarName},
                 accessors = ivarDecl.accessors;
 
@@ -10675,20 +12010,24 @@ ClassDeclarationStatement: function(node, st, c) {
                                 || compiler.getClassDef(ivarType) || compiler.getTypeDef(ivarType) || ivarType == classDef.name;
 
             if (!isTypeDefined)
-                compiler.addWarning(createMessage("Unknown type '" + ivarType + "' for ivar '" + ivarName + "'", ivarDecl.id, compiler.source));
+                compiler.addWarning(createMessage("Unknown type '" + ivarType + "' for ivar '" + ivarName + "'", ivarDecl.ivartype, compiler.source));
 
-            if (firstIvarDeclaration)
-            {
-                firstIvarDeclaration = false;
-                saveJSBuffer.concat("class_addIvars(the_class, [");
+            if (generateObjJ) {
+                c(ivarDecl, st, "IvarDeclaration");
+            } else {
+                if (firstIvarDeclaration)
+                {
+                    firstIvarDeclaration = false;
+                    saveJSBuffer.concat("class_addIvars(the_class, [");
+                }
+                else
+                    saveJSBuffer.concat(", ");
+
+                if (compiler.options.includeIvarTypeSignatures)
+                    saveJSBuffer.concat("new objj_ivar(\"" + ivarName + "\", \"" + ivarType + "\")", node);
+                else
+                    saveJSBuffer.concat("new objj_ivar(\"" + ivarName + "\")", node);
             }
-            else
-                saveJSBuffer.concat(", ");
-
-            if (compiler.flags & ObjJAcornCompiler.Flags.IncludeTypeSignatures)
-                saveJSBuffer.concat("new objj_ivar(\"" + ivarName + "\", \"" + ivarType + "\")");
-            else
-                saveJSBuffer.concat("new objj_ivar(\"" + ivarName + "\")");
 
             if (ivarDecl.outlet)
                 ivar.outlet = true;
@@ -10698,18 +12037,17 @@ ClassDeclarationStatement: function(node, st, c) {
 
             if (!classScope.ivars)
                 classScope.ivars = Object.create(null);
-            classScope.ivars[ivarName] = {type: "ivar", name: ivarName, node: ivarDecl.id, ivar: ivar};
+            classScope.ivars[ivarName] = {type: "ivar", name: ivarName, node: ivarIdentifier, ivar: ivar};
 
-            if (accessors)
-            {
+            if (accessors) {
+
 
                 var property = (accessors.property && accessors.property.name) || ivarName,
                     getterName = (accessors.getter && accessors.getter.name) || property;
 
                 classDef.addInstanceMethod(new MethodDef(getterName, [ivarType]));
 
-                if (!accessors.readonly)
-                {
+                if (!accessors.readonly) {
                     var setterName = accessors.setter ? accessors.setter.name : null;
 
                     if (!setterName)
@@ -10723,14 +12061,17 @@ ClassDeclarationStatement: function(node, st, c) {
                 hasAccessors = true;
             }
         }
-
-    if (!firstIvarDeclaration)
+    }
+    if (generateObjJ) {
+        indentation = indentation.substring(indentationSize);
+        saveJSBuffer.concatFormat("\n}");
+    } else if (!firstIvarDeclaration)
         saveJSBuffer.concat("]);");
 
 
-    if (!isInterfaceDeclaration && hasAccessors)
+    if (!generateObjJ && !isInterfaceDeclaration && hasAccessors)
     {
-        var getterSetterBuffer = new StringBuffer();
+        var getterSetterBuffer = new StringBuffer(compiler.createSourceMap, compiler.URL);
 
 
 
@@ -10779,7 +12120,7 @@ ClassDeclarationStatement: function(node, st, c) {
 
 
         var b = getterSetterBuffer.toString().replace(/@accessors(\(.*\))?/g, "");
-        var imBuffer = ObjJAcornCompiler.compileToIMBuffer(b, "Accessors", compiler.flags, compiler.classDefs, compiler.protocolDefs, compiler.typeDefs);
+        var imBuffer = exports.compileToIMBuffer(b, "Accessors", compiler.options);
 
 
 
@@ -10803,45 +12144,46 @@ ClassDeclarationStatement: function(node, st, c) {
 
     if (bodyLength > 0)
     {
-        if (!generate)
-            compiler.lastPos = bodies[0].start;
+        if (!generate) compiler.lastPos = bodies[0].start;
 
 
         for (var i = 0; i < bodyLength; ++i) {
             var body = bodies[i];
             c(body, classScope, "Statement");
         }
-        if (!generate)
-            saveJSBuffer.concat(compiler.source.substring(compiler.lastPos, body.end));
+        if (!generate) saveJSBuffer.concat(compiler.source.substring(compiler.lastPos, body.end));
     }
 
-    if (!isInterfaceDeclaration && !node.categoryname) {
+
+    if (!generateObjJ && !isInterfaceDeclaration && !node.categoryname) {
         saveJSBuffer.concat("objj_registerClassPair(the_class);\n");
     }
 
 
-    if (compiler.imBuffer.isEmpty())
+    if (!generateObjJ && compiler.imBuffer.isEmpty())
     {
         saveJSBuffer.concat("class_addMethods(the_class, [");
-        saveJSBuffer.atoms.push.apply(saveJSBuffer.atoms, compiler.imBuffer.atoms);
+        saveJSBuffer.appendStringBuffer(compiler.imBuffer);
         saveJSBuffer.concat("]);\n");
     }
 
 
-    if (compiler.cmBuffer.isEmpty())
+    if (!generateObjJ && compiler.cmBuffer.isEmpty())
     {
         saveJSBuffer.concat("class_addMethods(meta_class, [");
-        saveJSBuffer.atoms.push.apply(saveJSBuffer.atoms, compiler.cmBuffer.atoms);
+        saveJSBuffer.appendStringBuffer(compiler.cmBuffer);
         saveJSBuffer.concat("]);\n");
     }
 
-    saveJSBuffer.concat("}");
+    if (!generateObjJ) saveJSBuffer.concat("}\n");
 
     compiler.jsBuffer = saveJSBuffer;
 
 
-    if (!generate)
-        compiler.lastPos = node.end;
+    if (!generate) compiler.lastPos = node.end;
+
+    if (generateObjJ)
+        saveJSBuffer.concat("\n@end");
 
 
     if (protocols)
@@ -10862,8 +12204,8 @@ ClassDeclarationStatement: function(node, st, c) {
         var unimplementedMethods = classDef.listOfNotImplementedMethodsForProtocols(protocolDefs);
 
         if (unimplementedMethods && unimplementedMethods.length > 0)
-            for (var i = 0, size = unimplementedMethods.length; i < size; i++) {
-                var unimplementedMethod = unimplementedMethods[i],
+            for (var j = 0, unimpSize = unimplementedMethods.length; j < unimpSize; j++) {
+                var unimplementedMethod = unimplementedMethods[j],
                     methodDef = unimplementedMethod.methodDef,
                     protocolDef = unimplementedMethod.protocolDef;
 
@@ -10879,34 +12221,54 @@ ProtocolDeclarationStatement: function(node, st, c) {
         protocolDef = compiler.getProtocolDef(protocolName),
         protocols = node.protocols,
         protocolScope = new Scope(st),
-        inheritFromProtocols = [];
+        inheritFromProtocols = [],
+        generateObjJ = compiler.options.generateObjJ;
 
     if (protocolDef)
         throw compiler.error_message("Duplicate protocol " + protocolName, node.protocolname);
 
-    compiler.imBuffer = new StringBuffer();
-    compiler.cmBuffer = new StringBuffer();
+    compiler.imBuffer = new StringBuffer(compiler.createSourceMap, compiler.URL);
+    compiler.cmBuffer = new StringBuffer(compiler.createSourceMap), compiler.URL;
 
-    if (!generate)
-        buffer.concat(compiler.source.substring(compiler.lastPos, node.start));
+    if (!generate) buffer.concat(compiler.source.substring(compiler.lastPos, node.start));
 
-    buffer.concat("{var the_protocol = objj_allocateProtocol(\"" + protocolName + "\");");
+    if (generateObjJ) {
+        buffer.concat("@protocol ");
+        c(node.protocolname, st, "IdentifierName");
+    } else {
+    buffer.concat("{var the_protocol = objj_allocateProtocol(\"" + protocolName + "\");", node);
+    }
 
-    if (protocols)
+    if (protocols) {
+        if (generateObjJ)
+            buffer.concat(" <");
+
         for (var i = 0, size = protocols.length; i < size; i++)
         {
             var protocol = protocols[i],
-                inheritFromProtocolName = protocol.name;
+                inheritFromProtocolName = protocol.name,
                 inheritProtocolDef = compiler.getProtocolDef(inheritFromProtocolName);
 
             if (!inheritProtocolDef)
                 throw compiler.error_message("Can't find protocol " + inheritFromProtocolName, protocol);
 
-            buffer.concat("\nvar aProtocol = objj_getProtocol(\"" + inheritFromProtocolName + "\");");
-            buffer.concat("\nif (!aProtocol) throw new SyntaxError(\"*** Could not find definition for protocol \\\"" + protocolName + "\\\"\");");
-            buffer.concat("\nprotocol_addProtocol(the_protocol, aProtocol);");
+            if (generateObjJ) {
+                if (i)
+                    buffer.concat(", ");
+
+                c(protocol, st, "IdentifierName");
+            } else {
+                buffer.concat("\nvar aProtocol = objj_getProtocol(\"" + inheritFromProtocolName + "\");", node);
+                buffer.concat("\nif (!aProtocol) throw new SyntaxError(\"*** Could not find definition for protocol \\\"" + protocolName + "\\\"\");", node);
+                buffer.concat("\nprotocol_addProtocol(the_protocol, aProtocol);", node);
+            }
+
             inheritFromProtocols.push(inheritProtocolDef);
         }
+
+        if (generateObjJ)
+            buffer.concat(">");
+    }
 
     protocolDef = new ProtocolDef(protocolName, inheritFromProtocols);
     compiler.protocolDefs[protocolName] = protocolDef;
@@ -10920,109 +12282,168 @@ ProtocolDeclarationStatement: function(node, st, c) {
         if (requiredLength > 0)
         {
 
-            for (var i = 0; i < requiredLength; ++i)
-            {
+            for (var i = 0; i < requiredLength; ++i) {
                 var required = someRequired[i];
-                if (!generate)
-                    compiler.lastPos = required.start;
+                if (!generate) compiler.lastPos = required.start;
                 c(required, protocolScope, "Statement");
             }
-            if (!generate)
-                buffer.concat(compiler.source.substring(compiler.lastPos, required.end));
+            if (!generate) buffer.concat(compiler.source.substring(compiler.lastPos, required.end));
         }
     }
 
-    buffer.concat("\nobjj_registerProtocol(the_protocol);\n");
+    if (generateObjJ) {
+        buffer.concatFormat("\n@end");
+    } else {
+        buffer.concat("\nobjj_registerProtocol(the_protocol);\n");
 
 
-    if (compiler.imBuffer.isEmpty())
-    {
-        buffer.concat("protocol_addMethodDescriptions(the_protocol, [");
-        buffer.atoms.push.apply(buffer.atoms, compiler.imBuffer.atoms);
-        buffer.concat("], true, true);\n");
+        if (compiler.imBuffer.isEmpty())
+        {
+            buffer.concat("protocol_addMethodDescriptions(the_protocol, [");
+            buffer.appendStringBuffer(compiler.imBuffer);
+            buffer.concat("], true, true);\n");
+        }
+
+
+        if (compiler.cmBuffer.isEmpty())
+        {
+            buffer.concat("protocol_addMethodDescriptions(the_protocol, [");
+            buffer.appendStringBuffer(compiler.cmBuffer);
+            buffer.concat("], true, false);\n");
+        }
+
+        buffer.concat("}");
     }
-
-
-    if (compiler.cmBuffer.isEmpty())
-    {
-        buffer.concat("protocol_addMethodDescriptions(the_protocol, [");
-        buffer.atoms.push.apply(buffer.atoms, compiler.cmBuffer.atoms);
-        buffer.concat("], true, false);\n");
-    }
-
-    buffer.concat("}");
 
     compiler.jsBuffer = buffer;
 
 
-    if (!generate)
-        compiler.lastPos = node.end;
+    if (!generate) compiler.lastPos = node.end;
+},
+IvarDeclaration: function(node, st, c, format) {
+    var compiler = st.compiler,
+        buffer = compiler.jsBuffer;
+
+        if (node.outlet)
+            buffer.concat("@outlet ");
+        c(node.ivartype, st, "IdentifierName");
+        buffer.concat(" ");
+        c(node.id, st, "IdentifierName");
+        if (node.accessors)
+            buffer.concat(" @accessors");
 },
 MethodDeclarationStatement: function(node, st, c) {
     var compiler = st.compiler,
         generate = compiler.generate,
         saveJSBuffer = compiler.jsBuffer,
         methodScope = new Scope(st),
-        isInstanceMethodType = node.methodtype === '-';
+        isInstanceMethodType = node.methodtype === '-',
         selectors = node.selectors,
         nodeArguments = node.arguments,
         returnType = node.returntype,
         types = [returnType ? returnType.name : (node.action ? "void" : "id")],
-        returnTypeProtocols = returnType ? returnType.protocols : null;
-        selector = selectors[0].name;
+        returnTypeProtocols = returnType ? returnType.protocols : null,
+        selector = selectors[0].name,
+        generateObjJ = compiler.options.generateObjJ;
 
-    if (returnTypeProtocols)
-        for (var i = 0, size = returnTypeProtocols.length; i < size; i++) {
-            var returnTypeProtocol = returnTypeProtocols[i];
-            if (!compiler.getProtocolDef(returnTypeProtocol.name)) {
-                compiler.addWarning(createMessage("Cannot find protocol declaration for '" + returnTypeProtocol.name + "'", returnTypeProtocol, compiler.source));
-            }
+    if (returnTypeProtocols) for (var i = 0, size = returnTypeProtocols.length; i < size; i++) {
+        var returnTypeProtocol = returnTypeProtocols[i];
+        if (!compiler.getProtocolDef(returnTypeProtocol.name)) {
+            compiler.addWarning(createMessage("Cannot find protocol declaration for '" + returnTypeProtocol.name + "'", returnTypeProtocol, compiler.source));
         }
-
-    if (!generate)
-        saveJSBuffer.concat(compiler.source.substring(compiler.lastPos, node.start));
-
-    compiler.jsBuffer = isInstanceMethodType ? compiler.imBuffer : compiler.cmBuffer;
-
-
-    for (var i = 0; i < nodeArguments.length; i++) {
-        var argument = nodeArguments[i],
-            argumentType = argument.type,
-            argumentTypeName = argumentType ? argumentType.name : "id",
-            argumentProtocols = argumentType ? argumentType.protocols : null;
-
-        types.push(argumentType ? argumentType.name : "id");
-
-        if (argumentProtocols) for (var j = 0, size = argumentProtocols.length; j < size; j++)
-        {
-            var argumentProtocol = argumentProtocols[j];
-            if (!compiler.getProtocolDef(argumentProtocol.name))
-                compiler.addWarning(createMessage("Cannot find protocol declaration for '" + argumentProtocol.name + "'", argumentProtocol, compiler.source));
-        }
-
-        if (i === 0)
-            selector += ":";
-        else
-            selector += (selectors[i] ? selectors[i].name : "") + ":";
     }
 
-    if (compiler.jsBuffer.isEmpty())
-        compiler.jsBuffer.concat(", ");
+    if (!generate) saveJSBuffer.concat(compiler.source.substring(compiler.lastPos, node.start));
 
-    compiler.jsBuffer.concat("new objj_method(sel_getUid(\"");
-    compiler.jsBuffer.concat(selector);
-    compiler.jsBuffer.concat("\"), ");
 
-    if (node.body)
-    {
-        compiler.jsBuffer.concat("function");
 
-        if (compiler.flags & ObjJAcornCompiler.Flags.IncludeDebugSymbols)
-        {
-            compiler.jsBuffer.concat(" $" + st.currentClassName() + "__" + selector.replace(/:/g, "_"));
+    if (generateObjJ) {
+        compiler.jsBuffer.concat(isInstanceMethodType ? "- (" : "+ (");
+        compiler.jsBuffer.concat(types[0]);
+        compiler.jsBuffer.concat(")");
+    } else {
+        compiler.jsBuffer = isInstanceMethodType ? compiler.imBuffer : compiler.cmBuffer;
+    }
+
+
+
+    var size = nodeArguments.length;
+    if (size > 0) {
+        for (var i = 0; i < nodeArguments.length; i++) {
+            var argument = nodeArguments[i],
+                argumentType = argument.type,
+                argumentTypeName = argumentType ? argumentType.name : "id",
+                argumentProtocols = argumentType ? argumentType.protocols : null;
+
+            types.push(argumentTypeName);
+
+            if (i === 0)
+                selector += ":";
+            else
+                selector += (selectors[i] ? selectors[i].name : "") + ":";
+
+            if (argumentProtocols) for (var j = 0, size = argumentProtocols.length; j < size; j++) {
+                var argumentProtocol = argumentProtocols[j];
+                if (!compiler.getProtocolDef(argumentProtocol.name)) {
+                    compiler.addWarning(createMessage("Cannot find protocol declaration for '" + argumentProtocol.name + "'", argumentProtocol, compiler.source));
+                }
+            }
+
+            if (generateObjJ) {
+                var aSelector = selectors[i];
+
+                if (i)
+                    compiler.jsBuffer.concat(" ");
+
+                compiler.jsBuffer.concat((aSelector ? aSelector.name : "") + ":");
+                compiler.jsBuffer.concat("(");
+                compiler.jsBuffer.concat(argumentTypeName);
+                if (argumentProtocols) {
+                    compiler.jsBuffer.concat(" <");
+                    for (var j = 0, size = argumentProtocols.length; j < size; j++) {
+                        var argumentProtocol = argumentProtocols[j];
+
+                        if (j)
+                            compiler.jsBuffer.concat(", ");
+
+                        compiler.jsBuffer.concat(argumentProtocol.name);
+                    }
+
+                    compiler.jsBuffer.concat(">");
+                }
+                compiler.jsBuffer.concat(")");
+                c(argument.identifier, st, "IdentifierName");
+            }
         }
+    } else if (generateObjJ) {
+        var selectorNode = selectors[0];
+        compiler.jsBuffer.concat(selectorNode.name, selectorNode);
+    }
 
-        compiler.jsBuffer.concat("(self, _cmd");
+    if (generateObjJ) {
+        if (node.parameters) {
+            compiler.jsBuffer.concat(", ...");
+        }
+    } else {
+        if (compiler.jsBuffer.isEmpty())
+            compiler.jsBuffer.concat(", ");
+
+        compiler.jsBuffer.concat("new objj_method(sel_getUid(\"", node);
+        compiler.jsBuffer.concat(selector);
+        compiler.jsBuffer.concat("\"), ");
+    }
+
+    if (node.body) {
+        if (!generateObjJ) {
+            compiler.jsBuffer.concat("function");
+
+            if (compiler.options.includeMethodFunctionNames)
+            {
+                compiler.jsBuffer.concat(" $" + st.currentClassName() + "__" + selector.replace(/:/g, "_"));
+            }
+
+            compiler.jsBuffer.concat("(self, _cmd");
+        }
 
         methodScope.methodType = node.methodtype;
         methodScope.vars["self"] = {type: "method base", scope: methodScope};
@@ -11033,35 +12454,40 @@ MethodDeclarationStatement: function(node, st, c) {
             var argument = nodeArguments[i],
                 argumentName = argument.identifier.name;
 
-            compiler.jsBuffer.concat(", ");
-            compiler.jsBuffer.concat(argumentName);
+            if (!generateObjJ) {
+                compiler.jsBuffer.concat(", ");
+                compiler.jsBuffer.concat(argumentName, argument.identifier);
+            }
             methodScope.vars[argumentName] = {type: "method argument", node: argument};
         }
 
-        compiler.jsBuffer.concat(")\n");
+        if (!generateObjJ)
+            compiler.jsBuffer.concat(")\n");
 
-        if (!generate)
-            compiler.lastPos = node.startOfBody;
+        if (!generate) compiler.lastPos = node.startOfBody;
         indentation += indentStep;
         methodScope.endOfScopeBody = true;
         c(node.body, methodScope, "Statement");
-        indentation = indentation.substring(indentationSpaces);
-        if (!generate)
-            compiler.jsBuffer.concat(compiler.source.substring(compiler.lastPos, node.body.end));
+        indentation = indentation.substring(indentationSize);
+        if (!generate) compiler.jsBuffer.concat(compiler.source.substring(compiler.lastPos, node.body.end));
 
-        compiler.jsBuffer.concat("\n");
+        if (!generateObjJ)
+            compiler.jsBuffer.concat("\n");
     } else {
-        compiler.jsBuffer.concat("Nil\n");
+        if (generateObjJ)
+            compiler.jsBuffer.concat(";");
+        else
+            compiler.jsBuffer.concat("Nil\n");
     }
 
-    if (compiler.flags & ObjJAcornCompiler.Flags.IncludeTypeSignatures)
-        compiler.jsBuffer.concat(","+JSON.stringify(types));
+    if (!generateObjJ) {
+        if (compiler.options.includeMethodArgumentTypeSignatures)
+            compiler.jsBuffer.concat(","+JSON.stringify(types));
+        compiler.jsBuffer.concat(")");
+        compiler.jsBuffer = saveJSBuffer;
+    }
 
-    compiler.jsBuffer.concat(")");
-    compiler.jsBuffer = saveJSBuffer;
-
-    if (!generate)
-        compiler.lastPos = node.end;
+    if (!generate) compiler.lastPos = node.end;
 
 
     var def = st.classDef,
@@ -11074,7 +12500,7 @@ MethodDeclarationStatement: function(node, st, c) {
         def = st.protocolDef;
 
     if (!def)
-        throw "InternalError: MethodDeclaration without ClassDeclaration or ProtocolDeclaration at line: " + exports.acorn.getLineInfo(compiler.source, node.start).line;
+        throw "InternalError: MethodDeclaration without ClassDeclaration or ProtocolDeclaration at line: " + acorn.getLineInfo(compiler.source, node.start).line;
 
 
 
@@ -11082,14 +12508,13 @@ MethodDeclarationStatement: function(node, st, c) {
     if (!alreadyDeclared) {
         var protocols = def.protocols;
 
-        if (protocols)
-            for (var i = 0, size = protocols.length; i < size; i++) {
-                var protocol = protocols[i],
-                    alreadyDeclared = isInstanceMethodType ? protocol.getInstanceMethod(selector) : protocol.getClassMethod(selector);
+        if (protocols) for (var i = 0, size = protocols.length; i < size; i++) {
+            var protocol = protocols[i],
+                alreadyDeclared = isInstanceMethodType ? protocol.getInstanceMethod(selector) : protocol.getClassMethod(selector);
 
-                if (alreadyDeclared)
-                    break;
-            }
+            if (alreadyDeclared)
+                break;
+        }
     }
 
     if (alreadyDeclared) {
@@ -11127,21 +12552,26 @@ MethodDeclarationStatement: function(node, st, c) {
 MessageSendExpression: function(node, st, c) {
     var compiler = st.compiler,
         generate = compiler.generate,
-        inlineMsgSend = compiler.flags & ObjJAcornCompiler.Flags.InlineMsgSend,
+        inlineMsgSend = compiler.options.inlineMsgSendFunctions,
         buffer = compiler.jsBuffer,
         nodeObject = node.object,
         selectors = node.selectors,
-        arguments = node.arguments,
-        argumentsLength = arguments.length,
+        nodeArguments = node.arguments,
+        argumentsLength = nodeArguments.length,
         firstSelector = selectors[0],
-        selector = firstSelector ? firstSelector.name : "";
+        selector = firstSelector ? firstSelector.name : "",
+        parameters = node.parameters,
+        generateObjJ = compiler.options.generateObjJ;
 
 
-    for (var i = 0; i < argumentsLength; i++)
-        if (i === 0)
-            selector += ":";
-        else
-            selector += (selectors[i] ? selectors[i].name : "") + ":";
+    for (var i = 0; i < argumentsLength; i++) {
+        if (i !== 0) {
+            var nextSelector = selectors[i];
+            if (nextSelector)
+                selector += nextSelector.name;
+        }
+        selector += ":";
+    }
 
     if (!generate) {
         buffer.concat(compiler.source.substring(compiler.lastPos, node.start));
@@ -11150,24 +12580,28 @@ MessageSendExpression: function(node, st, c) {
 
         var totalNoOfParameters = argumentsLength;
 
-        if (node.parameters)
-            totalNoOfParameters += node.parameters.length;
+        if (parameters)
+            totalNoOfParameters += parameters.length;
     }
     if (node.superObject)
     {
         if (!generate) buffer.concat(" ");
-        if (inlineMsgSend) {
-            buffer.concat("(");
-            buffer.concat(st.currentMethodType() === "+" ? compiler.currentSuperMetaClass : compiler.currentSuperClass);
-            buffer.concat(".method_dtable[\"");
-            buffer.concat(selector);
-            buffer.concat("\"] || _objj_forward)(self");
+        if (generateObjJ) {
+            buffer.concat("[super ");
         } else {
-            buffer.concat("objj_msgSendSuper");
-            if (totalNoOfParameters < 4) {
-                buffer.concat("" + totalNoOfParameters);
+            if (inlineMsgSend) {
+                buffer.concat("(");
+                buffer.concat(st.currentMethodType() === "+" ? compiler.currentSuperMetaClass : compiler.currentSuperClass);
+                buffer.concat(".method_dtable[\"");
+                buffer.concat(selector);
+                buffer.concat("\"] || _objj_forward)(self");
+            } else {
+                buffer.concat("objj_msgSendSuper");
+                if (totalNoOfParameters < 4) {
+                    buffer.concat("" + totalNoOfParameters);
+                }
+                buffer.concat("({ receiver:self, super_class:" + (st.currentMethodType() === "+" ? compiler.currentSuperMetaClass : compiler.currentSuperClass ) + " }");
             }
-            buffer.concat("({ receiver:self, super_class:" + (st.currentMethodType() === "+" ? compiler.currentSuperMetaClass : compiler.currentSuperClass ) + " }");
         }
     }
     else
@@ -11227,129 +12661,182 @@ MessageSendExpression: function(node, st, c) {
         }
     }
 
-    if (generate && !node.superObject) {
-        if (!inlineMsgSend) {
-            if (totalNoOfParameters < 4) {
-                buffer.concat("" + totalNoOfParameters);
+    if (generateObjJ) {
+        for (var i = 0; i < argumentsLength || (argumentsLength === 0 && i === 0); i++) {
+            var selector = selectors[i];
+
+            buffer.concat(" ");
+            buffer.concat(selector ? selector.name : "");
+
+            if (argumentsLength > 0) {
+                var argument = nodeArguments[i];
+
+                buffer.concat(":");
+                c(argument, st, "Expression");
             }
         }
 
-        if (receiverIsIdentifier) {
-            buffer.concat("(");
-            c(nodeObject, st, "Expression");
-        } else {
-            buffer.concat("(___r");
-            buffer.concat(st.receiverLevel + "");
+        if (parameters) for (var i = 0, size = parameters.length; i < size; ++i)
+        {
+            var parameter = parameters[i];
+
+            buffer.concat(", ");
+            c(parameter, st, "Expression");
         }
-    }
+        buffer.concat("]");
+    } else {
+        if (generate && !node.superObject) {
+            if (!inlineMsgSend) {
+                if (totalNoOfParameters < 4) {
+                    buffer.concat("" + totalNoOfParameters);
+                }
+            }
 
-    buffer.concat(", \"");
-    buffer.concat(selector);
-    buffer.concat("\"");
-
-    if (node.arguments) for (var i = 0; i < node.arguments.length; i++)
-    {
-        var argument = node.arguments[i];
-
-        buffer.concat(", ");
-        if (!generate)
-            compiler.lastPos = argument.start;
-        c(argument, st, "Expression");
-        if (!generate) {
-            buffer.concat(compiler.source.substring(compiler.lastPos, argument.end));
-            compiler.lastPos = argument.end;
+            if (receiverIsIdentifier) {
+                buffer.concat("(");
+                c(nodeObject, st, "Expression");
+            } else {
+                buffer.concat("(___r");
+                buffer.concat(st.receiverLevel + "");
+            }
         }
-    }
 
+        buffer.concat(", \"");
+        buffer.concat(selector);
+        buffer.concat("\"");
 
-    if (node.parameters) for (var i = 0; i < node.parameters.length; ++i)
-    {
-        var parameter = node.parameters[i];
+        if (nodeArguments) for (var i = 0; i < nodeArguments.length; i++)
+        {
+            var argument = nodeArguments[i];
 
-        buffer.concat(", ");
-        if (!generate)
-            compiler.lastPos = parameter.start;
-        c(parameter, st, "Expression");
-        if (!generate) {
-            buffer.concat(compiler.source.substring(compiler.lastPos, parameter.end));
-            compiler.lastPos = parameter.end;
+            buffer.concat(", ");
+            if (!generate)
+                compiler.lastPos = argument.start;
+            c(argument, st, "Expression");
+            if (!generate) {
+                buffer.concat(compiler.source.substring(compiler.lastPos, argument.end));
+                compiler.lastPos = argument.end;
+            }
         }
+
+        if (parameters) for (var i = 0; i < parameters.length; ++i)
+        {
+            var parameter = parameters[i];
+
+            buffer.concat(", ");
+            if (!generate)
+                compiler.lastPos = parameter.start;
+            c(parameter, st, "Expression");
+            if (!generate) {
+                buffer.concat(compiler.source.substring(compiler.lastPos, parameter.end));
+                compiler.lastPos = parameter.end;
+            }
+        }
+
+        if (generate && !node.superObject) {
+            if (receiverIsNotSelf)
+                buffer.concat(")");
+            if (!receiverIsIdentifier)
+                st.receiverLevel--;
+        }
+
+        buffer.concat(")");
     }
 
-    if (generate && !node.superObject) {
-        if (receiverIsNotSelf)
-            buffer.concat(")");
-        if (!receiverIsIdentifier)
-            st.receiverLevel--;
-    }
-
-    buffer.concat(")");
     if (!generate) compiler.lastPos = node.end;
 },
 SelectorLiteralExpression: function(node, st, c) {
     var compiler = st.compiler,
         buffer = compiler.jsBuffer,
-        generate = compiler.generate;
+        generate = compiler.generate,
+        generateObjJ = compiler.options.generateObjJ;
+
     if (!generate) {
         buffer.concat(compiler.source.substring(compiler.lastPos, node.start));
         buffer.concat(" ");
     }
-    buffer.concat("sel_getUid(\"");
+
+    buffer.concat(generateObjJ ? "@selector(" : "sel_getUid(\"", node);
     buffer.concat(node.selector);
-    buffer.concat("\")");
+    buffer.concat(generateObjJ ? ")" : "\")");
+
     if (!generate) compiler.lastPos = node.end;
 },
 ProtocolLiteralExpression: function(node, st, c) {
     var compiler = st.compiler,
         buffer = compiler.jsBuffer,
-        generate = compiler.generate;
+        generate = compiler.generate,
+        generateObjJ = compiler.options.generateObjJ;
+
     if (!generate) {
         buffer.concat(compiler.source.substring(compiler.lastPos, node.start));
         buffer.concat(" ");
     }
-    buffer.concat("objj_getProtocol(\"");
-    buffer.concat(node.id.name);
-    buffer.concat("\")");
+    buffer.concat(generateObjJ ? "@protocol(" : "objj_getProtocol(\"", node);
+    c(node.id, st, "IdentifierName");
+    buffer.concat(generateObjJ ? ")" : "\")");
     if (!generate) compiler.lastPos = node.end;
 },
 Reference: function(node, st, c) {
     var compiler = st.compiler,
         buffer = compiler.jsBuffer,
-        generate = compiler.generate;
+        generate = compiler.generate,
+        generateObjJ = compiler.options.generateObjJ;
+
     if (!generate) {
         buffer.concat(compiler.source.substring(compiler.lastPos, node.start));
         buffer.concat(" ");
     }
-    buffer.concat("function(__input) { if (arguments.length) return ");
-    c(node.element, st, "Expression");
-    buffer.concat(" = __input; return ");
-    c(node.element, st, "Expression");
-    buffer.concat("; }");
+    if (generateObjJ) {
+        buffer.concat("@ref(", node);
+        buffer.concat(node.element.name, node.element);
+        buffer.concat(")", node);
+    } else {
+        buffer.concat("function(__input) { if (arguments.length) return ", node);
+        c(node.element, st, "Expression");
+        buffer.concat(" = __input; return ");
+        c(node.element, st, "Expression");
+        buffer.concat("; }");
+    }
+
     if (!generate) compiler.lastPos = node.end;
 },
 Dereference: function(node, st, c) {
     var compiler = st.compiler,
-        generate = compiler.generate;
+        buffer = compiler.jsBuffer,
+        generate = compiler.generate,
+        generateObjJ = compiler.options.generateObjJ;
 
     checkCanDereference(st, node.expr);
 
 
 
     if (!generate) {
-        compiler.jsBuffer.concat(compiler.source.substring(compiler.lastPos, node.start));
+        buffer.concat(compiler.source.substring(compiler.lastPos, node.start));
         compiler.lastPos = node.expr.start;
     }
+    if (generateObjJ)
+        buffer.concat("@deref(");
     c(node.expr, st, "Expression");
-    if (!generate) compiler.jsBuffer.concat(compiler.source.substring(compiler.lastPos, node.expr.end));
-    compiler.jsBuffer.concat("()");
+    if (!generate) buffer.concat(compiler.source.substring(compiler.lastPos, node.expr.end));
+    if (generateObjJ)
+        buffer.concat(")");
+    else
+        buffer.concat("()");
     if (!generate) compiler.lastPos = node.end;
 },
 ClassStatement: function(node, st, c) {
-    var compiler = st.compiler;
+    var compiler = st.compiler,
+        buffer = compiler.jsBuffer,
+        generateObjJ = compiler.options.generateObjJ;
     if (!compiler.generate) {
-        compiler.jsBuffer.concat(compiler.source.substring(compiler.lastPos, node.start));
+        buffer.concat(compiler.source.substring(compiler.lastPos, node.start));
         compiler.lastPos = node.start;
-        compiler.jsBuffer.concat("//");
+        buffer.concat("//");
+    }
+    if (generateObjJ) {
+        buffer.concat("@class ");
+        c(node.id, st, "IdentifierName");
     }
     var className = node.id.name;
 
@@ -11357,17 +12844,22 @@ ClassStatement: function(node, st, c) {
         throw compiler.error_message(className + " is already declared as a type", node.id);
 
     if (!compiler.getClassDef(className)) {
-        classDef = new ClassDef(false, className);
-        compiler.classDefs[className] = classDef;
+        compiler.classDefs[className] = new ClassDef(false, className);
     }
     st.vars[node.id.name] = {type: "class", node: node.id};
 },
 GlobalStatement: function(node, st, c) {
-    var compiler = st.compiler;
+    var compiler = st.compiler,
+        buffer = compiler.jsBuffer,
+        generateObjJ = compiler.options.generateObjJ;
     if (!compiler.generate) {
-        compiler.jsBuffer.concat(compiler.source.substring(compiler.lastPos, node.start));
+        buffer.concat(compiler.source.substring(compiler.lastPos, node.start));
         compiler.lastPos = node.start;
-        compiler.jsBuffer.concat("//");
+        buffer.concat("//");
+    }
+    if (generateObjJ) {
+        buffer.concat("@global ");
+        c(node.id, st, "IdentifierName");
     }
     st.rootScope().vars[node.id.name] = {type: "global", node: node.id};
 },
@@ -11380,7 +12872,6 @@ PreprocessStatement: function(node, st, c) {
     }
 },
 TypeDefStatement: function(node, st, c) {
-
     var compiler = st.compiler,
         generate = compiler.generate,
         buffer = compiler.jsBuffer,
@@ -11393,9 +12884,6 @@ TypeDefStatement: function(node, st, c) {
 
     if (compiler.getClassDef(typeDefName))
         throw compiler.error_message(typeDefName + " is already declared as class", node.typedefname);
-
-    compiler.imBuffer = new StringBuffer();
-    compiler.cmBuffer = new StringBuffer();
 
     if (!generate)
         buffer.concat(compiler.source.substring(compiler.lastPos, node.start));
@@ -11410,12 +12898,12 @@ TypeDefStatement: function(node, st, c) {
 
     buffer.concat("}");
 
-    compiler.jsBuffer = buffer;
-
 
     if (!generate)
         compiler.lastPos = node.end;
 }
+});
+
 });
 function FileDependency( aURL, isLocal)
 {
@@ -11595,6 +13083,10 @@ Executable.prototype.execute = function()
         this._compiler.popImport();
 
         this.setCode(this._compiler.compilePass2());
+
+    if (FileExecutable.printWarningsAndErrors(this._compiler, exports.messageOutputFormatInXML))
+            throw "Compilation error";
+
         this._compiler = null;
     }
 
@@ -11882,7 +13374,6 @@ Executable.fileExecutableSearcherForURL = function( referenceURL)
     var referenceURLString = referenceURL.absoluteString(),
         cachedFileExecutableSearcher = cachedFileExecutableSearchers[referenceURLString],
         aFilenameTranslateDictionary = Executable.filenameTranslateDictionary ? Executable.filenameTranslateDictionary() : null;
-        cachedSearchResults = { };
 
     if (!cachedFileExecutableSearcher)
     {
@@ -11910,7 +13401,7 @@ Executable.fileExecutableSearcherForURL = function( referenceURL)
             {
                 if (!aStaticResource)
                 {
-                    var compilingFileUrl = ObjJAcornCompiler ? ObjJAcornCompiler.currentCompileFile : null;
+                    var compilingFileUrl = exports.ObjJCompiler ? exports.ObjJCompiler.currentCompileFile : null;
                     throw new Error("Could not load file at " + aURL + (compilingFileUrl ? " when compiling " + compilingFileUrl : ""));
                 }
 
@@ -11928,6 +13419,9 @@ Executable.fileExecutableSearcherForURL = function( referenceURL)
 
                                                      ;
 var FileExecutablesForURLStrings = { };
+
+var currentCompilerFlags = {};
+var currentGccCompilerFlags = "";
 
 function FileExecutable( aURL, aFilenameTranslateDictionary)
 {
@@ -11948,7 +13442,17 @@ function FileExecutable( aURL, aFilenameTranslateDictionary)
     if (fileContents.match(/^@STATIC;/))
         executable = decompile(fileContents, aURL);
     else if ((extension === "j" || !extension) && !fileContents.match(/^{/))
-        executable = exports.ObjJAcornCompiler.compileFileDependencies(fileContents, aURL, exports.currentCompilerFlags());
+    {
+        var compiler = exports.ObjJCompiler.compileFileDependencies(fileContents, aURL, currentCompilerFlags || {});
+
+        if (FileExecutable.printWarningsAndErrors(compiler, exports.messageOutputFormatInXML))
+            throw "Compilation error";
+
+        var fileDependencies = compiler.dependencies.map(function (aFileDep) {
+            return new FileDependency(new CFURL(aFileDep.url), aFileDep.isLocal);
+        });
+        executable = new Executable(compiler.jsBuffer ? compiler.jsBuffer.toString() : null, fileDependencies, compiler.URL, null, compiler);
+    }
     else
         executable = new Executable(fileContents, [], aURL);
 
@@ -12046,6 +13550,113 @@ FileExecutable._lookupCachedFunction = function( aURL)
     aURL = typeof aURL === "string" ? aURL : aURL.absoluteString();
     return FunctionCache[aURL];
 }
+
+FileExecutable.setCurrentGccCompilerFlags = function( compilerFlags)
+{
+    if (currentGccCompilerFlags === compilerFlags) return;
+
+    currentGccCompilerFlags = compilerFlags;
+
+    var args = compilerFlags.split(" "),
+        count = args.length,
+        objjcFlags = {};
+
+    for (var index = 0; index < count; ++index)
+    {
+        var argument = args[index];
+
+        if (argument.indexOf("-g") === 0)
+            objjcFlags.includeMethodFunctionNames = true;
+        else if (argument.indexOf("-O") === 0) {
+            objjcFlags.inlineMsgSendFunctions = true;
+
+
+            if (argument.length > 2)
+                objjcFlags.inlineMsgSendFunctions = true;
+        }
+
+
+        else if (argument.indexOf("-T") === 0) {
+            objjcFlags.includeIvarTypeSignatures = false;
+            objjcFlags.includeMethodArgumentTypeSignatures = false;
+        }
+    }
+
+    FileExecutable.setCurrentCompilerFlags(objjcFlags);
+}
+
+FileExecutable.currentGccCompilerFlags = function( compilerFlags)
+{
+    return currentGccCompilerFlags;
+}
+
+FileExecutable.setCurrentCompilerFlags = function( compilerFlags)
+{
+    currentCompilerFlags = compilerFlags;
+
+
+    if (currentCompilerFlags.transformNamedFunctionDeclarationToAssignment == null)
+        currentCompilerFlags.transformNamedFunctionDeclarationToAssignment = true;
+    if (currentCompilerFlags.sourceMap == null)
+        currentCompilerFlags.sourceMap = false;
+    if (currentCompilerFlags.inlineMsgSendFunctions == null)
+        currentCompilerFlags.inlineMsgSendFunctions = false;
+}
+
+FileExecutable.currentCompilerFlags = function( compilerFlags)
+{
+    return currentCompilerFlags;
+}
+
+
+
+
+
+FileExecutable.printWarningsAndErrors = function( compiler, printXML)
+{
+    var warnings = [],
+        anyErrors = false;
+
+    for (var i = 0; i < compiler.warningsAndErrors.length; i++)
+    {
+        var warning = compiler.warningsAndErrors[i],
+            message = compiler.prettifyMessage(warning);
+
+
+        anyErrors = anyErrors || warning.messageType === "ERROR";
+
+
+
+        if (printXML)
+        {
+            var dict = new CFMutableDictionary();
+            if (warning.messageOnLine != null) dict.addValueForKey('line', warning.messageOnLine)
+            if (warning.path != null) dict.addValueForKey('sourcePath', new CFURL(warning.path).path())
+            if (message != null) dict.addValueForKey('message', message)
+
+            warnings.push(dict);
+        }
+        else
+        {
+            print(message);
+        }
+
+    }
+
+
+    if (warnings.length && printXML)
+        try {
+            print(CFPropertyListCreateXMLData(warnings, kCFPropertyListXMLFormat_v1_0).rawString());
+        } catch (e) {
+            print ("XML encode error: " + e);
+        }
+
+
+    return anyErrors;
+}
+
+
+FileExecutable.setCurrentCompilerFlags({});
 var CLS_CLASS = 0x1,
     CLS_META = 0x2,
     CLS_INITIALIZED = 0x4,
@@ -12323,7 +13934,7 @@ class_addProtocol = function( aClass, aProtocol)
         return;
     }
 
-    (aClass.protocol_list || (aClass.protocol_list == [])).push(aProtocol);
+    (aClass.protocol_list || (aClass.protocol_list = [])).push(aProtocol);
 
     return true;
 }
@@ -13504,6 +15115,7 @@ exports.run = function(args)
 
 
         var argv = args.slice(1);
+        var outputFormatInXML = false;
 
         if (argv[0] === "--version" || argv[0] === "-v")
         {
@@ -13544,25 +15156,33 @@ exports.run = function(args)
                 case "-x":
                 case "--xml":
                     argv.shift();
-                    exports.outputFormatInXML = true;
+                    exports.messageOutputFormatInXML = true;
+                    outputFormatInXML = true;
                     break;
 
                 case "-g":
                 case "--include-debug-symbols":
                     argv.shift();
-                    (OBJJ_COMPILER_FLAGS || (OBJJ_COMPILER_FLAGS = [])).push("IncludeDebugSymbols");
+                    var flags = ObjectiveJ.FileExecutable.currentCompilerFlags();
+                    flags.includeMethodFunctionNames = true;
+                    ObjectiveJ.FileExecutable.setCurrentCompilerFlags(flags);
                     break;
 
                 case "-T":
                 case "--dont-include-type-signatures":
                     argv.shift();
-                    (OBJJ_COMPILER_FLAGS || (OBJJ_COMPILER_FLAGS = [])).push("IncludeTypeSignatures");
+                    var flags = ObjectiveJ.FileExecutable.currentCompilerFlags();
+                    flags.includeIvarTypeSignatures = true;
+                    flags.includeMethodArgumentTypeSignatures = true;
+                    ObjectiveJ.FileExecutable.setCurrentCompilerFlags(flags);
                     break;
 
                 case "-O2":
                 case "--inline-msg-send":
                     argv.shift();
-                    (OBJJ_COMPILER_FLAGS || (OBJJ_COMPILER_FLAGS = [])).push("InlineMsgSend");
+                    var flags = ObjectiveJ.FileExecutable.currentCompilerFlags();
+                    flags.inlineMsgSendFunctions = true;
+                    ObjectiveJ.FileExecutable.setCurrentCompilerFlags(flags);
                     break;
             }
         }
@@ -13584,19 +15204,7 @@ exports.run = function(args)
             }
             catch(e)
             {
-                if (exports.outputFormatInXML)
-                {
-                    var dict = new CFMutableDictionary();
-                    dict.addValueForKey('line', e.line ? e.line : 0);
-                    dict.addValueForKey('sourcePath', e.path ? e.path : mainFilePath);
-                    dict.addValueForKey('message', e.message);
-
-                    errors.push(dict);
-                }
-                else
-                {
-                    errors.push("\n" + e);
-                }
+                errors.push(e);
             }
 
             if (typeof main === "function")
@@ -13618,10 +15226,8 @@ exports.run = function(args)
 
         if (errors.length)
         {
-            if (exports.outputFormatInXML)
-                throw CFPropertyListCreateXMLData(errors, kCFPropertyListXMLFormat_v1_0).rawString();
-            else
-                throw errors;
+
+            OS.exit(1);
         }
     }
     else
@@ -13695,7 +15301,6 @@ function getPackage() {
 exports.version = function() { return getPackage()["version"]; }
 exports.revision = function() { return getPackage()["cappuccino-revision"]; }
 exports.timestamp = function() { return new Date(getPackage()["cappuccino-timestamp"]); }
-exports.outputFormatInXML = false;
 
 exports.fullVersionString = function() {
     return sprintf("objective-j %s (%04d-%02d-%02d %s)",
