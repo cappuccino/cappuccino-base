@@ -48,6 +48,12 @@ fi
 
 # check the java version number in the most complicated fashion imaginable
 JAVA_VERSION=$(java -version 2>&1 | awk -F '[ ".]+' 'NR==1 {print $3 "." $4}')
+
+# For travis, java -version is different in the travis container
+if [ "$JAVA_VERSION" == "_JAVA_OPTIONS:.-Xmx2048m" ]; then
+	JAVA_VERSION=$(java -version 2>&1 | awk -F '[ ".]+' 'NR==2 {print $3 "." $4}')
+fi
+
 LOWER_VERSION=$( (echo "$JAVA_VERSION"; echo "1.5") | sort -n | head -n 1)
 if [ "$LOWER_VERSION" != "1.5" ]; then
     echo "Narwhal on Rhino requires Java 1.5 or higher.  You have $JAVA_VERSION."
@@ -68,4 +74,3 @@ if [ $# -lt 1 ]; then
 else
     java $JAVA_OPTS $NARWHAL_JAVA_ARGUMENTS -cp "$BOOTCLASSPATH:$CLASSPATH" "$JAVA_MAIN" -version "$NARWHAL_JS_VERSION" "$BOOTSTRAP" "$0" "$@"
 fi
-
