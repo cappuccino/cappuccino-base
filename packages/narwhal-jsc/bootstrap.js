@@ -45,7 +45,7 @@
         return loader;
     };
 
-    var sourceURLTag = "\n//@ sourceURL="+prefix+"/narwhal.js";
+    var sourceURLTag = "\n//# sourceURL="+prefix+"/narwhal.js";
     var narwhal = evalGlobal(_read(prefix + "/narwhal.js") + "/**/" + sourceURLTag);
     narwhal.displayName = "narwhal";
 
@@ -59,7 +59,7 @@
             prefixes: [enginePrefix, prefix],
             print: function print(string) { _print(String(string)); },
             evaluate: function evaluate(text, fileName, lineNumber) {
-                var sourceURLTag = "\n//@ sourceURL=" + fileName;
+                var sourceURLTag = "\n//# sourceURL=" + fileName;
                 //return new Function("require", "exports", "module", "system", "print", text+"/**/"+sourceURLTag);
                 return eval("(function(require,exports,module,system,print){" + text + "/**/\n})"+sourceURLTag);
             },

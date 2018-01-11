@@ -195,7 +195,7 @@ const bootstrap = function() {
     }
 
     const evaluate = function (text, fileName, lineNumber) {
-        const sourceURLTag = "\n//@ sourceURL=" + fileName;
+        const sourceURLTag = "\n//# sourceURL=" + fileName;
         return eval.call(global, "(function(require,exports,module,system,print){" + text + "/**/\n})"+sourceURLTag);
     };
     const cleanupList = [];
@@ -216,7 +216,7 @@ const bootstrap = function() {
         return eval.call(global, a);
     };
 
-    const sourceURLTag = "\n//@ sourceURL="+prefix+"/narwhal.js";
+    const sourceURLTag = "\n//# sourceURL="+prefix+"/narwhal.js";
     const narwhal = evalGlobal(read(narwhalFilePath) + "/**/" + sourceURLTag);
     narwhal.displayName = "narwhal";
 
