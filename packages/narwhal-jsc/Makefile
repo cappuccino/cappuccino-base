@@ -10,7 +10,7 @@ else
     CC        =clang
 endif
 
-CPPFLAGS  = -Os -force_cpusubtype_ALL -mmacosx-version-min=10.4 -arch i386
+CPPFLAGS  = -Os -force_cpusubtype_ALL -mmacosx-version-min=10.7 -arch x86_64
 #CPPFLAGS += -g -O0
 #CPPFLAGS += -DDEBUG_ON
 #CPPFLAGS += -save-temps
@@ -132,8 +132,8 @@ deps/http-parser/http_parser.o:
 deps/libedit-20100424-3.0/src/.libs/libedit.dylib: deps/libedit-20100424-3.0
 	chmod +x deps/libedit-20100424-3.0/configure
 	cd deps/libedit-20100424-3.0 && \
-		env CFLAGS="-force_cpusubtype_ALL -mmacosx-version-min=10.4 -arch i386" \
-		LDFLAGS="-force_cpusubtype_ALL -mmacosx-version-min=10.4 -arch i386" ./configure --disable-dependency-tracking && \
+		env CFLAGS="-force_cpusubtype_ALL -mmacosx-version-min=10.7 -arch x86_64" \
+		LDFLAGS="-force_cpusubtype_ALL -mmacosx-version-min=10.7 -arch x86_64" ./configure --disable-dependency-tracking && \
 		make
 
 lib/libedit.dylib: deps/libedit-20100424-3.0/src/.libs/libedit.dylib
