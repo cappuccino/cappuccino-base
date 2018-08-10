@@ -1,4 +1,4 @@
-OPT=-O0 -g -Wall -Wextra -force_cpusubtype_ALL -mmacosx-version-min=10.4 -arch i386 #-Werror
+OPT=-O0 -g -Wall -Wextra -force_cpusubtype_ALL -mmacosx-version-min=10.9 -arch x86_64 #-Werror
 #OPT=-O2
 
 test: http_parser.o test.c
