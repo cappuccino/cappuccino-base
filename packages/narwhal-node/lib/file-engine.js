@@ -111,9 +111,9 @@ exports.canonical = function (path) {
             try {
                 var link = exports.readlink(consider);
             } catch (exception) {
-                link = undefined;
+                link = null;
             }
-            if (link !== undefined) {
+            if (link != null) {
                 ins.unshift.apply(ins, exports.split(link));
             } else {
                 outs.push(leaf)
@@ -121,6 +121,15 @@ exports.canonical = function (path) {
         }
     }
     return exports.join.apply(undefined, outs);
+}
+
+exports.readlink = function (path) {
+    try {
+        return nodefs.readlinkSync(path);
+    } catch (e) {
+        throwIfAbnormal(e);
+    }
+    return null;
 }
 
 exports.exists = function (path) {
@@ -175,11 +184,16 @@ exports.isLink = function (path) {
 }
 
 exports.isReadable = function (path) {
-    throw new Error("isReadable not yet implemented.");
+    try {
+        return nodefs.statSync(path) && nodefs.accessSync(path, nodefs.R_OK);
+    } catch (e) {
+        //throwIfAbnormal(e);
+    }
+    return false;
 }
 
 exports.isWritable = function (path) {
-    throw new Error("isWritable not yet implemented.");
+    return nodefs.statSync(path) && nodefs.accessSync(path, nodefs.W_OK);
 }
 
 exports.move = function (source, target) {
