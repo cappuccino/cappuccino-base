@@ -1,3 +1,4 @@
+export MACOSX_DEPLOYMENT_TARGET=10.9
 KERNEL_VERSION = $(uname -r)
 HIGHER_VERSION = `echo -e "$(KERNEL_VERSION)\n12.3.0" | sort -g -t '.' | tail -n 1`
 # use gcc for Mountain Lion or lower, more info at
@@ -10,7 +11,7 @@ else
     CC        =clang
 endif
 
-CPPFLAGS  = -Os -force_cpusubtype_ALL -mmacosx-version-min=10.4 -arch i386
+CPPFLAGS  = -Os -force_cpusubtype_ALL -mmacosx-version-min=10.9 -arch x86_64
 #CPPFLAGS += -g -O0
 #CPPFLAGS += -DDEBUG_ON
 #CPPFLAGS += -save-temps
@@ -115,7 +116,7 @@ lib/%.dylib: src/%.cc
 
 lib/readline.dylib: src/readline.cc lib/libedit.dylib
 	mkdir -p `dirname $@`
-	$(CPP) -o $@ $< $(CPPFLAGS) $(INCLUDES) -dynamiclib $(LIBS) -DUSE_EDITLINE -Ideps/libedit-20100424-3.0/src -ledit
+	$(CPP) -o $@ $< $(CPPFLAGS) $(INCLUDES) -dynamiclib $(LIBS) -DUSE_EDITLINE -Ideps/libedit-20180525-3.1/src -ledit
 	#install_name_tool -change "$(SYSTEM_JSC)" "$(RELATIVE_JSC)" "$@"
 	install_name_tool -change "lib/libedit.dylib" "@executable_path/../lib/libedit.dylib" "$@"
 
@@ -129,14 +130,14 @@ lib/jack/handler/jill.dylib: src/jack/handler/jill.cc deps/http-parser/http_pars
 deps/http-parser/http_parser.o:
 	cd deps/http-parser && make http_parser.o
 
-deps/libedit-20100424-3.0/src/.libs/libedit.dylib: deps/libedit-20100424-3.0
-	chmod +x deps/libedit-20100424-3.0/configure
-	cd deps/libedit-20100424-3.0 && \
-		env CFLAGS="-force_cpusubtype_ALL -mmacosx-version-min=10.4 -arch i386" \
-		LDFLAGS="-force_cpusubtype_ALL -mmacosx-version-min=10.4 -arch i386" ./configure --disable-dependency-tracking && \
+deps/libedit-20180525-3.1/src/.libs/libedit.dylib: deps/libedit-20180525-3.1
+	chmod +x deps/libedit-20180525-3.1/configure
+	cd deps/libedit-20180525-3.1 && \
+		env CFLAGS="-force_cpusubtype_ALL -mmacosx-version-min=10.9 -arch x86_64" \
+		LDFLAGS="-force_cpusubtype_ALL -mmacosx-version-min=10.9 -arch x86_64" ./configure --disable-dependency-tracking && \
 		make
 
-lib/libedit.dylib: deps/libedit-20100424-3.0/src/.libs/libedit.dylib
+lib/libedit.dylib: deps/libedit-20180525-3.1/src/.libs/libedit.dylib
 	cp $< $@
 
 frameworks: $(JSCORE_FRAMEWORK)
