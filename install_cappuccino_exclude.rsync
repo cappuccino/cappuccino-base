@@ -1,5 +1,6 @@
 # Our own stuff.
 .git
+.gitignore
 install_cappuccino*
 README.markdown
 *.sublime*
@@ -20,3 +21,14 @@ zips/*
 *.la
 *.lo
 *.lai
+
+# We only want to rsync things that belong to Cappuccino itself. We don't want to overwrite narwhal bits which belong 
+# to the cappuccino-base itself, with older copies that would exist in the local install. 
+# TODO Instead of blacklisting all the things not to copy, just copy the things we want directly from Cappuccino build.
+packages/narwhal-jsc
+packages/narwhal-node
+packages/browserjs
+packages/shrinksafe
+engines/
+narwhal.js
+tests/

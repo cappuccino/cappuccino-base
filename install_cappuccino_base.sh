@@ -26,6 +26,7 @@ function prompt () {
 }
 
 destination=`pwd`
+# FIXME Don't hardcode path.
 cappuccino_source="/Users/stripe/narwhal"
 if ! echo $destination | grep cappuccino-base; then
     echo "This script should be run from within cappuccino-base."
