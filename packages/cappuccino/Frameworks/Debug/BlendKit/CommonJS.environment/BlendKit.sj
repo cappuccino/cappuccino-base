@@ -335,6 +335,50 @@ class_addMethods(meta_class, [new objj_method(sel_getUid("setBackgroundColor:"),
 
 ,["CPColor"])]);
 }
+p;17;BKThemeTemplate.jt;1323;@STATIC;1.0;I;21;Foundation/CPObject.jt;1278;objj_executeFile("Foundation/CPObject.j", NO);
+{var the_class = objj_allocateClassPair(CPObject, "BKThemeTemplate"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_name", "CPString"), new objj_ivar("_description", "CPString")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $BKThemeTemplate__initWithCoder_(self, _cmd, aCoder)
+{
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("BKThemeTemplate").super_class }, "init");
+    if (self)
+    {
+        self._name = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "BKThemeTemplateName"));
+        self._description = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "BKThemeTemplateDescription"));
+    }
+    return self;
+}
+
+,["id","CPCoder"]), new objj_method(sel_getUid("encodeWithCoder:"), function $BKThemeTemplate__encodeWithCoder_(self, _cmd, aCoder)
+{
+    (aCoder == null ? null : aCoder.isa.objj_msgSend2(aCoder, "encodeObject:forKey:", self._name, "BKThemeTemplateName"));
+    (aCoder == null ? null : aCoder.isa.objj_msgSend2(aCoder, "encodeObject:forKey:", self._description, "BKThemeTemplateDescription"));
+}
+
+,["void","CPCoder"])]);
+}
+p;24;BKThemedObjectTemplate.jt;1369;@STATIC;1.0;I;15;AppKit/CPView.jt;1330;objj_executeFile("AppKit/CPView.j", NO);
+{var the_class = objj_allocateClassPair(CPView, "BKThemedObjectTemplate"),
+meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_label", "CPString"), new objj_ivar("_themedObject", "id")]);objj_registerClassPair(the_class);
+class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $BKThemedObjectTemplate__initWithCoder_(self, _cmd, aCoder)
+{
+    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("BKThemedObjectTemplate").super_class }, "init");
+    if (self)
+    {
+        self._label = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "BKThemedObjectTemplateLabel"));
+        self._themedObject = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "BKThemedObjectTemplateThemedObject"));
+    }
+    return self;
+}
+
+,["id","CPCoder"]), new objj_method(sel_getUid("encodeWithCoder:"), function $BKThemedObjectTemplate__encodeWithCoder_(self, _cmd, aCoder)
+{
+    (aCoder == null ? null : aCoder.isa.objj_msgSend2(aCoder, "encodeObject:forKey:", self._label, "BKThemedObjectTemplateLabel"));
+    (aCoder == null ? null : aCoder.isa.objj_msgSend2(aCoder, "encodeObject:forKey:", self._themedObject, "BKThemedObjectTemplateThemedObject"));
+}
+
+,["void","CPCoder"])]);
+}
 p;19;BKThemeDescriptor.jt;15513;@STATIC;1.0;I;21;Foundation/CPObject.jI;20;Foundation/CPArray.jI;16;AppKit/CPColor.jI;16;AppKit/CPImage.jI;15;AppKit/CPView.jI;29;AppKit/_CPCibCustomResource.jt;15346;objj_executeFile("Foundation/CPObject.j", NO);objj_executeFile("Foundation/CPArray.j", NO);objj_executeFile("AppKit/CPColor.j", NO);objj_executeFile("AppKit/CPImage.j", NO);objj_executeFile("AppKit/CPView.j", NO);objj_executeFile("AppKit/_CPCibCustomResource.j", NO);PatternIsHorizontal = CPColorPatternIsHorizontal;
 PatternIsVertical = CPColorPatternIsVertical;
 var ItemSizes = {},
@@ -627,49 +671,5 @@ PatternColor = function()
     var args = Array.prototype.slice.apply(arguments);
     args.push(PatternImage);
     return CPColorWithImages.apply(this, args);
-}
-p;24;BKThemedObjectTemplate.jt;1369;@STATIC;1.0;I;15;AppKit/CPView.jt;1330;objj_executeFile("AppKit/CPView.j", NO);
-{var the_class = objj_allocateClassPair(CPView, "BKThemedObjectTemplate"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_label", "CPString"), new objj_ivar("_themedObject", "id")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $BKThemedObjectTemplate__initWithCoder_(self, _cmd, aCoder)
-{
-    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("BKThemedObjectTemplate").super_class }, "init");
-    if (self)
-    {
-        self._label = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "BKThemedObjectTemplateLabel"));
-        self._themedObject = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "BKThemedObjectTemplateThemedObject"));
-    }
-    return self;
-}
-
-,["id","CPCoder"]), new objj_method(sel_getUid("encodeWithCoder:"), function $BKThemedObjectTemplate__encodeWithCoder_(self, _cmd, aCoder)
-{
-    (aCoder == null ? null : aCoder.isa.objj_msgSend2(aCoder, "encodeObject:forKey:", self._label, "BKThemedObjectTemplateLabel"));
-    (aCoder == null ? null : aCoder.isa.objj_msgSend2(aCoder, "encodeObject:forKey:", self._themedObject, "BKThemedObjectTemplateThemedObject"));
-}
-
-,["void","CPCoder"])]);
-}
-p;17;BKThemeTemplate.jt;1323;@STATIC;1.0;I;21;Foundation/CPObject.jt;1278;objj_executeFile("Foundation/CPObject.j", NO);
-{var the_class = objj_allocateClassPair(CPObject, "BKThemeTemplate"),
-meta_class = the_class.isa;class_addIvars(the_class, [new objj_ivar("_name", "CPString"), new objj_ivar("_description", "CPString")]);objj_registerClassPair(the_class);
-class_addMethods(the_class, [new objj_method(sel_getUid("initWithCoder:"), function $BKThemeTemplate__initWithCoder_(self, _cmd, aCoder)
-{
-    self = objj_msgSendSuper0({ receiver:self, super_class:objj_getClass("BKThemeTemplate").super_class }, "init");
-    if (self)
-    {
-        self._name = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "BKThemeTemplateName"));
-        self._description = (aCoder == null ? null : aCoder.isa.objj_msgSend1(aCoder, "decodeObjectForKey:", "BKThemeTemplateDescription"));
-    }
-    return self;
-}
-
-,["id","CPCoder"]), new objj_method(sel_getUid("encodeWithCoder:"), function $BKThemeTemplate__encodeWithCoder_(self, _cmd, aCoder)
-{
-    (aCoder == null ? null : aCoder.isa.objj_msgSend2(aCoder, "encodeObject:forKey:", self._name, "BKThemeTemplateName"));
-    (aCoder == null ? null : aCoder.isa.objj_msgSend2(aCoder, "encodeObject:forKey:", self._description, "BKThemeTemplateDescription"));
-}
-
-,["void","CPCoder"])]);
 }
 p;10;BlendKit.jt;306;@STATIC;1.0;i;22;BKShowcaseController.ji;19;BKThemeDescriptor.ji;17;BKThemeTemplate.ji;24;BKThemedObjectTemplate.jt;186;objj_executeFile("BKShowcaseController.j", YES);objj_executeFile("BKThemeDescriptor.j", YES);objj_executeFile("BKThemeTemplate.j", YES);objj_executeFile("BKThemedObjectTemplate.j", YES);e;
