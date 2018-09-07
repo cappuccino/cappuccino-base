@@ -37,6 +37,8 @@ echo "Install $cappuccino_source in $destination?"
 echo "WARNING: all files not supposed to be in the folder will be deleted."
 if prompt "no"; then
     rsync -acvP --exclude-from install_cappuccino_exclude.rsync --delete "$cappuccino_source/" "$destination"
+    mkdir -p "$destination"/packages/cappuccino/support
+    rsync -acvP /Applications/XcodeCapp.app "$destination"/packages/cappuccino/support
 
     # Don't include JSC binaries. They should be built on the target machine by bootstrap.
     # \.(o|dylib|a|la|lo|lai) were already excluded by the rsync exclude.
