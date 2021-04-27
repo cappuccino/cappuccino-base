@@ -11,6 +11,7 @@ var terms = [
     'xterm',
     'xtermc',
     'xterm-color',
+    'xterm-256color',
     'gnome-terminal'
 ];
 
